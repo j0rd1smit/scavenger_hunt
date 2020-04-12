@@ -26,7 +26,8 @@
     "webpack",
     "jest",
     "src/setupTests.ts",
-    "webpack.config.js"
+    "webpack.config.js",
+    "clean.js"
   ]
 }
 

@@ -5,10 +5,18 @@ import * as fs from "fs";
 const app = express();
 export const port = 8080;
 
+
+
+
 app.get("/api/test", (req: Request, res: Response) => {
     res.json({"message": "test"});
 });
 
+
+/**
+ *  Route the index page to react.
+ */
+app.use(express.static("dist"));
 
 /**
  * fallback method production
