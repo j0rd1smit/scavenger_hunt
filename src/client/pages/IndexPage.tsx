@@ -1,9 +1,13 @@
 import React, {Fragment, useState} from "react";
 import {OnClickEvent} from "../utils/ReactTypes";
+import NavBar from "../components/NavBar";
+import MU from "../components/MU";
+
 
 
 function IndexPage(): JSX.Element {
-    const [value, setValue] = useState<string>('');
+    const [value, setValue] = useState<string>("");
+
 
     const onClick = async (e: OnClickEvent): Promise<void> => {
         e.preventDefault();
@@ -14,8 +18,12 @@ function IndexPage(): JSX.Element {
 
     return (
         <Fragment>
-            Message: {value}
+            <NavBar/>
+            <div>
+            <p>Message: {value}</p>
+
             <button onClick={onClick}>test</button>
+            </div>
         </Fragment>
     );
 }

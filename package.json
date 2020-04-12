@@ -10,7 +10,7 @@
     "client": "webpack-dev-server --mode development --devtool inline-source-map --hot",
     "server-compile": "tsc",
     "server": "nodemon -e ts --exec \"npm run server-compile && npm run start\"",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "npm run clean && concurrently \"npm run server\" \"npm run client\""
   },
   "author": "Jordi Smit",
   "dependencies": {
