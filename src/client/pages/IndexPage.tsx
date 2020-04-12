@@ -1,7 +1,6 @@
 import React, {Fragment, useState} from "react";
 import {OnClickEvent} from "../utils/ReactTypes";
 import NavBar from "../components/NavBar";
-import MU from "../components/MU";
 
 
 
