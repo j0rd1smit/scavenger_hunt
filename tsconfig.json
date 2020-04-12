@@ -2,7 +2,7 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "outDir": "build/dist/src/server",
+    "outDir": "build/dist/src",
     "module": "esnext",
     "target": "es5",
     "lib": ["es6", "dom"],

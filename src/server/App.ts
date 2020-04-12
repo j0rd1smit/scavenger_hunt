@@ -2,9 +2,13 @@ import express, {Request, Response} from "express";
 import * as fs from "fs";
 
 
-
 const app = express();
 export const port = 8080;
+
+app.get("/api/test", (req: Request, res: Response) => {
+    res.json({"message": "test"});
+});
+
 
 /**
  * fallback method production
@@ -14,7 +18,6 @@ app.get("*", (req: Request, res: Response) => {
         res.send(html);
     });
 });
-
 
 
 // noinspection TsLint
