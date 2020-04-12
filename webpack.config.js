@@ -1,3 +1,4 @@
+const ip = require("ip");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
@@ -40,10 +41,12 @@ module.exports = {
     },
     devServer: {
         port: 3000,
+        disableHostCheck: true,
         open: true,
         proxy: {
             "/api": "http://localhost:8080"
         },
+        host: ip.address(),
         historyApiFallback: true,
     },
     plugins: [
