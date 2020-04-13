@@ -47,6 +47,7 @@ module.exports = {
             "/api": "http://localhost:8080"
         },
         host: ip.address(),
+        https: true,
         historyApiFallback: true,
     },
     plugins: [
