@@ -45,3 +45,10 @@ export const distanceInMetersBetween = (start: LatLng, destination: LatLng): num
     return  R * c;
 }
 
+
+
+export const getPositionPromise = (options: PositionOptions): Promise<Position> => {
+    return new Promise(function (resolve: PositionCallback, reject: PositionErrorCallback) {
+        return navigator.geolocation.getCurrentPosition(resolve, reject, options);
+    });
+}

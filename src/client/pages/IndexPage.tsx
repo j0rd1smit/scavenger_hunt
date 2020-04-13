@@ -1,54 +1,59 @@
 import React, {Fragment, useState} from "react";
 import NavBar from "../components/NavBar";
-import { Map, Marker, Popup, TileLayer } from "react-leaflet"
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {createGeoDataHook} from "../service/GeolocationService";
-import QrReader from 'react-qr-reader'
+import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
+import {LatLngTuple} from "leaflet";
+import SideBarDrawer from "../components/SideBarDrawer";
+import MainMapView from "../components/MainMapView";
+
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             flexGrow: 1,
-            height: 500,
-            width: 500,
         },
+        mapContainer: {
+            height: "calc(100vh - 64px)",
+            width: "100%",
+        }
     }),
 );
 
-function IndexPage(): JSX.Element {
+interface IIndexPageProps {
+
+}
+
+function IndexPage(props: IIndexPageProps): JSX.Element {
     const classes = useStyles();
     const geoData = createGeoDataHook();
-    const [result, setResult] = useState<string>("");
+    const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
 
-    const handleError = (err: Error) => alert(err.message);
-    const handleScan = (data: string) => {
-        setResult(data);
-    }
+    const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
 
-    // @ts-ignore
+    const onClickMenuButton: OnClickCallback = (e: OnClickEvent): void => {
+        setDrawerIsOpen(true);
+    };
+
+
     return (
         <Fragment>
-            <NavBar/>
-
             <div className={classes.root}>
-                <Map center={geoData.coord} zoom={18}>
-                    <TileLayer
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                        attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-                    />
-                    <Marker position={geoData.coord}>
-                        <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
-                    </Marker>
-                </Map>
-            </div>
-            <div>
-                <QrReader
-                    delay={300}
-                    onError={handleError}
-                    onScan={handleScan}
-                    style={{ width: '100%' }}
+                <NavBar
+                    onMenuButtonClick={onClickMenuButton}
                 />
-                <p>result: {result}</p>
+                <SideBarDrawer
+                    isOpen={drawerIsOpen}
+                    setIsOpen={setDrawerIsOpen}
+                />
+
+                <div className={classes.mapContainer}>
+                    <MainMapView
+                        userLocation={geoData.coord}
+                        mapCenter={mapCenter}
+                        setMapCenter={setMapCenter}
+                    />
+                </div>
             </div>
 
         </Fragment>
