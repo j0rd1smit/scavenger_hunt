@@ -1,5 +1,9 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import {askForPremission, createGeoDataHook} from "../service/GeolocationService";
+import {OnClickEvent} from "../utils/ReactTypes";
+import {createHeadingHook} from "../service/HeadingService";
+import {bearingFromTo, differanceBetweenAngle, distanceInMetersBetween} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -11,92 +15,51 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 function Example(): JSX.Element {
-    try {
-        const classes = useStyles();
-        const [deviceOrientation, setDeviceOrientation] = useState<any>();
-        const [deviceRelOrientation, setDeviceRelOrientation] = useState<any>();
-        const [errorMsg, setErrorMsg] = useState<string>("");
-        const [errorRelMsg, setErrorRelMsg] = useState<string>("");
+    const classes = useStyles();
+    const [show, setShow] = useState<boolean>(true);
+    const geoData = createGeoDataHook();
+    const heading = createHeadingHook();
 
-        useEffect((): void => {
-            Promise.all([
-                navigator.permissions.query({ name: "accelerometer" }),
-                navigator.permissions.query({ name: "magnetometer" }),
-                navigator.permissions.query({ name: "gyroscope" })])
-                .then(results => {
-                    if (results.every(result => result.state === "granted")) {
-                        const options = { frequency: 60, referenceFrame: 'device' };
-                        // @ts-ignore
-                        const sensor = new AbsoluteOrientationSensor(options);
-                        // @ts-ignore
-                        const sensor2 = new RelativeOrientationSensor(options);
+    useEffect((): void => {
+        (async (): Promise<void> => {
+            try {
+                const result = await askForPremission();
+                console.log(result);
+            } catch (e) {
+                console.log(e.message);
+            }
+        })();
 
+    }, []);
 
-                        sensor.addEventListener('reading', () => {
-                            // model is a Three.js object instantiated elsewhere.
-                            //model.quaternion.fromArray(sensor.quaternion).inverse();
-                            const mat4 = new Float32Array(16);
-                            sensor.populateMatrix(mat4);
-                            setDeviceOrientation(mat4);
-                        });
-                        sensor.addEventListener('error', (err: Error) => {
-                            if (err.name == 'NotReadableError') {
-                                setErrorMsg("Sensor is not available.");
-                            }
-                        });
-                        sensor2.addEventListener('reading', () => {
-                            // model is a Three.js object instantiated elsewhere.
-                            //model.quaternion.fromArray(sensor.quaternion).inverse();
-                            const mat4 = new Float32Array(16);
-                            sensor2.populateMatrix(mat4);
-                            setDeviceRelOrientation(mat4);
-                        });
-                        sensor2.addEventListener('error', (err: Error) => {
-                            if (err.name == 'NotReadableError') {
-                                setErrorRelMsg("Sensor is not available.");
-                            }
-                        })
-                        sensor.start();
-                        sensor2.start();
-
-                    } else {
-                        setErrorMsg("No permissions to use AbsoluteOrientationSensor.");
-                    }
-                }).catch(e => setErrorMsg(e.message));
-
-        }, []);
-        if (deviceOrientation === undefined) {
-            return (
-                <Fragment>
-                    <div className={classes.root}>
-                    </div>
-                </Fragment>
-            );
-        } else {
-            return (
-                <Fragment>
-                    <div className={classes.root}>
-                        <p>errorMsg: {errorMsg}</p>
-                        <p>errorRelMsg: {errorRelMsg}</p>
-                        <p>deviceOrientation: {deviceOrientation[0]}</p>
-                        <p>deviceOrientation: {deviceOrientation[1]}</p>
-                        <p>deviceOrientation: {deviceOrientation[2]}</p>
-                        <p> </p>
-                        <p>deviceRelOrientation: {JSON.stringify(deviceRelOrientation)}</p>
-
-                    </div>
-                </Fragment>
-            );
-        }
-    } catch (e) {
-        return (
-            <Fragment>
-                {e.message}
-            </Fragment>
-        )
+    const onClick = (e: OnClickEvent): void => {
+        e.preventDefault();
+        setShow(!show);
     }
 
-
+    return (
+        <Fragment>
+            <div className={classes.root}>
+                <div>
+                    <button onClick={onClick}>test</button>
+                </div>
+                {show?
+                    <div>
+                        <p>accuracy: {geoData.accuracy}</p>
+                        <p>latitude: {geoData.coord[0]}</p>
+                        <p>longitude: {geoData.coord[1]}</p>
+                        <p>heading: {heading}</p>
+                        <p>bearing-off brug: {differanceBetweenAngle(bearingFromTo(geoData.coord, [52.212222, 4.419776]), heading)}</p>
+                        <p>distance brug: {distanceInMetersBetween(geoData.coord, [52.212222, 4.419776])}</p>
+                        <p>bearing-off hockey: {differanceBetweenAngle(bearingFromTo(geoData.coord, [52.211172, 4.426458]), heading)}</p>
+                        <p>distance hockey: {distanceInMetersBetween(geoData.coord, [52.211172, 4.426458])}</p>
+                    </div>
+                    :
+                    <div/>
+                }
+            </div>
+        </Fragment>
+    );
 }
 
 export default Example;
