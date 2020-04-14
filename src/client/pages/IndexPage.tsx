@@ -7,6 +7,9 @@ import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
+import Alert from '@material-ui/lab/Alert';
+import {Grid} from "@material-ui/core";
+import {AlertTitle} from "@material-ui/lab";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -15,8 +18,15 @@ const useStyles = makeStyles((theme: Theme) =>
             flexGrow: 1,
         },
         mapContainer: {
+            position: "relative",
             height: "calc(100vh - 64px)",
             width: "100%",
+        },
+        alertContainer: {
+            position: "absolute",
+            "padding-left": 50,
+            "padding-right": 15,
+            zIndex: 401,
         }
     }),
 );
@@ -54,6 +64,22 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                 />
 
                 <div className={classes.mapContainer}>
+                    <Grid
+                        container
+                        justify={"center"}
+                        alignItems={"center"}
+                        className={classes.alertContainer}>
+                        <Grid item md={6} sm={12} xs={12}>
+                            <Alert
+                                icon={false}
+                                severity="success"
+                                onClose={() => {}}
+                            >
+                                <AlertTitle>Location A</AlertTitle>
+
+                            </Alert>
+                        </Grid>
+                    </Grid>
                     <MainMapView
                         userLocation={geoData.coord}
                         mapCenter={mapCenter}

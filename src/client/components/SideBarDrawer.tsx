@@ -20,6 +20,10 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
+        locationList:{
+            "padding-right": 30,
+
+        },
 
         directionIcon: {
             position: "relative",
@@ -64,17 +68,21 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     disableBackdropTransition={!isIos()}
                     disableDiscovery={!isIos()}
                 >
-                    <List>
+                    <List >
                         <ListItem button onClick={onClickTrackableLocationButton}>
                             <ListItemIcon>
                                 <EditLocation
                                 />
                             </ListItemIcon>
-                            <ListItemText primary="Location"/>
+                            <ListItemText primary="Locations"/>
                             {showTrackableLocations ? <ExpandLess/> : <ExpandMore/>}
                         </ListItem>
                         <Collapse in={showTrackableLocations}>
-                            <List component="div" disablePadding>
+                            <List
+                                component="div"
+                                disablePadding
+                                className={classes.locationList}
+                            >
                                 {locations.map((name: string, idx: number) => {
                                     const labelId = `checkbox-list-secondary-label-${idx}`;
                                     return (
