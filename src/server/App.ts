@@ -17,6 +17,7 @@ app.get("/api/test", (req: Request, res: Response) => {
  *  Route the index page to react.
  */
 app.use(express.static("dist"));
+app.use(express.static("public"));
 
 /**
  * fallback method production

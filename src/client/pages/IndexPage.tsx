@@ -7,9 +7,8 @@ import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
-import Alert from '@material-ui/lab/Alert';
-import {Grid} from "@material-ui/core";
-import {AlertTitle} from "@material-ui/lab";
+import {Card, CardContent, CardMedia, Grid, IconButton, Typography} from "@material-ui/core";
+import {Close, Explore, Room,} from "@material-ui/icons";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -27,7 +26,32 @@ const useStyles = makeStyles((theme: Theme) =>
             "padding-left": 50,
             "padding-right": 15,
             zIndex: 401,
-        }
+        },
+        closeBtn: {
+            position: "absolute",
+            right: 0,
+            top: 0,
+        },
+        card: {
+            display: 'flex',
+            position: "relative",
+            "padding-right": 15,
+        },
+        details: {
+            display: 'flex',
+            flexDirection: 'column',
+        },
+        content: {
+            flex: '1 0 auto',
+        },
+        cover: {
+            width: 151,
+            height: 151,
+        },
+        playIcon: {
+            height: 38,
+            width: 38,
+        },
     }),
 );
 
@@ -69,16 +93,34 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                         justify={"center"}
                         alignItems={"center"}
                         className={classes.alertContainer}>
-                        <Grid item md={6} sm={12} xs={12}>
-                            <Alert
-                                icon={false}
-                                severity="success"
-                                onClose={() => {}}
-                            >
-                                <AlertTitle>Location A</AlertTitle>
 
-                            </Alert>
-                        </Grid>
+                            <Card className={classes.card}>
+                                <IconButton onClick={(e: OnClickEvent) => console.log(e)} className={classes.closeBtn} aria-label="close" size={"small"}>
+                                    <Close />
+                                </IconButton>
+
+                                <div className={classes.details}>
+                                    <CardContent className={classes.content}>
+                                        <Typography component="h5" variant="h5">
+                                            Location A
+                                        </Typography>
+                                        <Typography variant="subtitle1" color="textSecondary">
+                                            <Room fontSize={"small"}/>100m
+                                        </Typography>
+                                        <Typography variant="subtitle1" color="textSecondary">
+                                            <Explore fontSize={"small"}/>360°
+                                        </Typography>
+                                    </CardContent>
+                                </div>
+                                <CardMedia
+                                    className={classes.cover}
+                                    image="static/images/arrow.png"
+                                    title="Live from space album cover"
+                                    style={{
+                                        transform: "rotate(45deg)",
+                                    }}
+                                />
+                            </Card>
                     </Grid>
                     <MainMapView
                         userLocation={geoData.coord}
