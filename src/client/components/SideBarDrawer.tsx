@@ -22,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         locationList:{
             "padding-right": 30,
-
         },
 
         directionIcon: {
