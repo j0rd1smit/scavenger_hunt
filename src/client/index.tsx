@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 import IndexPage from "./pages/IndexPage";
 
 
-
 const element = (
     <React.Fragment>
         <CssBaseline/>

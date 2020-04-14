@@ -6,6 +6,7 @@ import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
+import PuzzelDialog from "../components/PuzzelDialog";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -30,6 +31,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
 
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+    const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
 
     const onClickMenuButton: OnClickCallback = (e: OnClickEvent): void => {
         setDrawerIsOpen(true);
@@ -46,6 +48,10 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
+                <PuzzelDialog
+                    isOpen={puzzelDialogIsOpen}
+                    setIsOpen={setPuzzelDialogIsOpen}
+                />
 
                 <div className={classes.mapContainer}>
                     <MainMapView
@@ -54,6 +60,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                         setMapCenter={setMapCenter}
                     />
                 </div>
+
             </div>
 
         </Fragment>

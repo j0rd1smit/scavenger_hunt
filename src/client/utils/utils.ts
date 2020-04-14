@@ -1,7 +1,6 @@
+export const isPresent = <T>(item: T | undefined | null): item is T => item !== undefined && item !== null;
 
-export const isPresent = <T>(item: T|undefined|null): item is T => item !== undefined && item !== null;
-
-export const getOrDefault = <T>(item: T|undefined|null, defaultValue: T): T => {
+export const getOrDefault = <T>(item: T | undefined | null, defaultValue: T): T => {
     if (!isPresent(item)) {
         return defaultValue;
     }
@@ -21,7 +20,9 @@ export const isIos = (): boolean => {
 
     if (!!navigator.platform) {
         while (iDevices.length) {
-            if (navigator.platform === iDevices.pop()){ return true; }
+            if (navigator.platform === iDevices.pop()) {
+                return true;
+            }
         }
     }
 

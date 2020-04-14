@@ -2,7 +2,6 @@ import {isPresent} from "../utils/utils";
 import {useEffect, useState} from "react";
 
 
-
 export const createHeadingHook = (): number => {
     const [state, setState] = useState<number>(-1);
     useEffect((): () => void => {
@@ -26,17 +25,16 @@ export default class HeadingService {
     private supportAbsoluteDeviceOrientation: boolean = !!window.DeviceOrientationEvent;
 
 
-    constructor(callbacks: undefined|HeadingServiceCallback[]) {
-        this.callbacks = callbacks !== undefined? callbacks : [];
+    constructor(callbacks: undefined | HeadingServiceCallback[]) {
+        this.callbacks = callbacks !== undefined ? callbacks : [];
     }
 
     public askForPremission = async (): Promise<[PermissionStatus, PermissionStatus, PermissionStatus]> => {
-        return  await  Promise.all([
-            navigator.permissions.query({ name: "accelerometer" }),
-            navigator.permissions.query({ name: "magnetometer" }),
-            navigator.permissions.query({ name: "gyroscope" })]);
+        return await Promise.all([
+            navigator.permissions.query({name: "accelerometer"}),
+            navigator.permissions.query({name: "magnetometer"}),
+            navigator.permissions.query({name: "gyroscope"})]);
     }
-
 
 
     public start = (): void => {
@@ -45,6 +43,9 @@ export default class HeadingService {
         }
     }
 
+    public stop = (): void => {
+        window.removeEventListener("deviceorientationabsolute", this.onSucessDeviceorientationabsolute)
+    }
 
     private onSucessDeviceorientationabsolute = (event: DeviceOrientationEvent): void => {
         if (!event.absolute) {
@@ -57,9 +58,5 @@ export default class HeadingService {
             this.callbacks.forEach((callback: HeadingServiceCallback) => callback(heading));
         }
 
-    }
-
-    public stop = (): void => {
-        window.removeEventListener("deviceorientationabsolute", this.onSucessDeviceorientationabsolute)
     }
 }

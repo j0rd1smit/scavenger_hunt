@@ -33,8 +33,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
             const position = await getPositionPromise(new GeoOptions())
             const latLng: LatLngTuple = [getOrDefault(position.coords.latitude, props.mapCenter[0]), getOrDefault(position.coords.longitude, props.mapCenter[1])];
             props.setMapCenter(latLng);
-        }
-        catch (e) {
+        } catch (e) {
             console.error(e.message);
         }
     }
@@ -51,7 +50,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
                     <Marker position={props.userLocation}>
-                        <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
+                        <Popup>A pretty CSS3 popup.<br/>Easily customizable.</Popup>
                     </Marker>
                 </Map>
             </div>

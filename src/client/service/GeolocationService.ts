@@ -4,10 +4,10 @@ import {useEffect, useState,} from "react";
 import {getOrDefault} from "../utils/utils";
 
 export const askForPremission = async (): Promise<PermissionStatus> => {
-    return navigator.permissions.query({name:'geolocation'});
+    return navigator.permissions.query({name: 'geolocation'});
 }
 
-export const createGeoDataHook = (options: GeoOptions|undefined = undefined): GeoData => {
+export const createGeoDataHook = (options: GeoOptions | undefined = undefined): GeoData => {
     const [state, setState] = useState<GeoData>(GeoData.empty());
     useEffect((): () => void => {
         const callback = (data: GeoData): void => setState(data);
@@ -28,18 +28,24 @@ type GeolocationServiceCallback = (data: GeoData) => void;
 export default class GeolocationService {
     private readonly options: GeoOptions;
     private callbacks: GeolocationServiceCallback[];
-    private wacthNumber: undefined|number;
+    private wacthNumber: undefined | number;
 
-    constructor(options: GeoOptions, callbacks: undefined|GeolocationServiceCallback[]) {
+    constructor(options: GeoOptions, callbacks: undefined | GeolocationServiceCallback[]) {
         this.options = options;
-        this.callbacks = callbacks !== undefined? callbacks : [];
+        this.callbacks = callbacks !== undefined ? callbacks : [];
         this.wacthNumber = undefined;
     }
 
 
-
     public start = (): void => {
         this.wacthNumber = navigator.geolocation.watchPosition(this.onSuccess, this.onError, this.options);
+    }
+
+    public stop = (): void => {
+        if (this.wacthNumber !== undefined) {
+            navigator.geolocation.clearWatch(this.wacthNumber);
+            this.wacthNumber = undefined;
+        }
     }
 
     private onSuccess = (pos: Position) => {
@@ -51,11 +57,4 @@ export default class GeolocationService {
 
     //TODO
     private onError = (err: PositionError) => console.error(err.message);
-
-    public stop = (): void => {
-        if (this.wacthNumber !== undefined) {
-            navigator.geolocation.clearWatch(this.wacthNumber);
-            this.wacthNumber = undefined;
-        }
-    }
 }
