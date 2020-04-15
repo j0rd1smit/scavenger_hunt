@@ -1,6 +1,7 @@
 import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {AppBar, Button, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
+import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
+import {OnClickCallback} from "../utils/ReactTypes";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -16,7 +17,11 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-function NavBar(): JSX.Element {
+export interface INavBarProps {
+    onMenuButtonClick: OnClickCallback;
+}
+
+function NavBar(props: INavBarProps): JSX.Element {
     const classes = useStyles();
 
     return (
@@ -24,13 +29,18 @@ function NavBar(): JSX.Element {
             <div className={classes.root}>
                 <AppBar position="static">
                     <Toolbar>
-                        <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+                        <IconButton
+                            edge="start"
+                            className={classes.menuButton}
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={props.onMenuButtonClick}
+                        >
                             <Icon>menu</Icon>
                         </IconButton>
                         <Typography variant="h6" className={classes.title}>
-                            News
+                            Treasure Trails
                         </Typography>
-                        <Button color="inherit">Login</Button>
                     </Toolbar>
                 </AppBar>
             </div>

@@ -1,7 +1,6 @@
 const ip = require("ip");
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 const outputDirectory = "dist";
 
@@ -9,7 +8,7 @@ module.exports = {
     entry: "./src/client/index.tsx",
     output: {
         path: path.join(__dirname, outputDirectory),
-        filename: "bundle.js"
+        filename: "bundle.js",
     },
     resolve: {
         extensions: [ '.ts', '.tsx', ".js", ".json"],
@@ -44,17 +43,14 @@ module.exports = {
         disableHostCheck: true,
         open: true,
         proxy: {
-            "/api": "http://localhost:8080"
+            "/api": "http://localhost:8080",
+            "/static": "http://localhost:8080",
         },
         host: ip.address(),
+        https: true,
         historyApiFallback: true,
     },
     plugins: [
-        new CleanWebpackPlugin({
-            "output":{
-                "path": outputDirectory
-            }
-        }),
         new HtmlWebpackPlugin({
             template: "./public/index.html",
             favicon: "./public/favicon.ico",
