@@ -67,51 +67,52 @@ function DirectionPullOver(props: IDirectionPullOverProps): JSX.Element {
 
     return (
         <Fragment>
-                <Grid
-                    container
-                    justify={"center"}
-                    alignItems={"center"}
-                    className={classes.alertContainer}>
+            <Grid
+                container
+                justify={"center"}
+                alignItems={"center"}
+                className={classes.alertContainer}>
 
-                    <Card >
-                        <div className={classes.card}>
-                            <IconButton onClick={(e: OnClickEvent) => console.log(e)} className={classes.closeBtn} aria-label="close" size={"small"}>
-                                <Close />
-                            </IconButton>
+                <Card>
+                    <div className={classes.card}>
+                        <IconButton onClick={(e: OnClickEvent) => console.log(e)} className={classes.closeBtn}
+                                    aria-label="close" size={"small"}>
+                            <Close/>
+                        </IconButton>
 
-                            <div className={classes.details}>
-                                <CardContent className={classes.content}>
-                                    <Typography variant="subtitle2">
-                                        Location A
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        <Room className={classes.directionIcon} fontSize={"small"}/> 100m
-                                    </Typography>
-                                    <Typography variant="body2" color="textSecondary">
-                                        <Explore className={classes.directionIcon} fontSize={"small"}/> 360°
-                                    </Typography>
-                                </CardContent>
-                            </div>
-                            <div className={classes.coverContainer}>
-                                <CardMedia
-                                    className={classes.cover}
-                                    image="static/images/arrow.png"
-                                    title="Bearing towards goal"
-                                    style={{
-                                        transform: `rotate(${bearing}deg)`,
-                                    }}
-
-                                />
-                            </div>
-
+                        <div className={classes.details}>
+                            <CardContent className={classes.content}>
+                                <Typography variant="subtitle2">
+                                    Location A
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    <Room className={classes.directionIcon} fontSize={"small"}/> 100m
+                                </Typography>
+                                <Typography variant="body2" color="textSecondary">
+                                    <Explore className={classes.directionIcon} fontSize={"small"}/> 360°
+                                </Typography>
+                            </CardContent>
                         </div>
-                        <CardActions>
-                            <Button size="small" color="primary">
-                                Center
-                            </Button>
-                        </CardActions>
-                    </Card>
-                </Grid>
+                        <div className={classes.coverContainer}>
+                            <CardMedia
+                                className={classes.cover}
+                                image="static/images/arrow.png"
+                                title="Bearing towards goal"
+                                style={{
+                                    transform: `rotate(${bearing}deg)`,
+                                }}
+
+                            />
+                        </div>
+
+                    </div>
+                    <CardActions>
+                        <Button size="small" color="primary">
+                            Center
+                        </Button>
+                    </CardActions>
+                </Card>
+            </Grid>
 
         </Fragment>
     );

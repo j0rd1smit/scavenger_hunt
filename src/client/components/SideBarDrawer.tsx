@@ -1,16 +1,7 @@
 import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
-import {
-    Button,
-    Collapse,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Radio,
-    SwipeableDrawer
-} from "@material-ui/core";
+import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
 import {OnClickEvent} from "../utils/ReactTypes";
 import {CheckCircle, EditLocation, ExpandLess, ExpandMore, Explore, Room} from "@material-ui/icons";
 import {ILocation} from "../utils/locations";
@@ -22,7 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
-        locationList:{
+        locationList: {
             "padding-right": 30,
         },
 
@@ -68,7 +59,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     disableBackdropTransition={!isIos()}
                     disableDiscovery={!isIos()}
                 >
-                    <List >
+                    <List>
                         <ListItem button onClick={onClickTrackableLocationButton}>
                             <ListItemIcon>
                                 <EditLocation/>
@@ -123,7 +114,7 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
     const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected} = props;
     return (
-        <ListItem >
+        <ListItem>
             <ListItemIcon>
                 {isCompleted ?
                     <Radio
@@ -150,10 +141,10 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                 primary={<Button color="primary" onClick={(e: any) => console.log(name)}>{name}</Button>}
                 secondary={(
                     distance !== undefined && direction !== undefined ?
-                    <span>
+                        <span>
                      <Room className={classes.directionIcon}
-                                                              fontSize={"small"}/>{Math.round(distance)}m <Explore
-                        className={classes.directionIcon} fontSize={"small"}/>{Math.round(direction)}°
+                           fontSize={"small"}/>{Math.round(distance)}m <Explore
+                            className={classes.directionIcon} fontSize={"small"}/>{Math.round(direction)}°
                                                     </span>
                         :
                         <div/>

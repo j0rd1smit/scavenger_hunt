@@ -73,7 +73,7 @@ function QRCodeDailog(props: IQRCodeDailogProps): JSX.Element {
                     style={{
                         height: "100%",
                     }}
-                    />
+                />
             </div>
 
         );
@@ -81,32 +81,32 @@ function QRCodeDailog(props: IQRCodeDailogProps): JSX.Element {
 
     return (
         <Fragment>
-                <Dialog
-                    fullScreen
-                    open={props.isOpen}
-                    className={classes.root}
+            <Dialog
+                fullScreen
+                open={props.isOpen}
+                className={classes.root}
+            >
+                <AppBar className={classes.appBar}>
+                    <Toolbar>
+                        <Typography variant="h6" color="inherit" className={classes.flex}>
+                            QR code scanner
+                        </Typography>
+                        <IconButton color="inherit" onClick={handleOnClose} aria-label="Close">
+                            <CloseIcon/>
+                        </IconButton>
+                    </Toolbar>
+                </AppBar>
+                <Grid
+                    className={classes.gridContainer}
+                    container
+                    alignContent={"center"}
+                    alignItems={"center"}
+                    justify={"center"}
+                    style={{height: contentHeight}}
                 >
-                    <AppBar className={classes.appBar}>
-                        <Toolbar>
-                            <Typography variant="h6" color="inherit" className={classes.flex}>
-                                QR code scanner
-                            </Typography>
-                            <IconButton color="inherit" onClick={handleOnClose} aria-label="Close">
-                                <CloseIcon/>
-                            </IconButton>
-                        </Toolbar>
-                    </AppBar>
-                    <Grid
-                        className={classes.gridContainer}
-                        container
-                        alignContent={"center"}
-                        alignItems={"center"}
-                        justify={"center"}
-                        style={{height: contentHeight}}
-                    >
-                        {qrReader()}
-                    </Grid>
-                </Dialog>
+                    {qrReader()}
+                </Grid>
+            </Dialog>
         </Fragment>
     );
 }

@@ -1,10 +1,6 @@
 import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {
-    Grid,
-    IconButton,
-    Paper, Typography,
-} from "@material-ui/core";
+import {Grid, IconButton, Paper, Typography,} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 
 
@@ -39,7 +35,7 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
                 justify={"center"}
                 alignItems={"center"}
             >
-                <Grid xl={12} lg={12} md={12} xs={12} sm={12} >
+                <Grid xl={12} lg={12} md={12} xs={12} sm={12}>
                     <Paper className={classes.paper}>
 
                         <Typography variant="h5" align={"justify"}>
@@ -47,7 +43,7 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
                         </Typography>
 
                         <IconButton aria-label="Close">
-                            <Close />
+                            <Close/>
                         </IconButton>
 
                     </Paper>

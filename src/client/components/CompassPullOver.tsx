@@ -63,9 +63,9 @@ function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
                         />
                     </div>
 
-                        <Typography align={"center"} variant="overline" component="p">
-                            {bearing}°
-                        </Typography>
+                    <Typography align={"center"} variant="overline" component="p">
+                        {bearing}°
+                    </Typography>
                 </Card>
             </div>
         </Fragment>
