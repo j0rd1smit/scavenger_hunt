@@ -14,6 +14,7 @@ import {CameraAlt, Navigation} from "@material-ui/icons";
 import QRCodeDailog from "../components/QRCodeDailog";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../utils/locations";
+import {bearingFromTo} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -48,19 +49,26 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
     const classes = useStyles();
     const geoData = createGeoDataHook();
 
+    //container related
     const mapHeight = windowHeightMinusAppBarState();
 
+    //selected location
+    const [selectedLocation, setSelectedLocation] = useState<ILocation|undefined>();
 
+    //map related
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
 
-    const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
+    // Dialog
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
     const [QRCodeDialogIsOpen, setQRCodeDialogIsOpen] = useState<boolean>(false);
 
+    // drawer
+    const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
     const onClickMenuButton: OnClickCallback = (e: OnClickEvent): void => {
         setDrawerIsOpen(true);
     };
 
+    //QR code
     const onClickFabCamera = (e: OnClickEvent): void => {
         setQRCodeDialogIsOpen(true);
     };
@@ -100,6 +108,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     onMenuButtonClick={onClickMenuButton}
                 />
                 <SideBarDrawer
+                    selectedLocation={selectedLocation}
+                    setSelectedLocation={setSelectedLocation}
                     userLocation={geoData.coord}
                     locations={locations}
                     isOpen={drawerIsOpen}
@@ -115,8 +125,15 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     className={classes.mapContainer}
                     style={{height: mapHeight}}
                 >
-                    <CompassPullOver/>
-                    <LocationPullOver/>
+                    {selectedLocation !== undefined &&
+                    <div>
+                        <CompassPullOver
+                            bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
+                        />
+                        <LocationPullOver/>
+                    </div>
+                    }
+
                     <Fab
                         className={classes.fabCenter}
                         color="primary"

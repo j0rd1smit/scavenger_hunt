@@ -23,7 +23,7 @@ export const bearingFromTo = (start: LatLng, destination: LatLng): number => {
     const x = Math.cos(startLat) * Math.sin(destLat) -
         Math.sin(startLat) * Math.cos(destLat) * Math.cos(destLng - startLng);
     const brng = toDegrees(Math.atan2(y, x));
-    return (brng + 180) % 360;
+    return (brng + 360) % 360;
 };
 
 export const differanceBetweenAngle = (target: number, current: number): number => {

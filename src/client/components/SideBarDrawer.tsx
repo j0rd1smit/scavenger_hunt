@@ -2,7 +2,7 @@ import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
 import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
-import {OnClickEvent} from "../utils/ReactTypes";
+import {OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CheckCircle, EditLocation, ExpandLess, ExpandMore, Explore, Room} from "@material-ui/icons";
 import {ILocation} from "../utils/locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
@@ -29,6 +29,8 @@ interface IDrawerProps {
     locations: ILocation[];
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
+    selectedLocation: ILocation|undefined;
+    setSelectedLocation: SetState<ILocation|undefined>;
 }
 
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
@@ -36,13 +38,18 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const noLocationSelected = "None selected"
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
-    const [selectedLocation, setSelectedLocation] = useState<string>(noLocationSelected);
+    //const [selectedLocation, setSelectedLocation] = useState<string>(noLocationSelected);
 
 
     const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
 
     const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedLocation(event.target.value);
+        const locations = props.locations.filter((e: ILocation) => e.name === event.target.value);
+        if  (locations.length === 0) {
+            props.setSelectedLocation(undefined);
+        } else {
+            props.setSelectedLocation(locations[0]);
+        }
     };
 
     return (
@@ -76,7 +83,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                 <LocationListItem
                                     name={noLocationSelected}
                                     isCompleted={false}
-                                    isSelected={selectedLocation === noLocationSelected}
+                                    isSelected={props.selectedLocation === undefined}
                                     onChangeRadioButton={onChangeRadioButton}
                                 />
                                 {props.locations.map((location: ILocation, idx: number) => {
@@ -87,7 +94,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                             isCompleted={location.isCompleted}
                                             direction={bearingFromTo(props.userLocation, location.coords)}
                                             distance={distanceInMetersBetween(props.userLocation, location.coords)}
-                                            isSelected={selectedLocation === location.name}
+                                            isSelected={props.selectedLocation?.name === location.name}
                                             onChangeRadioButton={onChangeRadioButton}
                                         />
                                     );

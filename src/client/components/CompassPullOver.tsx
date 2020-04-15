@@ -1,7 +1,6 @@
-import React, {Fragment, useEffect} from "react";
+import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Card, CardMedia, Typography} from "@material-ui/core";
-import {useRefState} from "../utils/ReactHelpers";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -35,17 +34,13 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IDirectionPullOver2Props {
-
+    bearingComparedToCurrentLocation: number;
 }
 
 function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
     const classes = useStyles();
 
-    const [bearing, bearingRef, setBearing] = useRefState<number>(0);
-
-    useEffect(() => {
-        setInterval(() => setBearing((bearingRef.current + 1) % 360), 50);
-    }, [])
+    const bearing = props.bearingComparedToCurrentLocation;
 
     return (
         <Fragment>
@@ -64,7 +59,7 @@ function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
                     </div>
 
                     <Typography align={"center"} variant="overline" component="p">
-                        {bearing}°
+                        {Math.round(bearing)}°
                     </Typography>
                 </Card>
             </div>
