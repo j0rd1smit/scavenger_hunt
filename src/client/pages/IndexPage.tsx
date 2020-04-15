@@ -78,6 +78,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
         setQRCodeDialogIsOpen(true);
     };
 
+    //TODO create an alert if the compass is not suported.
+
     const locations: ILocation[] = [
         {
             name: "Hockey club",

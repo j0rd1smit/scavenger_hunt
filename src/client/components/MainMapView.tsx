@@ -40,7 +40,6 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
         }
 
         if (isPresent(viewport.center)) {
-            setFollowUser(false);
             setMapCenter(viewport.center);
         }
     }
@@ -52,6 +51,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                     center={center}
                     zoom={zoom}
                     onViewportChanged={onViewportChanged}
+                    ondrag={event => setFollowUser(false)}
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

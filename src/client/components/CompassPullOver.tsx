@@ -45,6 +45,7 @@ function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
     const bearing = Math.round(props.bearingComparedToCurrentLocation);
     const heading = Math.round(createHeadingHook());
 
+
     return (
         <Fragment>
             <div
