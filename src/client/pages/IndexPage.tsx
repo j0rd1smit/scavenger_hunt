@@ -1,7 +1,6 @@
 import React, {Fragment, useState} from "react";
 import NavBar from "../components/NavBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {createGeoDataHook} from "../service/GeolocationService";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
@@ -14,7 +13,8 @@ import {CameraAlt, Navigation} from "@material-ui/icons";
 import QRCodeDailog from "../components/QRCodeDailog";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../utils/locations";
-import {bearingFromTo} from "../utils/GeoUtils";
+import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
+import {createGeoDataHook} from "../service/GeolocationService";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,6 +47,7 @@ interface IIndexPageProps {
 
 function IndexPage(props: IIndexPageProps): JSX.Element {
     const classes = useStyles();
+
     const geoData = createGeoDataHook();
 
     //container related
@@ -54,6 +55,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
 
     //selected location
     const [selectedLocation, setSelectedLocation] = useState<ILocation|undefined>();
+    const onClickCloseLocationTrackingBtn = (): void => setSelectedLocation(undefined);
 
     //map related
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
@@ -130,7 +132,11 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                         <CompassPullOver
                             bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
                         />
-                        <LocationPullOver/>
+                        <LocationPullOver
+                            onClickClose={onClickCloseLocationTrackingBtn}
+                            name={selectedLocation.name}
+                            distance={distanceInMetersBetween(geoData.coord, selectedLocation.coords)}
+                        />
                     </div>
                     }
 

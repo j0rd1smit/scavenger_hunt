@@ -50,6 +50,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
         } else {
             props.setSelectedLocation(locations[0]);
         }
+        props.setIsOpen(false);
     };
 
     return (

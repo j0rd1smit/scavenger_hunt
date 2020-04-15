@@ -2,6 +2,7 @@ import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Grid, IconButton, Paper, Typography,} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
+import {OnClickEvent} from "../utils/ReactTypes";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -22,11 +23,15 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ILocationPullOverProps {
-
+    name: string;
+    distance: number;
+    onClickClose: () => void;
 }
 
 function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
     const classes = useStyles();
+
+    const onClickCloseBtn = (e: OnClickEvent): void => props.onClickClose();
     return (
         <Fragment>
             <Grid
@@ -39,10 +44,12 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
                     <Paper className={classes.paper}>
 
                         <Typography variant="h5" align={"justify"}>
-                            Location A: 500m
+                            {props.name}: {Math.floor(props.distance)}m
                         </Typography>
 
-                        <IconButton aria-label="Close">
+                        <IconButton
+                            onClick={onClickCloseBtn}
+                            aria-label="Close">
                             <Close/>
                         </IconButton>
 
