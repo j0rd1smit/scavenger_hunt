@@ -39,7 +39,7 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
                 justify={"center"}
                 alignItems={"center"}
             >
-                <Grid xl={6} lg={6} md={6} xs={12} sm={12} >
+                <Grid xl={12} lg={12} md={12} xs={12} sm={12} >
                     <Paper className={classes.paper}>
 
                         <Typography variant="h5" align={"justify"}>

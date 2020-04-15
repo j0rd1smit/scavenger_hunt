@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useState} from "react";
+import React, {Fragment, useState} from "react";
 import NavBar from "../components/NavBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {createGeoDataHook} from "../service/GeolocationService";
@@ -11,6 +11,8 @@ import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {CameraAlt, Navigation} from "@material-ui/icons";
+import QRCodeDailog from "../components/QRCodeDailog";
+import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -20,7 +22,6 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         mapContainer: {
             position: "relative",
-            //height: "calc(100vh - 64px)",
             width: "100%",
         },
         fabCenter: {
@@ -46,26 +47,22 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
     const classes = useStyles();
     const geoData = createGeoDataHook();
 
-    const [mapHeight, setMapHeight] = useState<number>(window.innerHeight - 64);
-    useEffect((): () => void => {
-        const handleResize = (): void => setMapHeight(window.innerHeight - 64);
-        window.addEventListener("resize", handleResize);
-
-        return (): void => {
-            window.removeEventListener('resize', handleResize);
-        }
-    })
+    const mapHeight = windowHeightMinusAppBarState();
 
 
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
 
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
+    const [QRCodeDialogIsOpen, setQRCodeDialogIsOpen] = useState<boolean>(false);
 
     const onClickMenuButton: OnClickCallback = (e: OnClickEvent): void => {
         setDrawerIsOpen(true);
     };
 
+    const onClickFabCamera = (e: OnClickEvent): void => {
+        setQRCodeDialogIsOpen(true);
+    };
 
     return (
         <Fragment>
@@ -81,6 +78,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     isOpen={puzzelDialogIsOpen}
                     setIsOpen={setPuzzelDialogIsOpen}
                 />
+                <QRCodeDailog isOpen={QRCodeDialogIsOpen} setIsOpen={setQRCodeDialogIsOpen}/>
 
                 <div
                     className={classes.mapContainer}
@@ -97,6 +95,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     <Fab
                         className={classes.fabCamera}
                         color="primary"
+                        onClick={onClickFabCamera}
                         aria-label="Scan QR code">
                         <CameraAlt/>
                     </Fab>
