@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import NavBar from "../components/NavBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {createGeoDataHook} from "../service/GeolocationService";
@@ -7,7 +7,8 @@ import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
-import DirectionPullOver2 from "../components/DirectionPullOver2";
+import CompassPullOver from "../components/CompassPullOver";
+import LocationPullOver from "../components/LocationPullOver";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -17,7 +18,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         mapContainer: {
             position: "relative",
-            height: "calc(100vh - 64px)",
+            //height: "calc(100vh - 64px)",
             width: "100%",
         },
 
@@ -31,6 +32,18 @@ interface IIndexPageProps {
 function IndexPage(props: IIndexPageProps): JSX.Element {
     const classes = useStyles();
     const geoData = createGeoDataHook();
+
+    const [mapHeight, setMapHeight] = useState<number>(window.innerHeight - 64);
+    useEffect((): () => void => {
+        const handleResize = (): void => setMapHeight(window.innerHeight - 64);
+        window.addEventListener("resize", handleResize);
+
+        return (): void => {
+            window.removeEventListener('resize', handleResize);
+        }
+    })
+
+
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
 
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -56,8 +69,12 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     setIsOpen={setPuzzelDialogIsOpen}
                 />
 
-                <div className={classes.mapContainer}>
-                    <DirectionPullOver2/>
+                <div
+                    className={classes.mapContainer}
+                    style={{height: mapHeight}}
+                >
+                    <CompassPullOver/>
+                    <LocationPullOver/>
                     <MainMapView
                         userLocation={geoData.coord}
                         mapCenter={mapCenter}

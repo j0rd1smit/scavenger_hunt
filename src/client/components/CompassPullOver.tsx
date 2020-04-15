@@ -38,7 +38,7 @@ interface IDirectionPullOver2Props {
 
 }
 
-function DirectionPullOver2(props: IDirectionPullOver2Props): JSX.Element {
+function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
     const classes = useStyles();
 
     const [bearing, bearingRef, setBearing] = useRefState<number>(0);
@@ -72,4 +72,4 @@ function DirectionPullOver2(props: IDirectionPullOver2Props): JSX.Element {
     );
 }
 
-export default DirectionPullOver2;
+export default CompassPullOver;
