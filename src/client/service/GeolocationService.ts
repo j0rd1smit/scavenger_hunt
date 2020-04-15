@@ -2,6 +2,7 @@ import GeoData from "./GeoData";
 import {GeoOptions} from "./GeoOptions";
 import {useEffect, useState,} from "react";
 import {getOrDefault} from "../utils/utils";
+import {distanceInMetersBetween} from "../utils/GeoUtils";
 
 export const askForPremission = async (): Promise<PermissionStatus> => {
     return navigator.permissions.query({name: 'geolocation'});
@@ -29,11 +30,13 @@ export default class GeolocationService {
     private readonly options: GeoOptions;
     private callbacks: GeolocationServiceCallback[];
     private wacthNumber: undefined | number;
+    private lastLocation: GeoData;
 
     constructor(options: GeoOptions, callbacks: undefined | GeolocationServiceCallback[]) {
         this.options = options;
         this.callbacks = callbacks !== undefined ? callbacks : [];
         this.wacthNumber = undefined;
+        this.lastLocation = GeoData.empty();
     }
 
 
@@ -51,7 +54,12 @@ export default class GeolocationService {
     private onSuccess = (pos: Position) => {
         if (pos.coords?.accuracy !== undefined && pos.coords.latitude !== undefined && pos.coords.longitude != undefined) {
             const data = new GeoData(pos.coords.accuracy, [pos.coords.latitude, pos.coords.longitude]);
-            this.callbacks.forEach((callback: GeolocationServiceCallback) => callback(data))
+            if (distanceInMetersBetween(data.coord, this.lastLocation.coord) > data.accuracy) {
+                alert(data);
+                this.callbacks.forEach((callback: GeolocationServiceCallback) => callback(data));
+                this.lastLocation = data;
+            }
+
         }
     }
 
