@@ -13,6 +13,8 @@ import {
 } from "@material-ui/core";
 import {OnClickEvent} from "../utils/ReactTypes";
 import {CheckCircle, EditLocation, ExpandLess, ExpandMore, Explore, Room} from "@material-ui/icons";
+import {ILocation} from "../utils/locations";
+import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -32,24 +34,23 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface IDrawerProps {
+    userLocation: LatLng;
+    locations: ILocation[];
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
 }
 
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
-
-    const locations = ["Location A", "Location B", "Location C", "Location D", "Location E"];
-    const completedLocations = ["Location D", "Location E"];
-
+    const noLocationSelected = "None selected"
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
-    const [selectedLocation, setSelectedLocation] = useState<string>(locations[0]);
+    const [selectedLocation, setSelectedLocation] = useState<string>(noLocationSelected);
 
 
     const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
 
-    const onChangeRadioButtone = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedLocation(event.target.value);
     };
 
@@ -70,8 +71,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     <List >
                         <ListItem button onClick={onClickTrackableLocationButton}>
                             <ListItemIcon>
-                                <EditLocation
-                                />
+                                <EditLocation/>
                             </ListItemIcon>
                             <ListItemText primary="Locations"/>
                             {showTrackableLocations ? <ExpandLess/> : <ExpandMore/>}
@@ -82,46 +82,23 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                 disablePadding
                                 className={classes.locationList}
                             >
-                                {locations.map((name: string, idx: number) => {
-                                    const labelId = `checkbox-list-secondary-label-${idx}`;
+                                <LocationListItem
+                                    name={noLocationSelected}
+                                    isCompleted={false}
+                                    isSelected={selectedLocation === noLocationSelected}
+                                    onChangeRadioButton={onChangeRadioButton}
+                                />
+                                {props.locations.map((location: ILocation, idx: number) => {
                                     return (
-                                        <ListItem key={idx}>
-                                            <ListItemIcon>
-                                                {completedLocations.includes(name) ?
-                                                    <Radio
-                                                        checked={true}
-                                                        onChange={onChangeRadioButtone}
-                                                        value={name}
-                                                        name="radio-button-demo"
-                                                        inputProps={{'aria-label': name}}
-                                                        checkedIcon={<CheckCircle/>}
-                                                        disabled={true}
-                                                    />
-                                                :
-                                                    <Radio
-                                                        checked={selectedLocation === name}
-                                                        onChange={onChangeRadioButtone}
-                                                        value={name}
-                                                        name="radio-button-demo"
-                                                        inputProps={{'aria-label': name}}
-                                                    />
-
-                                                }
-                                            </ListItemIcon>
-                                            <ListItemText
-                                                id={labelId}
-                                                primary={<Button color="primary" onClick={(e: any) => console.log(name)}>{name}</Button>}
-                                                secondary={(
-                                                    <span>
-                                                        <Room className={classes.directionIcon}
-                                                              fontSize={"small"}/>100m <Explore
-                                                        className={classes.directionIcon} fontSize={"small"}/>360°
-                                                    </span>
-                                                )}
-
-                                            />
-
-                                        </ListItem>
+                                        <LocationListItem
+                                            key={idx}
+                                            name={location.name}
+                                            isCompleted={location.isCompleted}
+                                            direction={bearingFromTo(props.userLocation, location.coords)}
+                                            distance={distanceInMetersBetween(props.userLocation, location.coords)}
+                                            isSelected={selectedLocation === location.name}
+                                            onChangeRadioButton={onChangeRadioButton}
+                                        />
                                     );
                                 })}
                             </List>
@@ -131,6 +108,62 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
             </div>
         </Fragment>
     );
+}
+
+interface ILocationListItem {
+    name: string;
+    distance?: number;
+    direction?: number;
+    isCompleted: boolean;
+    isSelected: boolean;
+    onChangeRadioButton: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+function LocationListItem(props: ILocationListItem): JSX.Element {
+    const classes = useStyles();
+    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected} = props;
+    return (
+        <ListItem >
+            <ListItemIcon>
+                {isCompleted ?
+                    <Radio
+                        checked={true}
+                        onChange={onChangeRadioButton}
+                        value={name}
+                        name="radio-button-demo"
+                        inputProps={{'aria-label': name}}
+                        checkedIcon={<CheckCircle/>}
+                        disabled={true}
+                    />
+                    :
+                    <Radio
+                        checked={isSelected}
+                        onChange={onChangeRadioButton}
+                        value={name}
+                        name="radio-button-demo"
+                        inputProps={{'aria-label': name}}
+                    />
+
+                }
+            </ListItemIcon>
+            <ListItemText
+                primary={<Button color="primary" onClick={(e: any) => console.log(name)}>{name}</Button>}
+                secondary={(
+                    distance !== undefined && direction !== undefined ?
+                    <span>
+                     <Room className={classes.directionIcon}
+                                                              fontSize={"small"}/>{Math.round(distance)}m <Explore
+                        className={classes.directionIcon} fontSize={"small"}/>{Math.round(direction)}°
+                                                    </span>
+                        :
+                        <div/>
+                )}
+
+            />
+
+        </ListItem>
+    );
+
 }
 
 export default SideBarDrawer;

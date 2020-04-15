@@ -13,6 +13,7 @@ import {Fab} from "@material-ui/core";
 import {CameraAlt, Navigation} from "@material-ui/icons";
 import QRCodeDailog from "../components/QRCodeDailog";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
+import {ILocation} from "../utils/locations";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -64,6 +65,34 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
         setQRCodeDialogIsOpen(true);
     };
 
+    const locations: ILocation[] = [
+        {
+            name: "Hockey club",
+            coords: [52.210860, 4.426798],
+            isCompleted: false,
+        },
+        {
+            name: "Voetbalveld brug",
+            coords: [52.211344, 4.420593],
+            isCompleted: false,
+        },
+        {
+            name: "Polster",
+            coords: [52.211920, 4.418950],
+            isCompleted: false,
+        },
+        {
+            name: "Lidl",
+            coords: [52.212494, 4.417784],
+            isCompleted: false,
+        },
+        {
+            name: "Bushalt",
+            coords: [52.213809, 4.422414],
+            isCompleted: false,
+        }
+    ];
+
     return (
         <Fragment>
             <div className={classes.root}>
@@ -71,6 +100,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     onMenuButtonClick={onClickMenuButton}
                 />
                 <SideBarDrawer
+                    userLocation={geoData.coord}
+                    locations={locations}
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
