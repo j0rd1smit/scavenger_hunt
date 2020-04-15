@@ -148,14 +148,12 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
             <ListItemText
                 primary={<Button color="primary" onClick={(e: any) => console.log(name)}>{name}</Button>}
                 secondary={(
-                    distance !== undefined && direction !== undefined ?
+                    distance !== undefined && direction !== undefined && (
                         <span>
                      <Room className={classes.directionIcon}
                            fontSize={"small"}/>{Math.round(distance)}m <Explore
                             className={classes.directionIcon} fontSize={"small"}/>{Math.round(direction)}°
-                                                    </span>
-                        :
-                        <div/>
+                                                    </span>)
                 )}
 
             />

@@ -59,6 +59,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
 
     //map related
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
+    const [followUser, setFollowUser] = useState<boolean>(true);
+    const onClickFabCenterBtn = (e: OnClickEvent): void => setFollowUser(true);
 
     // Dialog
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
@@ -143,7 +145,9 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     <Fab
                         className={classes.fabCenter}
                         color="primary"
-                        aria-label="center">
+                        aria-label="center"
+                        onClick={onClickFabCenterBtn}
+                    >
                         <Navigation/>
                     </Fab>
                     <Fab
@@ -156,6 +160,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     <MainMapView
                         userLocation={geoData.coord}
                         mapCenter={mapCenter}
+                        followUser={followUser}
+                        setFollowUser={setFollowUser}
                         setMapCenter={setMapCenter}
                     />
                 </div>

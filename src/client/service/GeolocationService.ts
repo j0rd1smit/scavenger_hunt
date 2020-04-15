@@ -55,7 +55,6 @@ export default class GeolocationService {
         if (pos.coords?.accuracy !== undefined && pos.coords.latitude !== undefined && pos.coords.longitude != undefined) {
             const data = new GeoData(pos.coords.accuracy, [pos.coords.latitude, pos.coords.longitude]);
             if (distanceInMetersBetween(data.coord, this.lastLocation.coord) > data.accuracy) {
-                alert(data);
                 this.callbacks.forEach((callback: GeolocationServiceCallback) => callback(data));
                 this.lastLocation = data;
             }

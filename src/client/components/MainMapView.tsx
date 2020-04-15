@@ -1,10 +1,8 @@
-import React, {Fragment} from "react";
+import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {Map, Marker, Popup, TileLayer} from "react-leaflet";
+import {Map, Marker, Popup, TileLayer, Viewport} from "react-leaflet";
 import {LatLngTuple} from "leaflet";
-import {getPositionPromise} from "../utils/GeoUtils";
-import {GeoOptions} from "../service/GeoOptions";
-import {getOrDefault} from "../utils/utils";
+import {isPresent} from "../utils/utils";
 import {SetState} from "../utils/ReactTypes";
 
 
@@ -21,36 +19,46 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IMainMapViewProps {
     userLocation: LatLngTuple;
 
+    followUser: boolean;
+    setFollowUser: SetState<boolean>;
+
     mapCenter: LatLngTuple;
     setMapCenter: SetState<LatLngTuple>;
 }
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
+    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter} = props;
 
-    const whenReadyMap = async (): Promise<void> => {
-        try {
-            const position = await getPositionPromise(new GeoOptions())
-            const latLng: LatLngTuple = [getOrDefault(position.coords.latitude, props.mapCenter[0]), getOrDefault(position.coords.longitude, props.mapCenter[1])];
-            props.setMapCenter(latLng);
-        } catch (e) {
-            console.error(e.message);
+    const [zoom, setZoom] = useState<number>(18);
+
+    const center = followUser? userLocation : mapCenter;
+
+    const onViewportChanged = (viewport: Viewport): void => {
+        if (isPresent(viewport.zoom)) {
+            setZoom(viewport.zoom);
+        }
+
+        if (isPresent(viewport.center)) {
+            setFollowUser(false);
+            setMapCenter(viewport.center);
         }
     }
+
     return (
         <Fragment>
             <div className={classes.root}>
                 <Map
-                    center={props.mapCenter}
-                    whenReady={whenReadyMap}
-                    zoom={18}
+                    center={center}
+                    zoom={zoom}
+                    onViewportChanged={onViewportChanged}
                 >
                     <TileLayer
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                         attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                     />
                     <Marker position={props.userLocation}>
-                        <Popup>A pretty CSS3 popup.<br/>Easily customizable.</Popup>
+                        <Popup>You are currently here.</Popup>
                     </Marker>
                 </Map>
             </div>
