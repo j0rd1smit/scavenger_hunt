@@ -3,7 +3,7 @@ import {useEffect, useState} from "react";
 
 
 export const createHeadingHook = (): number => {
-    const [state, setState] = useState<number>(-1);
+    const [state, setState] = useState<number>(0);
     useEffect((): () => void => {
         const callback = (data: number): void => setState(data);
         const service = new HeadingService([callback]);
@@ -55,7 +55,7 @@ export default class HeadingService {
         }
         if (event.absolute && isPresent(event.alpha)) {
             const heading = event.alpha;
-            this.callbacks.forEach((callback: HeadingServiceCallback) => callback(heading));
+            this.callbacks.forEach((callback: HeadingServiceCallback) => callback(360 - heading));
         }
 
     }

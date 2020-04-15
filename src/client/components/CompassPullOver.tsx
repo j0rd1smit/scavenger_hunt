@@ -1,6 +1,8 @@
 import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Card, CardMedia, Typography} from "@material-ui/core";
+import {createHeadingHook} from "../service/HeadingService";
+import {differanceBetweenAngle} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -40,7 +42,8 @@ interface IDirectionPullOver2Props {
 function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
     const classes = useStyles();
 
-    const bearing = props.bearingComparedToCurrentLocation;
+    const bearing = Math.round(props.bearingComparedToCurrentLocation);
+    const heading = Math.round(createHeadingHook());
 
     return (
         <Fragment>
@@ -53,13 +56,13 @@ function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
                             image="static/images/arrow.png"
                             title="Bearing towards goal"
                             style={{
-                                transform: `rotate(${bearing}deg)`,
+                                transform: `rotate(${differanceBetweenAngle(bearing, heading)}deg)`,
                             }}
                         />
                     </div>
 
                     <Typography align={"center"} variant="overline" component="p">
-                        {Math.round(bearing)}°
+                        {bearing}°
                     </Typography>
                 </Card>
             </div>

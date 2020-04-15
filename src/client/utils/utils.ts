@@ -28,3 +28,17 @@ export const isIos = (): boolean => {
 
     return false;
 }
+
+export const listenToEventOnlyOnce = <T>(eventName: any): Promise<T> => {
+    return new Promise<T>((resolve, reject) => {
+        const oneTimeListener = (event: T) => {
+            try {
+                window.removeEventListener(eventName, oneTimeListener);
+                resolve(event);
+            } catch (e) {
+                reject(e);
+            }
+        }
+        window.addEventListener(eventName, oneTimeListener);
+    });
+}

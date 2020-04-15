@@ -17,6 +17,7 @@ import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 
 
+
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
