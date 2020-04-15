@@ -7,7 +7,7 @@ import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
-import DirectionPullOver from "../components/DirectionPullOver";
+import DirectionPullOver2 from "../components/DirectionPullOver2";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -57,7 +57,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                 />
 
                 <div className={classes.mapContainer}>
-                    <DirectionPullOver/>
+                    <DirectionPullOver2/>
                     <MainMapView
                         userLocation={geoData.coord}
                         mapCenter={mapCenter}

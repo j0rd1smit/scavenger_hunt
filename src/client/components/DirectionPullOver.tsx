@@ -13,6 +13,7 @@ const useStyles = makeStyles((theme: Theme) =>
             "padding-left": 50,
             "padding-right": 15,
             zIndex: 401,
+
         },
         closeBtn: {
             position: "absolute",
@@ -31,15 +32,19 @@ const useStyles = makeStyles((theme: Theme) =>
         content: {
             flex: '1 0 auto',
         },
+        coverContainer: {
+            position: "relative",
+            "padding-top": "100%",
+            width: 75,
+        },
         cover: {
+            position: "absolute",
+            top: "50%",
             padding: 10,
-            width: 151,
-            height: 151,
+            width: 75,
+            height: 75,
         },
-        playIcon: {
-            height: 38,
-            width: 38,
-        },
+
         directionIcon: {
             position: "relative",
             top: 4,
@@ -57,7 +62,7 @@ function DirectionPullOver(props: IDirectionPullOverProps): JSX.Element {
     const [bearing, bearingRef, setBearing] = useRefState<number>(0);
 
     useEffect(() => {
-        setInterval(() => setBearing((bearingRef.current + 1) % 360), 50);
+        setInterval(() => setBearing((bearingRef.current + 0) % 360), 50);
     }, [])
 
     return (
@@ -76,25 +81,29 @@ function DirectionPullOver(props: IDirectionPullOverProps): JSX.Element {
 
                             <div className={classes.details}>
                                 <CardContent className={classes.content}>
-                                    <Typography component="h5" variant="h5">
+                                    <Typography variant="subtitle2">
                                         Location A
                                     </Typography>
-                                    <Typography variant="subtitle1" color="textSecondary">
+                                    <Typography variant="body2" color="textSecondary">
                                         <Room className={classes.directionIcon} fontSize={"small"}/> 100m
                                     </Typography>
-                                    <Typography variant="subtitle1" color="textSecondary">
+                                    <Typography variant="body2" color="textSecondary">
                                         <Explore className={classes.directionIcon} fontSize={"small"}/> 360°
                                     </Typography>
                                 </CardContent>
                             </div>
-                            <CardMedia
-                                className={classes.cover}
-                                image="static/images/arrow.png"
-                                title="Bearing towards goal"
-                                style={{
-                                    transform: `rotate(${bearing}deg)`,
-                                }}
-                            />
+                            <div className={classes.coverContainer}>
+                                <CardMedia
+                                    className={classes.cover}
+                                    image="static/images/arrow.png"
+                                    title="Bearing towards goal"
+                                    style={{
+                                        transform: `rotate(${bearing}deg)`,
+                                    }}
+
+                                />
+                            </div>
+
                         </div>
                         <CardActions>
                             <Button size="small" color="primary">
