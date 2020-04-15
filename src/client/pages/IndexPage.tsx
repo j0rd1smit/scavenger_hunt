@@ -9,6 +9,8 @@ import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
 import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
+import {Fab} from "@material-ui/core";
+import {CameraAlt, Navigation} from "@material-ui/icons";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -21,7 +23,18 @@ const useStyles = makeStyles((theme: Theme) =>
             //height: "calc(100vh - 64px)",
             width: "100%",
         },
-
+        fabCenter: {
+            zIndex: 402,
+            position: 'absolute',
+            bottom: 58 + theme.spacing(2),
+            right: theme.spacing(2),
+        },
+        fabCamera: {
+            zIndex: 402,
+            position: 'absolute',
+            bottom: 56 + 58 + theme.spacing(2) + theme.spacing(1),
+            right: theme.spacing(2),
+        },
     }),
 );
 
@@ -75,6 +88,18 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                 >
                     <CompassPullOver/>
                     <LocationPullOver/>
+                    <Fab
+                        className={classes.fabCenter}
+                        color="primary"
+                        aria-label="center">
+                        <Navigation/>
+                    </Fab>
+                    <Fab
+                        className={classes.fabCamera}
+                        color="primary"
+                        aria-label="Scan QR code">
+                        <CameraAlt/>
+                    </Fab>
                     <MainMapView
                         userLocation={geoData.coord}
                         mapCenter={mapCenter}
