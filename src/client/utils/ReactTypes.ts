@@ -7,3 +7,5 @@ export type OnClickEvent = React.MouseEvent<HTMLElement>;
 export type OnClickCallback = (e: OnClickEvent) => void;
 
 export type SetState<T> = Dispatch<T>;
+
+export type OnChangeEvent = React.ChangeEvent<HTMLInputElement>;

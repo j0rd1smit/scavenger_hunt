@@ -5,3 +5,8 @@ export interface ILocation {
     coords: LatLng;
     isCompleted: boolean;
 }
+
+
+export interface Question {
+    type: ""
+}

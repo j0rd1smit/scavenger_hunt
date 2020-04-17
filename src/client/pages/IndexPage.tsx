@@ -9,7 +9,7 @@ import PuzzelDialog from "../components/PuzzelDialog";
 import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
-import {CameraAlt, Navigation} from "@material-ui/icons";
+import {AssignmentTurnedIn, CameraAlt, Navigation} from "@material-ui/icons";
 import QRCodeDailog from "../components/QRCodeDailog";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../utils/locations";
@@ -39,6 +39,12 @@ const useStyles = makeStyles((theme: Theme) =>
             bottom: 56 + 58 + theme.spacing(2) + theme.spacing(1),
             right: theme.spacing(2),
         },
+        fabAnswerQuestion: {
+            zIndex: 402,
+            position: 'absolute',
+            bottom: 56 + 2 * 58 + theme.spacing(2) + theme.spacing(2),
+            right: theme.spacing(2),
+        }
     }),
 );
 
@@ -46,7 +52,7 @@ interface IIndexPageProps {
 
 }
 
-function IndexPage(props: IIndexPageProps): JSX.Element {
+function IndexPage(_: IIndexPageProps): JSX.Element {
     const classes = useStyles();
 
     const geoData = createGeoDataHook();
@@ -61,25 +67,26 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
     //map related
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
     const [followUser, setFollowUser] = useState<boolean>(true);
-    const onClickFabCenterBtn = (e: OnClickEvent): void => setFollowUser(true);
+    const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
 
     // Dialog
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
     const [QRCodeDialogIsOpen, setQRCodeDialogIsOpen] = useState<boolean>(false);
 
+    const onClickFabAnswerQuestion = (e: OnClickEvent): void => setPuzzelDialogIsOpen(true);
+
     // drawer
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
-    const onClickMenuButton: OnClickCallback = (e: OnClickEvent): void => {
+    const onClickMenuButton: OnClickCallback = (_: OnClickEvent): void => {
         setDrawerIsOpen(true);
     };
 
     //QR code
-    const onClickFabCamera = (e: OnClickEvent): void => {
+    const onClickFabCamera = (_: OnClickEvent): void => {
         setQRCodeDialogIsOpen(true);
     };
 
     //TODO create an alert if the compass is not suported.
-
     const locations: ILocation[] = [
         {
             name: "Hockey club",
@@ -123,6 +130,7 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                     setIsOpen={setDrawerIsOpen}
                 />
                 <PuzzelDialog
+                    type={"QRCode"}
                     isOpen={puzzelDialogIsOpen}
                     setIsOpen={setPuzzelDialogIsOpen}
                 />
@@ -144,6 +152,14 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                         />
                     </div>
                     }
+                    <Fab
+                        className={classes.fabAnswerQuestion}
+                        color="primary"
+                        aria-label="center"
+                        onClick={onClickFabAnswerQuestion}
+                    >
+                        <AssignmentTurnedIn/>
+                    </Fab>
 
                     <Fab
                         className={classes.fabCenter}
@@ -161,7 +177,8 @@ function IndexPage(props: IIndexPageProps): JSX.Element {
                         <CameraAlt/>
                     </Fab>
                     <MainMapView
-                        userLocation={geoData.coord}
+                        userLocation={geoData}
+                        locations={locations}
                         mapCenter={mapCenter}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
