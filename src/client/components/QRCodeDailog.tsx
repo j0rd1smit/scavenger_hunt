@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IQRCodeDailogProps {
     isOpen: boolean;
     setIsOpen: SetState<boolean>;
+    setAnswer: SetState<string>;
 }
 
 function QRCodeDailog(props: IQRCodeDailogProps): JSX.Element {
@@ -37,8 +38,8 @@ function QRCodeDailog(props: IQRCodeDailogProps): JSX.Element {
     const handleOnClose = (e: OnClickEvent): void => props.setIsOpen(false);
     const handleScan = (data: string): void => {
         if (data) {
-            alert(data);
             props.setIsOpen(false);
+            props.setAnswer(data);
         }
     }
     const handleError = (err: Error) => {

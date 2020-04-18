@@ -4,9 +4,14 @@ export interface ILocation {
     name: string;
     coords: LatLng;
     isCompleted: boolean;
+    code: string;
+    question: IQuestion;
 }
 
 
-export interface Question {
-    type: ""
+export interface IQuestion {
+    type: "QR_CODE"|"OPEN";
+    description: string;
+    img?: string;
+    answer: string;
 }

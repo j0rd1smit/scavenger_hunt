@@ -9,6 +9,7 @@ import {
 import {OnChangeEvent, OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CameraAlt} from "@material-ui/icons";
 import QRCodeDailog from "./QRCodeDailog";
+import {ILocation, IQuestion} from "../utils/locations";
 
 
 
@@ -35,21 +36,23 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-type QRCODE = "QRCode";
-type OPENQUESTION = "Open";
 
 interface IPuzzelDialogProps {
     isOpen: boolean;
     setIsOpen: SetState<boolean>;
-    type: QRCODE|OPENQUESTION
+    location: ILocation;
+    markLocationAsCompleted: SetState<ILocation>;
 }
 
 function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
     const classes = useStyles();
-    const {type} = props;
+    const {location, markLocationAsCompleted} = props;
 
     const [isSolved, setIsSolved] = useState<boolean>(false);
-
+    const onSolved = (): void => {
+        setIsSolved(true);
+        markLocationAsCompleted(location);
+    }
 
     const handleOnClose = (e: OnClickEvent): void => props.setIsOpen(false);
 
@@ -63,17 +66,19 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
             );
         }
 
-        if (type === "QRCode") {
+        if (location.question.type === "QR_CODE") {
             return (
                 <QRCodeQuestionContent
-                    setIsSolved={setIsSolved}
+                    question={location.question}
+                    onSolved={onSolved}
                     handleOnClose={handleOnClose}
                 />
             );
         }
         return (
             <QuestionContent
-                setIsSolved={setIsSolved}
+                question={location.question}
+                onSolved={onSolved}
                 handleOnClose={handleOnClose}
             />
         );
@@ -88,6 +93,7 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
                     scroll={"body"}
                     fullWidth
                 >
+                    <DialogTitle id="form-dialog-title">{location.name}</DialogTitle>
                     {getContent()}
                 </Dialog>
             </div>
@@ -96,29 +102,40 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
 }
 
 interface IQRCodeQuestionContentProps {
+    question: IQuestion;
     handleOnClose: OnClickCallback;
-    setIsSolved: SetState<boolean>;
+    onSolved: () => void;
 }
 
 function QRCodeQuestionContent(props: IQRCodeQuestionContentProps): JSX.Element {
     const classes = useStyles();
-    const {handleOnClose} = props;
+    const {handleOnClose, question, onSolved} = props;
 
     const [QRCodeDialogIsOpen, setQRCodeDialogIsOpen] = useState<boolean>(false);
+
+    const setAnswer: SetState<string> = (userAnswer: string) => {
+        if (question.answer === userAnswer) {
+            onSolved();
+        } else {
+            //TODO
+            alert("That code is incorrect!")
+        }
+    }
 
     const onClickScanBtn = (e: OnClickEvent): void => setQRCodeDialogIsOpen(true);
 
     return (
         <Fragment>
-            <DialogTitle id="form-dialog-title">Location A</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Find the QR code. This is my view:
+                    {question.description}
                 </DialogContentText>
+                {question.img !== undefined &&
                 <img
-                    src={"/static/images/rebus10.jpg"}
+                    src={question.img}
                     className={classes.cover}
                 />
+                }
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleOnClose} color="primary">
@@ -133,19 +150,20 @@ function QRCodeQuestionContent(props: IQRCodeQuestionContentProps): JSX.Element 
                     Scan
                 </Button>
             </DialogActions>
-            <QRCodeDailog isOpen={QRCodeDialogIsOpen} setIsOpen={setQRCodeDialogIsOpen}/>
+            <QRCodeDailog setAnswer={setAnswer} isOpen={QRCodeDialogIsOpen} setIsOpen={setQRCodeDialogIsOpen}/>
         </Fragment>
     );
 }
 
 interface IQuestionContentProps {
+    question: IQuestion;
     handleOnClose: OnClickCallback;
-    setIsSolved: SetState<boolean>;
+    onSolved: () => void;
 }
 
 function QuestionContent(props: IQuestionContentProps): JSX.Element {
     const classes = useStyles();
-    const {handleOnClose, setIsSolved} = props;
+    const {handleOnClose, onSolved, question} = props;
 
     const [isIncorrect, setIsIncorrect] = useState<boolean>(false);
     const [userAnswer, setUserAnswer] = useState<string>("");
@@ -156,10 +174,10 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
     }
 
     const onSubmit = (e: OnClickEvent): void => {
-        if (userAnswer === "Ze blijft om de hete brij heendraaien") {
+        if (userAnswer === question.answer) {
             setAnswerHelperText("");
             setIsIncorrect(false);
-            setIsSolved(true);
+            onSolved();
         } else {
             setAnswerHelperText("Sorry but that is incorrect.");
             setIsIncorrect(true);
@@ -168,15 +186,16 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
 
     return (
         <Fragment>
-            <DialogTitle id="form-dialog-title">Location A</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Solve the rebus.
+                    {question.description}
                 </DialogContentText>
+                {question.img !== undefined &&
                 <img
                     src={"/static/images/rebus10.jpg"}
                     className={classes.cover}
                 />
+                }
                 <FormControl fullWidth error={isIncorrect}>
                     <TextField
                         margin="dense"
@@ -212,7 +231,6 @@ function AnswerContent(props: IAnswerContentProps): JSX.Element {
 
     return (
         <Fragment>
-            <DialogTitle id="form-dialog-title">Location A</DialogTitle>
             <DialogContent>
                 <Typography variant="body1" display="block" gutterBottom>
                     You solved it. Well done!

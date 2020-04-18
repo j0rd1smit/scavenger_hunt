@@ -9,8 +9,7 @@ import PuzzelDialog from "../components/PuzzelDialog";
 import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
-import {AssignmentTurnedIn, CameraAlt, Navigation} from "@material-ui/icons";
-import QRCodeDailog from "../components/QRCodeDailog";
+import {AssignmentTurnedIn, Navigation} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../utils/locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
@@ -71,7 +70,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
     // Dialog
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
-    const [QRCodeDialogIsOpen, setQRCodeDialogIsOpen] = useState<boolean>(false);
 
     const onClickFabAnswerQuestion = (e: OnClickEvent): void => setPuzzelDialogIsOpen(true);
 
@@ -81,39 +79,70 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         setDrawerIsOpen(true);
     };
 
-    //QR code
-    const onClickFabCamera = (_: OnClickEvent): void => {
-        setQRCodeDialogIsOpen(true);
-    };
+    const [locations, setLocations] = useState<ILocation[]>([
+            {
+                name: "Hockey club",
+                coords: [52.210860, 4.426798],
+                isCompleted: false,
+                code: "001",
+                question: {
+                    type: "OPEN",
+                    description: "",
+                    answer: "",
+                }
+            },
+            {
+                name: "Voetbalveld brug",
+                coords: [52.211344, 4.420593],
+                isCompleted: false,
+                code: "001",
+                question: {
+                    type: "QR_CODE",
+                    description: "Find the QR code?",
+                    answer: "test",
+                }
+            },
+            {
+                name: "Polster",
+                coords: [52.211920, 4.418950],
+                isCompleted: false,
+                code: "001",
+                question: {
+                    type: "OPEN",
+                    description: "Solve the rebus.",
+                    img: "/static/images/rebus10.jpg",
+                    answer: "Ze blijft om de hete brij heendraaien",
+                }
+            },
+            {
+                name: "Lidl",
+                coords: [52.212494, 4.417784],
+                isCompleted: false,
+                code: "001",
+                question: {
+                    type: "OPEN",
+                    description: "",
+                    answer: "",
+                }
+            },
+            {
+                name: "Bushalt",
+                coords: [52.213809, 4.422414],
+                isCompleted: false,
+                code: "001",
+                question: {
+                    type: "OPEN",
+                    description: "",
+                    answer: "",
+                }
+            }
+        ]);
 
+    const markLocationAsCompleted = (location: ILocation) => {
+        locations.filter(e => e === location)[0].isCompleted = true;
+        setLocations(locations);
+    }
     //TODO create an alert if the compass is not suported.
-    const locations: ILocation[] = [
-        {
-            name: "Hockey club",
-            coords: [52.210860, 4.426798],
-            isCompleted: false,
-        },
-        {
-            name: "Voetbalveld brug",
-            coords: [52.211344, 4.420593],
-            isCompleted: false,
-        },
-        {
-            name: "Polster",
-            coords: [52.211920, 4.418950],
-            isCompleted: false,
-        },
-        {
-            name: "Lidl",
-            coords: [52.212494, 4.417784],
-            isCompleted: false,
-        },
-        {
-            name: "Bushalt",
-            coords: [52.213809, 4.422414],
-            isCompleted: false,
-        }
-    ];
 
     return (
         <Fragment>
@@ -129,12 +158,14 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
-                <PuzzelDialog
-                    type={"QRCode"}
-                    isOpen={puzzelDialogIsOpen}
-                    setIsOpen={setPuzzelDialogIsOpen}
-                />
-                <QRCodeDailog isOpen={QRCodeDialogIsOpen} setIsOpen={setQRCodeDialogIsOpen}/>
+                {selectedLocation !== undefined &&
+                    <PuzzelDialog
+                        markLocationAsCompleted={markLocationAsCompleted}
+                        location={selectedLocation}
+                        isOpen={puzzelDialogIsOpen}
+                        setIsOpen={setPuzzelDialogIsOpen}
+                    />
+                }
 
                 <div
                     className={classes.mapContainer}
@@ -152,14 +183,16 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         />
                     </div>
                     }
-                    <Fab
-                        className={classes.fabAnswerQuestion}
-                        color="primary"
-                        aria-label="center"
-                        onClick={onClickFabAnswerQuestion}
-                    >
-                        <AssignmentTurnedIn/>
-                    </Fab>
+                    {selectedLocation !== undefined &&
+                        <Fab
+                            className={classes.fabAnswerQuestion}
+                            color="primary"
+                            aria-label="center"
+                            onClick={onClickFabAnswerQuestion}
+                        >
+                            <AssignmentTurnedIn/>
+                        </Fab>
+                    }
 
                     <Fab
                         className={classes.fabCenter}
@@ -168,13 +201,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         onClick={onClickFabCenterBtn}
                     >
                         <Navigation/>
-                    </Fab>
-                    <Fab
-                        className={classes.fabCamera}
-                        color="primary"
-                        onClick={onClickFabCamera}
-                        aria-label="Scan QR code">
-                        <CameraAlt/>
                     </Fab>
                     <MainMapView
                         userLocation={geoData}
