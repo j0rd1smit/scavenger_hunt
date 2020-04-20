@@ -24,18 +24,17 @@ interface IMainMapViewProps {
     followUser: boolean;
     setFollowUser: SetState<boolean>;
 
-    mapCenter: LatLngTuple;
-    setMapCenter: SetState<LatLngTuple>;
-
     locations: ILocation[];
     withingDistanceRange: number;
+    ondblclickSearchArea: (location: ILocation) => void;
 }
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
-    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter, locations, withingDistanceRange} = props;
+    const {setFollowUser, followUser, userLocation, locations, withingDistanceRange, ondblclickSearchArea} = props;
 
     const [zoom, setZoom] = useState<number>(18);
+    const [mapCenter, setMapCenter] = useState<LatLngTuple>(followUser ? userLocation.coord : [0., 0.]);
 
     const center = followUser ? userLocation.coord : mapCenter;
     if (followUser && (userLocation.coord[0] !== mapCenter[0] || userLocation.coord[1] !== mapCenter[1])) {
@@ -94,7 +93,15 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                     {
                         locations.filter(e => !e.isCompleted && e.isUnlocked).map(location => {
                             return (
-                                <CircleMarker key={location.name} color={"gray"} fillColor="gray" center={location.coords} radius={1.5 * withingDistanceRange / metresPerPixel} icon={completedIcon}>
+                                <CircleMarker
+                                    key={location.name}
+                                    color={"gray"}
+                                    fillColor="gray"
+                                    center={location.coords}
+                                    radius={1.5 * withingDistanceRange / metresPerPixel}
+                                    icon={completedIcon}
+                                    ondblclick={(_: L.LeafletMouseEvent) => ondblclickSearchArea(location)}
+                                >
                                     <Popup offset={[0, 0]}>
                                         Discovered: {location.name}
                                     </Popup>

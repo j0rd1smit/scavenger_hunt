@@ -2,7 +2,7 @@ import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
 import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
-import {OnClickEvent, SetState} from "../utils/ReactTypes";
+import {OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CheckCircle, EditLocation, ExpandLess, ExpandMore, Explore, Room} from "@material-ui/icons";
 import {ILocation} from "../utils/locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
@@ -31,6 +31,7 @@ interface IDrawerProps {
     setIsOpen: (isOpen: boolean) => void;
     selectedLocation: ILocation|undefined;
     setSelectedLocation: SetState<ILocation|undefined>;
+    setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
@@ -38,7 +39,6 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const noLocationSelected = "None selected"
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
-    //const [selectedLocation, setSelectedLocation] = useState<string>(noLocationSelected);
 
 
     const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
@@ -97,6 +97,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                             distance={distanceInMetersBetween(props.userLocation, location.coords)}
                                             isSelected={props.selectedLocation?.name === location.name}
                                             onChangeRadioButton={onChangeRadioButton}
+                                            onClickBtn={_ => props.setPuzzelDialogIsOpenFor(location)}
                                         />
                                     );
                                 })}
@@ -116,11 +117,13 @@ interface ILocationListItem {
     isCompleted: boolean;
     isSelected: boolean;
     onChangeRadioButton: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    onClickBtn?: OnClickCallback;
 }
 
 function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
-    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected} = props;
+    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected, onClickBtn} = props;
+
     return (
         <ListItem>
             <ListItemIcon>
@@ -146,7 +149,7 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                 }
             </ListItemIcon>
             <ListItemText
-                primary={<Button color="primary" onClick={(e: any) => console.log(name)}>{name}</Button>}
+                primary={<Button color="primary" disabled={onClickBtn === undefined} onClick={onClickBtn}>{name}</Button>}
                 secondary={(
                     distance !== undefined && direction !== undefined && (
                         <span>

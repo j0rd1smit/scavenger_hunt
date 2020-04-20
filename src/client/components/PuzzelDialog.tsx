@@ -39,14 +39,14 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IPuzzelDialogProps {
     isOpen: boolean;
-    setIsOpen: SetState<boolean>;
     location: ILocation;
     markLocationAsCompleted: SetState<ILocation>;
+    setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
     const classes = useStyles();
-    const {location, markLocationAsCompleted} = props;
+    const {location, markLocationAsCompleted, setPuzzelDialogIsOpenFor} = props;
 
     const [isSolved, setIsSolved] = useState<boolean>(false);
     const onSolved = (): void => {
@@ -54,7 +54,7 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
         markLocationAsCompleted(location);
     }
 
-    const handleOnClose = (e: OnClickEvent): void => props.setIsOpen(false);
+    const handleOnClose = (e: OnClickEvent): void => setPuzzelDialogIsOpenFor(undefined);
 
 
     const getContent = (): JSX.Element => {

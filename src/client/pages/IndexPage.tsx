@@ -2,14 +2,13 @@ import React, {Fragment, useState} from "react";
 import NavBar from "../components/NavBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
-import {LatLngTuple} from "leaflet";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
 import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
-import {AssignmentTurnedIn, Navigation} from "@material-ui/icons";
+import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../utils/locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
@@ -59,17 +58,25 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     const onClickCloseLocationTrackingBtn = (): void => setSelectedLocation(undefined);
     const selectedLocationOffSet = selectedLocation === undefined ? spacing : 56;
 
+    // Dialog
+    const [puzzelDialogIsOpenFor, setPuzzelDialogIsOpenFor] = useState<ILocation|undefined>(undefined);
+    const onClickFabAnswerQuestion = (e: OnClickEvent): void => setPuzzelDialogIsOpenFor(selectedLocation);
+
     //map related
-    const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const withingDistanceRange = 25;
+    const withingDistanceRange = 1000;
     const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
+    const ondblclickSearchArea = (location: ILocation): void => {
+        if (selectedLocation !== location) {
+            setSelectedLocation(location);
+        }
+        if (puzzelDialogIsOpenFor !== location) {
+            setPuzzelDialogIsOpenFor(location);
+        }
+    }
 
-    // Dialog
-    const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
 
-    const onClickFabAnswerQuestion = (e: OnClickEvent): void => setPuzzelDialogIsOpen(true);
 
     // drawer
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -145,8 +152,8 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     if (locationsInTheArea.length > 0) {
         locationsInTheArea.forEach(location => {
             location.isUnlocked = true;
-            if (location == selectedLocation) {
-                setPuzzelDialogIsOpen(true);
+            if (location === selectedLocation) {
+                setPuzzelDialogIsOpenFor(selectedLocation);
             }
         });
         setLocations(locations);
@@ -167,6 +174,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     onMenuButtonClick={onClickMenuButton}
                 />
                 <SideBarDrawer
+                    setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
                     selectedLocation={selectedLocation}
                     setSelectedLocation={setSelectedLocation}
                     userLocation={geoData.coord}
@@ -174,14 +182,17 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
-                {selectedLocation !== undefined &&
-                    <PuzzelDialog
-                        markLocationAsCompleted={markLocationAsCompleted}
-                        location={selectedLocation}
-                        isOpen={puzzelDialogIsOpen}
-                        setIsOpen={setPuzzelDialogIsOpen}
-                    />
-                }
+                {locations.map(location => {
+                    return (
+                        <PuzzelDialog
+                            key={location.name}
+                            markLocationAsCompleted={markLocationAsCompleted}
+                            location={location}
+                            isOpen={puzzelDialogIsOpenFor === location}
+                            setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
+                        />
+                    );
+                })}
 
                 <div
                     className={classes.mapContainer}
@@ -211,7 +222,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                                 bottom: selectedLocationOffSet + 4 * spacing  + fabSize,
                             }}
                         >
-                            <AssignmentTurnedIn/>
+                            <RateReview/>
                         </Fab>
                     }
 
@@ -227,13 +238,12 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         <Navigation/>
                     </Fab>
                     <MainMapView
+                        ondblclickSearchArea={ondblclickSearchArea}
                         withingDistanceRange={withingDistanceRange}
                         userLocation={geoData}
                         locations={locations}
-                        mapCenter={mapCenter}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
-                        setMapCenter={setMapCenter}
                     />
                 </div>
 
