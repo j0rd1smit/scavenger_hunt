@@ -16,7 +16,6 @@ import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 
 
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -64,7 +63,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const withingDistanceRange = 1000;
+    const withingDistanceRange = 25;
     const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
 
     // Dialog
@@ -113,7 +112,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     type: "OPEN",
                     description: "Solve the rebus.",
                     img: "/static/images/rebus10.jpg",
-                    answer: "Ze blijft om de hete brij heendraaien",
+                    answer: "test",
                 }
             },
             {
@@ -142,12 +141,15 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
             }
         ]);
 
-    if (selectedLocation !== undefined && !selectedLocation.isUnlocked && isInSearchArea) {
-        locations.filter(e => e === selectedLocation)[0].isUnlocked = true;
-        selectedLocation.isUnlocked = true;
+    const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= withingDistanceRange);
+    if (locationsInTheArea.length > 0) {
+        locationsInTheArea.forEach(location => {
+            location.isUnlocked = true;
+            if (location == selectedLocation) {
+                setPuzzelDialogIsOpen(true);
+            }
+        });
         setLocations(locations);
-        setSelectedLocation(selectedLocation);
-        setPuzzelDialogIsOpen(true);
     }
 
     const markLocationAsCompleted = (location: ILocation) => {
@@ -225,6 +227,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         <Navigation/>
                     </Fab>
                     <MainMapView
+                        withingDistanceRange={withingDistanceRange}
                         userLocation={geoData}
                         locations={locations}
                         mapCenter={mapCenter}

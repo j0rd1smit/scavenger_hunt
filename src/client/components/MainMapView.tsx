@@ -6,6 +6,7 @@ import {isPresent} from "../utils/utils";
 import {SetState} from "../utils/ReactTypes";
 import GeoData from "../service/GeoData";
 import {ILocation} from "../utils/locations";
+import L from 'leaflet'
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -27,11 +28,12 @@ interface IMainMapViewProps {
     setMapCenter: SetState<LatLngTuple>;
 
     locations: ILocation[];
+    withingDistanceRange: number;
 }
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
-    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter} = props;
+    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter, locations, withingDistanceRange} = props;
 
     const [zoom, setZoom] = useState<number>(18);
 
@@ -50,6 +52,17 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
         }
     }
     const metresPerPixel = 40075016.686 * Math.abs(Math.cos(center[0] * Math.PI/180)) / Math.pow(2, zoom+8);
+
+    const completedIcon = new L.Icon({
+        iconUrl: '/static/images/check_circle_marker.svg',
+        iconRetinaUrl: '/static/images/check_circle_marker.svg',
+        iconAnchor: [15 / metresPerPixel, 15/ metresPerPixel],
+        popupAnchor: [0, -7.5 / metresPerPixel],
+        iconSize: [30 / metresPerPixel , 30 / metresPerPixel],
+        shadowSize: [29, 40/metresPerPixel],
+        shadowAnchor: [7, 40],
+    });
+
     return (
         <Fragment>
             <div className={classes.root}>
@@ -67,6 +80,28 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                         <Popup>You are currently here.</Popup>
                     </Marker>
                     <CircleMarker center={props.userLocation.coord} fillColor="blue" radius={props.userLocation.accuracy / metresPerPixel} />
+                    {
+                        locations.filter(e => e.isCompleted).map(location => {
+                            return (
+                                <Marker key={location.name} position={location.coords} icon={completedIcon}>
+                                    <Popup>
+                                        Completed: {location.name}
+                                    </Popup>
+                                </Marker>
+                            );
+                        })
+                    }
+                    {
+                        locations.filter(e => !e.isCompleted && e.isUnlocked).map(location => {
+                            return (
+                                <CircleMarker key={location.name} color={"gray"} fillColor="gray" center={location.coords} radius={1.5 * withingDistanceRange / metresPerPixel} icon={completedIcon}>
+                                    <Popup offset={[0, 0]}>
+                                        Discovered: {location.name}
+                                    </Popup>
+                                </CircleMarker>
+                            );
+                        })
+                    }
                 </Map>
             </div>
         </Fragment>
