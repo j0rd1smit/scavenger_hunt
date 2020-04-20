@@ -6,8 +6,6 @@ import {isPresent} from "../utils/utils";
 import {SetState} from "../utils/ReactTypes";
 import GeoData from "../service/GeoData";
 import {ILocation} from "../utils/locations";
-import {distanceInMetersBetween} from "../utils/GeoUtils";
-
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -33,7 +31,7 @@ interface IMainMapViewProps {
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
-    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter, locations} = props;
+    const {setMapCenter, setFollowUser, followUser, userLocation, mapCenter} = props;
 
     const [zoom, setZoom] = useState<number>(18);
 
@@ -69,9 +67,6 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                         <Popup>You are currently here.</Popup>
                     </Marker>
                     <CircleMarker center={props.userLocation.coord} fillColor="blue" radius={props.userLocation.accuracy / metresPerPixel} />
-                    {locations.filter((e: ILocation) => distanceInMetersBetween(e.coords, userLocation.coord) <= 1000).map((location: ILocation) => (
-                        <CircleMarker key={location.name} center={location.coords} color={"gray"} fillColor="gray" radius={25 / metresPerPixel} />
-                        ))}
                 </Map>
             </div>
         </Fragment>

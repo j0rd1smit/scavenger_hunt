@@ -35,16 +35,16 @@ const useStyles = makeStyles((theme: Theme) =>
     }),
 );
 
-interface IDirectionPullOver2Props {
+interface ICompassPullOverProps {
     bearingComparedToCurrentLocation: number;
 }
 
-function CompassPullOver(props: IDirectionPullOver2Props): JSX.Element {
+function CompassPullOver(props: ICompassPullOverProps): JSX.Element {
     const classes = useStyles();
+    const {bearingComparedToCurrentLocation} = props;
+    const bearing = Math.round(bearingComparedToCurrentLocation);
 
-    const bearing = Math.round(props.bearingComparedToCurrentLocation);
-    const heading = Math.round(createHeadingHook());
-
+    const heading = Math.round(createHeadingHook()) % 360;
 
     return (
         <Fragment>

@@ -29,19 +29,13 @@ const useStyles = makeStyles((theme: Theme) =>
         fabCenter: {
             zIndex: 402,
             position: 'absolute',
-            bottom: 58 + theme.spacing(2),
-            right: theme.spacing(2),
-        },
-        fabCamera: {
-            zIndex: 402,
-            position: 'absolute',
-            bottom: 56 + 58 + theme.spacing(2) + theme.spacing(1),
+            //bottom: 58 + theme.spacing(2),
             right: theme.spacing(2),
         },
         fabAnswerQuestion: {
             zIndex: 402,
             position: 'absolute',
-            bottom: 56 + 2 * 58 + theme.spacing(2) + theme.spacing(2),
+            //bottom: 56 + 2 * 58 + theme.spacing(2) + theme.spacing(2),
             right: theme.spacing(2),
         }
     }),
@@ -53,6 +47,8 @@ interface IIndexPageProps {
 
 function IndexPage(_: IIndexPageProps): JSX.Element {
     const classes = useStyles();
+    const spacing = 8;
+    const fabSize = 56;
 
     const geoData = createGeoDataHook();
 
@@ -62,11 +58,14 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     //selected location
     const [selectedLocation, setSelectedLocation] = useState<ILocation|undefined>();
     const onClickCloseLocationTrackingBtn = (): void => setSelectedLocation(undefined);
+    const selectedLocationOffSet = selectedLocation === undefined ? spacing : 56;
 
     //map related
     const [mapCenter, setMapCenter] = useState<LatLngTuple>([0., 0.]);
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
+    const withingDistanceRange = 1000;
+    const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
 
     // Dialog
     const [puzzelDialogIsOpen, setPuzzelDialogIsOpen] = useState<boolean>(false);
@@ -83,17 +82,19 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
             {
                 name: "Hockey club",
                 coords: [52.210860, 4.426798],
+                isUnlocked: false,
                 isCompleted: false,
                 code: "001",
                 question: {
                     type: "OPEN",
-                    description: "",
-                    answer: "",
+                    description: "The answer is test",
+                    answer: "test",
                 }
             },
             {
                 name: "Voetbalveld brug",
                 coords: [52.211344, 4.420593],
+                isUnlocked: false,
                 isCompleted: false,
                 code: "001",
                 question: {
@@ -105,6 +106,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
             {
                 name: "Polster",
                 coords: [52.211920, 4.418950],
+                isUnlocked: false,
                 isCompleted: false,
                 code: "001",
                 question: {
@@ -117,30 +119,42 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
             {
                 name: "Lidl",
                 coords: [52.212494, 4.417784],
+                isUnlocked: false,
                 isCompleted: false,
                 code: "001",
                 question: {
                     type: "OPEN",
-                    description: "",
-                    answer: "",
+                    description: "The answer is test",
+                    answer: "test",
                 }
             },
             {
                 name: "Bushalt",
                 coords: [52.213809, 4.422414],
+                isUnlocked: false,
                 isCompleted: false,
                 code: "001",
                 question: {
                     type: "OPEN",
-                    description: "",
-                    answer: "",
+                    description: "The answer is test",
+                    answer: "test",
                 }
             }
         ]);
 
-    const markLocationAsCompleted = (location: ILocation) => {
-        locations.filter(e => e === location)[0].isCompleted = true;
+    if (selectedLocation !== undefined && !selectedLocation.isUnlocked && isInSearchArea) {
+        locations.filter(e => e === selectedLocation)[0].isUnlocked = true;
+        selectedLocation.isUnlocked = true;
         setLocations(locations);
+        setSelectedLocation(selectedLocation);
+        setPuzzelDialogIsOpen(true);
+    }
+
+    const markLocationAsCompleted = (location: ILocation) => {
+        if (selectedLocation === location) {
+            selectedLocation.isCompleted = true;
+            setSelectedLocation(selectedLocation);
+        }
     }
     //TODO create an alert if the compass is not suported.
 
@@ -177,6 +191,8 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                             bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
                         />
                         <LocationPullOver
+                            isCompleted={selectedLocation.isCompleted}
+                            isInSearchArea={isInSearchArea}
                             onClickClose={onClickCloseLocationTrackingBtn}
                             name={selectedLocation.name}
                             distance={distanceInMetersBetween(geoData.coord, selectedLocation.coords)}
@@ -189,6 +205,9 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                             color="primary"
                             aria-label="center"
                             onClick={onClickFabAnswerQuestion}
+                            style={{
+                                bottom: selectedLocationOffSet + 4 * spacing  + fabSize,
+                            }}
                         >
                             <AssignmentTurnedIn/>
                         </Fab>
@@ -199,6 +218,9 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         color="primary"
                         aria-label="center"
                         onClick={onClickFabCenterBtn}
+                        style={{
+                            bottom: selectedLocationOffSet + 2 * spacing,
+                        }}
                     >
                         <Navigation/>
                     </Fab>

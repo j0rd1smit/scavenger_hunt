@@ -58,6 +58,13 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
 
 
     const getContent = (): JSX.Element => {
+        if (!location.isUnlocked) {
+            return (
+                <NotUnlockedContent
+                    handleOnClose={handleOnClose}
+                />
+            )
+        }
         if (isSolved) {
             return (
                 <AnswerContent
@@ -174,7 +181,7 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
     }
 
     const onSubmit = (e: OnClickEvent): void => {
-        if (userAnswer === question.answer) {
+        if (userAnswer.toLowerCase() === question.answer.toLowerCase()) {
             setAnswerHelperText("");
             setIsIncorrect(false);
             onSolved();
@@ -240,6 +247,32 @@ function AnswerContent(props: IAnswerContentProps): JSX.Element {
                 </Typography>
                 <Typography align={"center"} variant="overline" display="block" gutterBottom>
                     999
+                </Typography>
+            </DialogContent>
+            <DialogActions>
+                <Button onClick={handleOnClose} color="primary">
+                    Close
+                </Button>
+            </DialogActions>
+
+        </Fragment>
+    );
+}
+
+interface INotUnlockedContentProps {
+    handleOnClose: OnClickCallback;
+}
+
+function NotUnlockedContent(props: INotUnlockedContentProps): JSX.Element {
+    const {handleOnClose} = props;
+
+    return (
+        <Fragment>
+            <DialogContent>
+                <Typography variant="body1" display="block" gutterBottom>
+                    Sorry but you have not yet unlocked this question.
+                    You can unlock it by physically visiting the location.
+                    However, you have to find this location first using the map and compass.
                 </Typography>
             </DialogContent>
             <DialogActions>

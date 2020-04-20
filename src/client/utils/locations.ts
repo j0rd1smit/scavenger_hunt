@@ -3,6 +3,7 @@ import {LatLng} from "./GeoUtils";
 export interface ILocation {
     name: string;
     coords: LatLng;
+    isUnlocked: boolean;
     isCompleted: boolean;
     code: string;
     question: IQuestion;

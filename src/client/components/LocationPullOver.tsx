@@ -25,13 +25,27 @@ const useStyles = makeStyles((theme: Theme) =>
 interface ILocationPullOverProps {
     name: string;
     distance: number;
+    isInSearchArea: boolean;
+    isCompleted: boolean;
     onClickClose: () => void;
 }
 
 function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
     const classes = useStyles();
+    const {name, distance, isInSearchArea, isCompleted} = props;
 
     const onClickCloseBtn = (e: OnClickEvent): void => props.onClickClose();
+    console.log(isCompleted);
+    const getText = (): string => {
+        if (isCompleted) {
+            return "Well done! Please select a new location.";
+        }
+        if (isInSearchArea) {
+            return `You are in the search area!`;
+        }
+        return `${name}: ${Math.floor(distance)}m`;
+    }
+
     return (
         <Fragment>
             <Grid
@@ -44,7 +58,7 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
                     <Paper className={classes.paper}>
 
                         <Typography variant="h5" align={"justify"}>
-                            {props.name}: {Math.floor(props.distance)}m
+                            {getText()}
                         </Typography>
 
                         <IconButton
