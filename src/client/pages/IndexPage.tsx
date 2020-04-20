@@ -196,7 +196,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     className={classes.mapContainer}
                     style={{height: mapHeight}}
                 >
-                    {selectedLocation !== undefined &&
+                    {selectedLocation !== undefined && selectedLocation.isCompleted &&
                     <div>
                         <CompassPullOver
                             bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
