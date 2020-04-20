@@ -1,9 +1,27 @@
 import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
-import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
+import {
+    Button,
+    Collapse,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText,
+    Radio,
+    SwipeableDrawer
+} from "@material-ui/core";
 import {OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
-import {CheckCircle, EditLocation, ExpandLess, ExpandMore, Explore, Room} from "@material-ui/icons";
+import {
+    CheckCircle,
+    EditLocation,
+    ExpandLess,
+    ExpandMore,
+    Explore,
+    Room,
+    Settings,
+    SportsEsports
+} from "@material-ui/icons";
 import {ILocation} from "../utils/locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 
@@ -15,12 +33,15 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         locationList: {
             "padding-right": 30,
+            position: "relative",
         },
-
         directionIcon: {
             position: "relative",
             top: 4,
-        }
+        },
+        inline: {
+            display: 'inline',
+        },
     }),
 );
 
@@ -37,11 +58,16 @@ interface IDrawerProps {
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
     const noLocationSelected = "None selected"
+    const {locations} = props
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
+    const [showProgress, setShowProgress] = useState<boolean>(true);
+    const [showSetting, setshowSetting] = useState<boolean>(false);
 
-
+    const onClickProgressButton = (e: OnClickEvent) => setShowProgress(!showProgress);
     const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
+    const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
+
 
     const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
         const locations = props.locations.filter((e: ILocation) => e.name === event.target.value);
@@ -68,6 +94,65 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     disableDiscovery={!isIos()}
                 >
                     <List>
+                        <ListItem button onClick={onClickShowSettingsButton}>
+                            <ListItemIcon>
+                                <Settings/>
+                            </ListItemIcon>
+                            <ListItemText primary="Setting"/>
+                            {showSetting ? <ExpandLess/> : <ExpandMore/>}
+                        </ListItem>
+                        <Collapse in={showSetting}>
+                            todo: hide completed locations, sort options, filter question types, notify if close to location your are not tracking.
+                        </Collapse>
+
+                        <ListItem button onClick={onClickProgressButton}>
+                            <ListItemIcon>
+                                <SportsEsports/>
+                            </ListItemIcon>
+                            <ListItemText primary="Progress"/>
+                            {showProgress ? <ExpandLess/> : <ExpandMore/>}
+                        </ListItem>
+                        <Collapse in={showProgress}>
+                            <List
+                                component="div"
+                                disablePadding
+                                className={classes.locationList}
+                            >
+                                <ListItem dense alignItems="flex-start">
+                                    <ListItemText
+                                        primary="Compation rate"
+                                        secondary={
+                                            `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem dense alignItems="flex-start">
+                                    <ListItemText
+                                        primary="Locations visted"
+                                        secondary={
+                                            `${locations.filter(e => e.isUnlocked).length} / ${locations.length}`
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem dense alignItems="flex-start">
+                                    <ListItemText
+                                        primary="QR-code questions completed"
+                                        secondary={
+                                            `${locations.filter(e => e.question.type == "QR_CODE" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "QR_CODE").length}`
+                                        }
+                                    />
+                                </ListItem>
+                                <ListItem dense alignItems="flex-start">
+                                    <ListItemText
+                                        primary="Open questions completed"
+                                        secondary={
+                                            `${locations.filter(e => e.question.type === "OPEN" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "OPEN").length}`
+                                        }
+                                    />
+                                </ListItem>
+                            </List>
+                        </Collapse>
+
                         <ListItem button onClick={onClickTrackableLocationButton}>
                             <ListItemIcon>
                                 <EditLocation/>
@@ -79,7 +164,6 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                             <List
                                 component="div"
                                 disablePadding
-                                className={classes.locationList}
                             >
                                 <LocationListItem
                                     name={noLocationSelected}
@@ -160,7 +244,6 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                 )}
 
             />
-
         </ListItem>
     );
 

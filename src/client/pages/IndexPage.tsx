@@ -27,13 +27,11 @@ const useStyles = makeStyles((theme: Theme) =>
         fabCenter: {
             zIndex: 402,
             position: 'absolute',
-            //bottom: 58 + theme.spacing(2),
             right: theme.spacing(2),
         },
         fabAnswerQuestion: {
             zIndex: 402,
             position: 'absolute',
-            //bottom: 56 + 2 * 58 + theme.spacing(2) + theme.spacing(2),
             right: theme.spacing(2),
         }
     }),

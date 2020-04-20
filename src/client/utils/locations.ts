@@ -9,6 +9,7 @@ export interface ILocation {
     question: IQuestion;
 }
 
+export const questionTypes: ("QR_CODE"|"OPEN")[] = ["QR_CODE", "OPEN"];
 
 export interface IQuestion {
     type: "QR_CODE"|"OPEN";
