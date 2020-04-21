@@ -1,8 +1,6 @@
 import React, {Fragment} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Card, CardMedia, Typography} from "@material-ui/core";
-import {createHeadingHook} from "../service/HeadingService";
-import {differanceBetweenAngle} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -44,7 +42,6 @@ function CompassPullOver(props: ICompassPullOverProps): JSX.Element {
     const {bearingComparedToCurrentLocation} = props;
     const bearing = Math.round(bearingComparedToCurrentLocation);
 
-    const heading = Math.round(createHeadingHook()) % 360;
 
     return (
         <Fragment>
@@ -57,7 +54,7 @@ function CompassPullOver(props: ICompassPullOverProps): JSX.Element {
                             image="static/images/arrow.png"
                             title="Bearing towards goal"
                             style={{
-                                transform: `rotate(${differanceBetweenAngle(bearing, heading)}deg)`,
+                                transform: `rotate(${bearing}deg)`,
                             }}
                         />
                     </div>

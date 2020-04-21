@@ -18,7 +18,8 @@ import {createGeoDataHook} from "../service/GeolocationService";
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
-            flexGrow: 1,
+            width: "100%",
+            height: "100%",
         },
         mapContainer: {
             position: "relative",
@@ -54,6 +55,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     //selected location
     const [selectedLocation, setSelectedLocation] = useState<ILocation|undefined>();
     const onClickCloseLocationTrackingBtn = (): void => setSelectedLocation(undefined);
+    const onClickCloseCompass = (_: OnClickEvent): void => setSelectedLocation(undefined);
     const selectedLocationOffSet = selectedLocation === undefined ? spacing : 56;
 
     // Dialog
@@ -169,8 +171,9 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         <Fragment>
             <div className={classes.root}>
                 <NavBar
-                    showCompass={selectedLocation !== undefined}
+                    bearingComparedToCurrentLocation={selectedLocation !== undefined ? bearingFromTo(geoData.coord, selectedLocation.coords) : undefined}
                     onMenuButtonClick={onClickMenuButton}
+                    onClickCloseCompass={onClickCloseCompass}
                 />
                 <SideBarDrawer
                     setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}

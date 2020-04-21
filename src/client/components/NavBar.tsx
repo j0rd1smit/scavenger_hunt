@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect, useRef, useState} from "react";
+import React, {Fragment, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
 import {OnClickCallback} from "../utils/ReactTypes";
@@ -13,11 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
         menuButton: {
             marginRight: theme.spacing(2),
         },
+        closeButton: {
+            marginLeft: theme.spacing(2),
+        },
         title: {
             flexGrow: 1,
         },
         compassContainer: {
-            width: "100%",
             flexGrow: 1,
         }
     }),
@@ -25,32 +27,40 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface INavBarProps {
     onMenuButtonClick: OnClickCallback;
-    showCompass: boolean;
+    bearingComparedToCurrentLocation: number|undefined;
+    onClickCloseCompass: OnClickCallback;
 }
 
 function NavBar(props: INavBarProps): JSX.Element {
     const classes = useStyles();
-    const {showCompass} = props;
+    const {bearingComparedToCurrentLocation, onClickCloseCompass} = props;
+    const showCompass = bearingComparedToCurrentLocation !== undefined;
+
+
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState<number>(0);
+
+    useLayoutEffect(() => {
+        setContainerWidth(getOrDefault(containerRef?.current?.getBoundingClientRect().width, 0) - 48 - 48 - 16 - 16 - 12 - 12);
+    }, [containerRef, showCompass]);
+
     useEffect(() => {
-        const onResize = (_: Event) => setContainerWidth(getOrDefault(containerRef?.current?.getBoundingClientRect().width, 0));
+        const onResize = (_: Event) => setContainerWidth(getOrDefault(containerRef?.current?.getBoundingClientRect().width, 0) - 48 - 48 - 16 -16 - 12 - 12);
         window.addEventListener("resize", onResize);
         return (): void => {
             window.removeEventListener("resize", onResize);
         }
     }, []);
 
-    useEffect(() => {
-        setContainerWidth(getOrDefault(containerRef?.current?.getBoundingClientRect().width, 0));
-    });
+
+
 
     return (
         <Fragment>
             <div className={classes.root}>
-                <AppBar position="static">
+                <AppBar position="static" ref={containerRef}>
                     <Toolbar>
-                        {!showCompass &&
+
                         <IconButton
                             edge="start"
                             className={classes.menuButton}
@@ -60,15 +70,16 @@ function NavBar(props: INavBarProps): JSX.Element {
                         >
                             <Icon>menu</Icon>
                         </IconButton>
-                        }
 
-                        <div className={classes.compassContainer} ref={containerRef}>
                         {
-                            showCompass ?
+                            bearingComparedToCurrentLocation !== undefined ?
                                 (
-
-                                        <InlineCompass containerWidth={containerWidth}/>
-
+                                    <div className={classes.compassContainer}>
+                                        <InlineCompass
+                                            containerWidth={containerWidth}
+                                            bearingComparedToCurrentLocation={bearingComparedToCurrentLocation}
+                                        />
+                                    </div>
                                 )
                                 :
                                 <Fragment>
@@ -78,7 +89,17 @@ function NavBar(props: INavBarProps): JSX.Element {
                                     </Typography>
                                 </Fragment>
                         }
-                        </div>
+                        {showCompass &&
+                        <IconButton
+                            edge="start"
+                            className={classes.closeButton}
+                            color="inherit"
+                            aria-label="menu"
+                            onClick={onClickCloseCompass}
+                        >
+                            <Icon>close</Icon>
+                        </IconButton>
+                        }
 
                     </Toolbar>
                 </AppBar>

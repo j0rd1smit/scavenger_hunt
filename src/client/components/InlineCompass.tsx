@@ -24,11 +24,12 @@ interface IInlineCompassProps {
 
 interface IInlineCompassProps {
     containerWidth: number;
+    bearingComparedToCurrentLocation: number;
 }
 
 function InlineCompass(props: IInlineCompassProps): JSX.Element {
     const classes = useStyles();
-    const {containerWidth} = props;
+    const {containerWidth, bearingComparedToCurrentLocation} = props;
     const height = 58;
 
     const yOffsetLetters = 35;
@@ -47,7 +48,7 @@ function InlineCompass(props: IInlineCompassProps): JSX.Element {
         if (canvas === null) {
             return;
         }
-        const context = canvas.getContext('2d')
+        const context = canvas.getContext('2d');
         if (context === null) {
             return;
         }
@@ -82,17 +83,16 @@ function InlineCompass(props: IInlineCompassProps): JSX.Element {
         const drawCompassNumbers = (): void => {
             context.font = `${numbersPixels}px Roboto`;
             context.fillStyle = "#FFFFFF";
-            const letter = `${heading}°`;
+            const letter = `${heading}`;
             const x = containerWidth * 0.5 - context.measureText(letter).width / 2
-            context.fillText(letter, x, yOffsetDirectionNumber);
+            context.fillText(letter + "°", x, yOffsetDirectionNumber);
         }
 
         const drawTargetArrow = (): void => {
             const img = new Image();
             img.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGAAAABgCAYAAADimHc4AAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAH6SURBVHhe7duxTsNAFETRBFHy/z9KSQE7wkuR4NiO3+68F93TOAYk7LmCFEkuAAAAAAAAAACMd12OZXw3y8N/XZvlYQmlLnZr/K5ShLflCBMCmBHAjABmBDAjgBkBzAhgRgAzApgRwIwAZgQwI4AZAcwIYEYAMwKYEcCMAGYEMCOAGQHMCGBGALMhAZZ3sL3/nr2Ej73vyjsqPEC/0Hb4aodXiKDxP/Wg31uk0AC3F9hOq0f4G7+7vcezwgKsXVj7ctUId+N3a/f6jJAAWxfUvl0twur43dY973U6wN4LaT9WJcLm+N3ee38k/En4kQIRdo8f5XSAox+GSBzh8PgRHwQJ+Qt4gQiW8SXsX1DhCLbxJfQ5oGAE6/gS/iRcKIJ9fAkPIAUipBhfhgSQxBHSjC/DAkjCCKnGl6EBJFGEdOPL8ACSIELK8WVKADFGSDu+TAsghgipx5epAWRihPTjy/QAMiFCifHF8ku7NlLYK0tnuMYXawBxR3COL/YA4orgHl9SBJDZETKML2kCyKwIWcaXVAFkdIRM40u6ADIqQrbxJWUAiY6QcXxJG0CiImQdX1IHkLMRMo8v6QPIsxGyjy8lAsjRCBXGlzIBZG+EKuNLqQCyFaHS+FIugKxFqDa+lAwgtxEqjl+eIshyCgAAAAAAAAAAkNDl8gNewCAm3KbxegAAAABJRU5ErkJggg==";
-            const location = 10;
             const drawArrow = (): void => {
-                const x = calcXPosition(location, arrowSize);
+                const x = calcXPosition(bearingComparedToCurrentLocation, arrowSize);
                 context.fillStyle = "#FFFFFF";
                 context.drawImage(img, x, arrowYOffset, arrowSize, arrowSize);
             }
