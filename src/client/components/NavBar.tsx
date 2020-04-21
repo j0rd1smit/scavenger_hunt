@@ -4,6 +4,7 @@ import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
 import {OnClickCallback} from "../utils/ReactTypes";
 import InlineCompass from "./InlineCompass";
 import {getOrDefault} from "../utils/utils";
+import {isHeadingSuported} from "../service/HeadingService";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -34,7 +35,9 @@ export interface INavBarProps {
 function NavBar(props: INavBarProps): JSX.Element {
     const classes = useStyles();
     const {bearingComparedToCurrentLocation, onClickCloseCompass} = props;
-    const showCompass = bearingComparedToCurrentLocation !== undefined;
+    const [compassIsSupported, setCompassIsSupported] = useState<boolean>(false);
+
+    const showCompass = compassIsSupported && bearingComparedToCurrentLocation !== undefined;
 
 
     const containerRef = useRef<HTMLDivElement>(null);
@@ -53,6 +56,9 @@ function NavBar(props: INavBarProps): JSX.Element {
     }, []);
 
 
+    useEffect(() => {
+        isHeadingSuported().then((isSupported: boolean) => setCompassIsSupported(isSupported));
+    }, [])
 
 
     return (
@@ -72,7 +78,7 @@ function NavBar(props: INavBarProps): JSX.Element {
                         </IconButton>
 
                         {
-                            bearingComparedToCurrentLocation !== undefined ?
+                            showCompass && bearingComparedToCurrentLocation !== undefined ?
                                 (
                                     <div className={classes.compassContainer}>
                                         <InlineCompass

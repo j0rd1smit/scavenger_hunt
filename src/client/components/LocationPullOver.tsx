@@ -35,7 +35,6 @@ function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
     const {name, distance, isInSearchArea, isCompleted} = props;
 
     const onClickCloseBtn = (e: OnClickEvent): void => props.onClickClose();
-    console.log(isCompleted);
     const getText = (): string => {
         if (isCompleted) {
             return "Well done! Please select a new location.";

@@ -1,4 +1,4 @@
-import {isPresent} from "../utils/utils";
+import {isPresent, listenToEventOnlyOnce} from "../utils/utils";
 import {useEffect, useState} from "react";
 
 
@@ -19,7 +19,7 @@ export const createHeadingHook = (): number => {
 
 export type HeadingServiceCallback = (data: number) => void;
 
-export default class HeadingService {
+class HeadingService {
     private callbacks: HeadingServiceCallback[];
 
     private supportAbsoluteDeviceOrientation: boolean = !!window.DeviceOrientationEvent;
@@ -59,4 +59,13 @@ export default class HeadingService {
         }
 
     }
+}
+
+export const isHeadingSuported = async (): Promise<boolean> => {
+    if (!!window.DeviceOrientationEvent) {
+        return false;
+    }
+
+    const event = await listenToEventOnlyOnce<DeviceOrientationEvent>("deviceorientationabsolute")
+    return event.absolute && event.alpha !== undefined && event.gamma !== undefined && event.beta !== undefined;
 }
