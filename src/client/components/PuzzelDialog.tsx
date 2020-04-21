@@ -9,7 +9,7 @@ import {
 import {OnChangeEvent, OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CameraAlt} from "@material-ui/icons";
 import QRCodeDailog from "./QRCodeDailog";
-import {ILocation, IQuestion} from "../utils/locations";
+import {ILocation, IQuestion} from "../../utils/Locations";
 
 
 

@@ -5,7 +5,7 @@ import {LatLngTuple} from "leaflet";
 import {isPresent} from "../utils/utils";
 import {SetState} from "../utils/ReactTypes";
 import GeoData from "../service/GeoData";
-import {ILocation} from "../utils/locations";
+import {ILocation} from "../../utils/Locations";
 import L from 'leaflet'
 
 const useStyles = makeStyles((theme: Theme) =>

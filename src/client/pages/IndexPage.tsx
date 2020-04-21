@@ -10,7 +10,7 @@ import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
-import {ILocation} from "../utils/locations";
+import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 

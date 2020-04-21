@@ -16,8 +16,14 @@
     "noImplicitThis": true,
     "noImplicitAny": true,
     "strictNullChecks": true,
-    "noUnusedLocals": true
+    "noUnusedLocals": true,
+    "resolveJsonModule": true
   },
+  "include": [
+    "src/**/*.json",
+    "src/**/*.ts",
+    "src/**/*.js"
+  ],
   "exclude": [
     "node_modules",
     "build",

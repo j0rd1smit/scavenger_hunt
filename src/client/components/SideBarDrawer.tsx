@@ -22,7 +22,7 @@ import {
     Settings,
     SportsEsports
 } from "@material-ui/icons";
-import {ILocation} from "../utils/locations";
+import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 
 

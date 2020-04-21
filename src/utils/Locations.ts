@@ -1,8 +1,6 @@
-import {LatLng} from "./GeoUtils";
-
 export interface ILocation {
     name: string;
-    coords: LatLng;
+    coords: [number, number];
     isUnlocked: boolean;
     isCompleted: boolean;
     code: string;
