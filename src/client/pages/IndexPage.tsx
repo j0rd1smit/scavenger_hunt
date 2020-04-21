@@ -63,7 +63,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     //map related
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const withingDistanceRange = 1000;
+    const withingDistanceRange = 25;
     const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
     const ondblclickSearchArea = (location: ILocation): void => {
         if (selectedLocation !== location) {
@@ -169,6 +169,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         <Fragment>
             <div className={classes.root}>
                 <NavBar
+                    showCompass={selectedLocation !== undefined}
                     onMenuButtonClick={onClickMenuButton}
                 />
                 <SideBarDrawer
@@ -196,7 +197,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     className={classes.mapContainer}
                     style={{height: mapHeight}}
                 >
-                    {selectedLocation !== undefined && selectedLocation.isCompleted &&
+                    {selectedLocation !== undefined && !selectedLocation.isCompleted &&
                     <div>
                         <CompassPullOver
                             bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}

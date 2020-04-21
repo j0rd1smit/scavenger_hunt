@@ -1,7 +1,7 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import React from "react";
 import ReactDOM from "react-dom";
-import IndexPage from "./pages/CanvasPage";
+import IndexPage from "./pages/IndexPage";
 
 
 const element = (
