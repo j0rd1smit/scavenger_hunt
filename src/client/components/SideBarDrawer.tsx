@@ -24,6 +24,7 @@ import {
 } from "@material-ui/icons";
 import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -47,18 +48,17 @@ const useStyles = makeStyles((theme: Theme) =>
 
 interface IDrawerProps {
     userLocation: LatLng;
-    locations: ILocation[];
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    selectedLocation: ILocation|undefined;
-    setSelectedLocation: SetState<ILocation|undefined>;
     setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
     const noLocationSelected = "None selected"
-    const {locations} = props
+    const [state, {setSelectedLocation, clearSelectedLocation}] = useGlobalGameStore();
+    const locations = state.gameState.locations;
+    const selectedLocation = state.gameState.selectedLocation;
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
     const [showProgress, setShowProgress] = useState<boolean>(true);
@@ -70,12 +70,14 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
 
 
     const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const locations = props.locations.filter((e: ILocation) => e.name === event.target.value);
-        if  (locations.length === 0) {
-            props.setSelectedLocation(undefined);
-        } else {
-            props.setSelectedLocation(locations[0]);
+        const location = locations.find((e: ILocation) => e.name === event.target.value);
+        if (location) {
+            setSelectedLocation(location);
         }
+        else {
+            clearSelectedLocation();
+        }
+
         props.setIsOpen(false);
     };
 
@@ -168,10 +170,10 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                 <LocationListItem
                                     name={noLocationSelected}
                                     isCompleted={false}
-                                    isSelected={props.selectedLocation === undefined}
+                                    isSelected={selectedLocation === undefined || selectedLocation === null}
                                     onChangeRadioButton={onChangeRadioButton}
                                 />
-                                {props.locations.map((location: ILocation, idx: number) => {
+                                {locations.map((location: ILocation, idx: number) => {
                                     return (
                                         <LocationListItem
                                             key={idx}
@@ -179,7 +181,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                             isCompleted={location.isCompleted}
                                             direction={bearingFromTo(props.userLocation, location.coords)}
                                             distance={distanceInMetersBetween(props.userLocation, location.coords)}
-                                            isSelected={props.selectedLocation?.name === location.name}
+                                            isSelected={selectedLocation?.name === location.name}
                                             onChangeRadioButton={onChangeRadioButton}
                                             onClickBtn={_ => props.setPuzzelDialogIsOpenFor(location)}
                                         />

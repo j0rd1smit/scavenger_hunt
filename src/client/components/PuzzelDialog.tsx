@@ -41,21 +41,19 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IPuzzelDialogProps {
     isOpen: boolean;
     location: ILocation;
-    setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
     const classes = useStyles();
-    const {location, setPuzzelDialogIsOpenFor} = props;
-    const [, {markLocationAsCompleted}] = useGlobalGameStore();
+    const {location} = props;
+    const [, {markLocationAsCompleted, closePuzzelDialog, clearSelectedLocation}] = useGlobalGameStore();
 
-    const [isSolved, setIsSolved] = useState<boolean>(false);
     const onSolved = (): void => {
-        setIsSolved(true);
         markLocationAsCompleted(location);
+        clearSelectedLocation();
     }
 
-    const handleOnClose = (e: OnClickEvent): void => setPuzzelDialogIsOpenFor(undefined);
+    const handleOnClose = (e: OnClickEvent): void => closePuzzelDialog();
 
 
     const getContent = (): JSX.Element => {
@@ -66,7 +64,7 @@ function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
                 />
             )
         }
-        if (isSolved) {
+        if (location.isCompleted) {
             return (
                 <AnswerContent
                     handleOnClose={handleOnClose}
@@ -234,6 +232,7 @@ interface IAnswerContentProps {
     handleOnClose: OnClickCallback;
 }
 
+//TODO seperate this in to a seperate view.
 function AnswerContent(props: IAnswerContentProps): JSX.Element {
     const {handleOnClose} = props;
 

@@ -7,6 +7,7 @@ import {SetState} from "../utils/ReactTypes";
 import GeoData from "../service/GeoData";
 import {ILocation} from "../../utils/Locations";
 import L from 'leaflet'
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -24,14 +25,14 @@ interface IMainMapViewProps {
     followUser: boolean;
     setFollowUser: SetState<boolean>;
 
-    locations: ILocation[];
-    //withingDistanceRange: number;
-    ondblclickSearchArea: (location: ILocation) => void;
 }
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
-    const {setFollowUser, followUser, userLocation, locations, ondblclickSearchArea} = props;
+    const [state, {setSelectedLocation, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
+    const {locations, selectedLocation} = state.gameState;
+
+    const {setFollowUser, followUser, userLocation} = props;
 
     const [zoom, setZoom] = useState<number>(18);
     const [mapCenter, setMapCenter] = useState<LatLngTuple>(followUser ? userLocation.coord : [0., 0.]);
@@ -39,6 +40,15 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
     const center = followUser ? userLocation.coord : mapCenter;
     if (followUser && (userLocation.coord[0] !== mapCenter[0] || userLocation.coord[1] !== mapCenter[1])) {
         setMapCenter(userLocation.coord);
+    }
+
+    const ondblclickSearchArea = (location: ILocation): void => {
+        if (selectedLocation !== location) {
+            setSelectedLocation(location);
+        }
+        if (state.puzzelDialogIsOpenFor !== location.name) {
+            setPuzzelDialogIsOpenFor(location);
+        }
     }
 
     const onViewportChanged = (viewport: Viewport): void => {
@@ -50,6 +60,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
             setMapCenter(viewport.center);
         }
     }
+
     const metresPerPixel = 40075016.686 * Math.abs(Math.cos(center[0] * Math.PI/180)) / Math.pow(2, zoom+8);
 
     const completedIcon = new L.Icon({

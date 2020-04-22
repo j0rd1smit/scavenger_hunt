@@ -15,7 +15,6 @@ function PrivateRoute(props: IPrivateRouteProps): JSX.Element {
     const {children, ...rest} = props;
 
     const render = (_: any): ReactNode => {
-        console.log(isAuthenticated());
         if (isAuthenticated()) {
             return children;
         }

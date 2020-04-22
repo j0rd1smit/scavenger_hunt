@@ -9,16 +9,21 @@ import {distanceInMetersBetween} from "./GeoUtils";
 
 
 export type GlobalState = {
-    gameState: IGameState
+    gameState: IGameState;
+    puzzelDialogIsOpenFor: string;
 }
 
 // Associated actions are what's expected to be returned from globalHook
 export type GameStateActions = {
     fetchGameState: () => Promise<void>;
     saveGameState: () => Promise<void>;
+    clearSelectedLocation: () => void;
     setSelectedLocation: (location: ILocation|undefined) => void;
     markLocationAsCompleted: (location: ILocation) => void;
     unlockLocations: (coords: [number, number]) => void;
+
+    setPuzzelDialogIsOpenFor: (location: ILocation) => void;
+    closePuzzelDialog: () => void;
 };
 
 type GameStateStore = Store<GlobalState, GameStateActions>;
@@ -28,6 +33,7 @@ const initialState: GlobalState = {
         locations: [],
         selectedLocation: null,
     },
+    puzzelDialogIsOpenFor: "",
 };
 
 const fetchGameState = async (store: GameStateStore,): Promise<void> => {
@@ -48,13 +54,18 @@ const saveGameState = async (store: GameStateStore): Promise<void> => {
     await axios.post(fetchLocationsUrl, data, options);
 }
 
-const setSelectedLocation = (store: GameStateStore, location: ILocation|null): void => {
+const setSelectedLocation = (store: GameStateStore, location: ILocation): void => {
     const gameState = {... store.state.gameState, selectedLocation: location}
     const updatedState = {... store.state, gameState: gameState};
     store.setState(updatedState);
 }
 
-// TODO unlock locations in the area.
+const clearSelectedLocation = (store: GameStateStore): void => {
+    const gameState = {... store.state.gameState, selectedLocation: null}
+    const updatedState = {... store.state, gameState: gameState};
+    store.setState(updatedState);
+}
+
 const unlockLocations = (store: GameStateStore, coords: [number, number]) => {
     // check if something can be unlocked.
     const shouldBeUnlocked = (location: ILocation) => !location.isUnlocked && distanceInMetersBetween(location.coords, coords) <= location.unlockingDistanceInMeters;
@@ -86,17 +97,26 @@ const markLocationAsCompleted = (store: GameStateStore, location: ILocation): vo
     const selectedLocation = store.state.gameState.selectedLocation === location ? updatedLocation : store.state.gameState.selectedLocation;
 
     // update the locations
-    const locations = store.state.gameState.locations.map((l: ILocation) => {
+    const mapLocationToUpdatedLocation = (l: ILocation) => {
         if (l === location) {
             return updatedLocation;
         }
         return l;
-    });
+    }
+    const locations = store.state.gameState.locations.map(mapLocationToUpdatedLocation);
     // recreate the state
     const gameState = {... store.state.gameState, locations, selectedLocation};
     const updatedState = {... store.state, gameState};
 
     store.setState(updatedState);
+}
+
+const setPuzzelDialogIsOpenFor = (store: GameStateStore, location: ILocation): void => {
+    store.setState({... store.state, puzzelDialogIsOpenFor: location.name});
+}
+
+const closePuzzelDialog = (store: GameStateStore): void => {
+    store.setState({... store.state, puzzelDialogIsOpenFor: ""});
 }
 
 
@@ -106,6 +126,10 @@ const actions = {
     setSelectedLocation,
     markLocationAsCompleted,
     unlockLocations,
+    clearSelectedLocation,
+
+    setPuzzelDialogIsOpenFor,
+    closePuzzelDialog,
 };
 
 export const useGlobalGameStore = globalHook<GlobalState, GameStateActions>(React, initialState, actions);

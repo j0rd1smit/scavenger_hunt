@@ -3,6 +3,9 @@ import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {Grid, IconButton, Paper, Typography,} from "@material-ui/core";
 import {Close} from "@material-ui/icons";
 import {OnClickEvent} from "../utils/ReactTypes";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
+import {ILocation, isInTheSearchArea} from "../../utils/Locations";
+import {distanceInMetersBetween} from "../utils/GeoUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -23,26 +26,27 @@ const useStyles = makeStyles((theme: Theme) =>
 );
 
 interface ILocationPullOverProps {
-    name: string;
-    distance: number;
-    isInSearchArea: boolean;
-    isCompleted: boolean;
-    onClickClose: () => void;
+    userLocation: [number, number];
+    location: ILocation;
 }
 
 function LocationPullOver(props: ILocationPullOverProps): JSX.Element {
     const classes = useStyles();
-    const {name, distance, isInSearchArea, isCompleted} = props;
+    const {location, userLocation} = props;
+    const {name,  isCompleted} = location;
+    const [{}, {clearSelectedLocation,}] = useGlobalGameStore();
 
-    const onClickCloseBtn = (e: OnClickEvent): void => props.onClickClose();
+
+
+    const onClickCloseBtn = (e: OnClickEvent): void => clearSelectedLocation();
     const getText = (): string => {
         if (isCompleted) {
             return "Well done! Please select a new location.";
         }
-        if (isInSearchArea) {
+        if (isInTheSearchArea(location, userLocation)) {
             return `You are in the search area!`;
         }
-        return `${name}: ${Math.floor(distance)}m`;
+        return `${name}: ${Math.floor(distanceInMetersBetween(location.coords, userLocation))}m`;
     }
 
     return (

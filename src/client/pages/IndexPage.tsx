@@ -10,11 +10,9 @@ import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
-import {ILocation} from "../../utils/Locations";
-import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
+import {bearingFromTo} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
-
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -51,8 +49,9 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
     const geoData = createGeoDataHook();
 
-
-    const [state, {fetchGameState, unlockLocations}] = useGlobalGameStore();
+    const [state, {fetchGameState, unlockLocations, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
+    const {gameState, puzzelDialogIsOpenFor} = state;
+    const {selectedLocation, locations} = gameState;
 
     //fetch init data from the server.
     useEffect(() => {
@@ -61,59 +60,33 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         })();
     }, []);
 
+    // unlockLocations.
     useEffect(() => {
         unlockLocations(geoData.coord);
-    }, [geoData]);
+    }, [geoData, locations]);
 
-
-    //game state
-    //const [gameState, setGameState] = useState<IGameState>(emptyGameState());
-    //fetch init data from the server.
-    /*useEffect(() => {
-       (async () => {
-           setGameState(await fetchGameState());
-       })();
-   }, []);
-   // save game state on the server.
-   useEffect(() => {
-       (async () => {
-           //TODO do we need a ref here?
-           try {
-               await saveGameState(gameState);
-           } catch (e) {
-               //TODO display error message.
-               console.error(e);
-           }
-       })();
-   }, [gameState])*/
-
+    //TODO remove
+    useEffect(() => {
+        console.log(state);
+    }, [state])
 
     //container related
     const mapHeight = windowHeightMinusAppBarState();
 
     //selected location
-    const [selectedLocation, setSelectedLocation] = useState<ILocation|undefined>();
-    const onClickCloseLocationTrackingBtn = (): void => setSelectedLocation(undefined);
-    const onClickCloseCompass = (_: OnClickEvent): void => setSelectedLocation(undefined);
-    const selectedLocationOffSet = selectedLocation === undefined ? spacing : 56;
+    const selectedLocationOffSet = selectedLocation === null ? spacing : 56;
 
     // Dialog
-    const [puzzelDialogIsOpenFor, setPuzzelDialogIsOpenFor] = useState<ILocation|undefined>(undefined);
-    const onClickFabAnswerQuestion = (e: OnClickEvent): void => setPuzzelDialogIsOpenFor(selectedLocation);
+    const onClickFabAnswerQuestion = (e: OnClickEvent): void => {
+        if (selectedLocation !== null) {
+            setPuzzelDialogIsOpenFor(selectedLocation);
+        }
+    }
 
     //map related
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= selectedLocation.unlockingDistanceInMeters;
 
-    const ondblclickSearchArea = (location: ILocation): void => {
-        if (selectedLocation !== location) {
-            setSelectedLocation(location);
-        }
-        if (puzzelDialogIsOpenFor !== location) {
-            setPuzzelDialogIsOpenFor(location);
-        }
-    }
 
     // drawer
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
@@ -122,22 +95,16 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     };
 
 
-
-
     return (
         <Fragment>
             <div className={classes.root}>
                 <NavBar
-                    bearingComparedToCurrentLocation={selectedLocation !== undefined ? bearingFromTo(geoData.coord, selectedLocation.coords) : undefined}
+                    geoData={geoData}
                     onMenuButtonClick={onClickMenuButton}
-                    onClickCloseCompass={onClickCloseCompass}
                 />
                 <SideBarDrawer
                     setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
-                    selectedLocation={selectedLocation}
-                    setSelectedLocation={setSelectedLocation}
                     userLocation={geoData.coord}
-                    locations={state.gameState.locations}
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
@@ -146,8 +113,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         <PuzzelDialog
                             key={location.name}
                             location={location}
-                            isOpen={puzzelDialogIsOpenFor === location}
-                            setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
+                            isOpen={puzzelDialogIsOpenFor === location.name}
                         />
                     );
                 })}
@@ -156,21 +122,18 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     className={classes.mapContainer}
                     style={{height: mapHeight}}
                 >
-                    {selectedLocation !== undefined && !selectedLocation.isCompleted &&
+                    {selectedLocation && !selectedLocation?.isCompleted &&
                     <div>
                         <CompassPullOver
                             bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
                         />
                         <LocationPullOver
-                            isCompleted={selectedLocation.isCompleted}
-                            isInSearchArea={isInSearchArea}
-                            onClickClose={onClickCloseLocationTrackingBtn}
-                            name={selectedLocation.name}
-                            distance={distanceInMetersBetween(geoData.coord, selectedLocation.coords)}
+                            userLocation={geoData.coord}
+                            location={selectedLocation}
                         />
                     </div>
                     }
-                    {selectedLocation !== undefined &&
+                    {selectedLocation &&
                         <Fab
                             className={classes.fabAnswerQuestion}
                             color="primary"
@@ -196,9 +159,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         <Navigation/>
                     </Fab>
                     <MainMapView
-                        ondblclickSearchArea={ondblclickSearchArea}
                         userLocation={geoData}
-                        locations={state.gameState.locations}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
                     />

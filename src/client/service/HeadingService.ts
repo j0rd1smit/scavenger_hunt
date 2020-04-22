@@ -62,10 +62,11 @@ class HeadingService {
 }
 
 export const isHeadingSuported = async (): Promise<boolean> => {
-    if (!!window.DeviceOrientationEvent) {
-        return false;
+    if (window.DeviceOrientationEvent) {
+        const event = await listenToEventOnlyOnce<DeviceOrientationEvent>("deviceorientationabsolute");
+        return event.absolute && isPresent(event.alpha) && isPresent(event.gamma) && isPresent(event.beta);
     }
 
-    const event = await listenToEventOnlyOnce<DeviceOrientationEvent>("deviceorientationabsolute")
-    return event.absolute && event.alpha !== undefined && event.gamma !== undefined && event.beta !== undefined;
+    return false;
+
 }

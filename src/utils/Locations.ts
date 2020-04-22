@@ -1,3 +1,4 @@
+import {distanceInMetersBetween} from "../client/utils/GeoUtils";
 
 export const emptyGameState  = (): IGameState => {
     return {
@@ -28,4 +29,8 @@ export interface IQuestion {
     description: string;
     img?: string;
     answer: string;
+}
+
+export const isInTheSearchArea = (location: ILocation, userLocation: [number, number]): boolean => {
+    return distanceInMetersBetween(location.coords, userLocation) <= location.unlockingDistanceInMeters;
 }

@@ -7,6 +7,9 @@ import {getOrDefault} from "../utils/utils";
 import {isHeadingSuported} from "../service/HeadingService";
 import { useHistory } from "react-router-dom";
 import {loginPageUrl} from "../routes/Hrefs";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
+import {bearingFromTo} from "../utils/GeoUtils";
+import GeoData from "../service/GeoData";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -30,17 +33,23 @@ const useStyles = makeStyles((theme: Theme) =>
 
 export interface INavBarProps {
     onMenuButtonClick: OnClickCallback;
-    bearingComparedToCurrentLocation: number|undefined;
-    onClickCloseCompass: OnClickCallback;
+    geoData: GeoData;
 }
 
 function NavBar(props: INavBarProps): JSX.Element {
     const classes = useStyles();
-    const {bearingComparedToCurrentLocation, onClickCloseCompass} = props;
+    const [state, {clearSelectedLocation}] = useGlobalGameStore();
+    const selectedLocation = state.gameState.selectedLocation;
+
+    const bearingComparedToCurrentLocation = selectedLocation !== null ? bearingFromTo(props.geoData.coord, selectedLocation.coords) : undefined;
+
     const [compassIsSupported, setCompassIsSupported] = useState<boolean>(false);
-
     const showCompass = compassIsSupported && bearingComparedToCurrentLocation !== undefined;
-
+    useEffect(() => {
+        isHeadingSuported().then((isSupported: boolean) => {
+            setCompassIsSupported(isSupported)
+        });
+    }, []);
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState<number>(0);
@@ -58,10 +67,7 @@ function NavBar(props: INavBarProps): JSX.Element {
     }, []);
 
 
-    useEffect(() => {
-        isHeadingSuported().then((isSupported: boolean) => setCompassIsSupported(isSupported));
-    }, [])
-
+    const onClickCloseCompass = (e: OnClickEvent): void => clearSelectedLocation();
 
     const history = useHistory();
     const onClickLogout = (_: OnClickEvent): void => {
