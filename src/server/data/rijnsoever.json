@@ -6,6 +6,7 @@
         52.210860,
         4.426798
       ],
+      "unlockingDistanceInMeters": 1000,
       "isUnlocked": false,
       "isCompleted": false,
       "code": "001",
@@ -21,6 +22,7 @@
         52.211344,
         4.420593
       ],
+      "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
       "code": "001",
@@ -36,6 +38,7 @@
         52.211920,
         4.418950
       ],
+      "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
       "code": "001",
@@ -52,6 +55,7 @@
         52.212494,
         4.417784
       ],
+      "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
       "code": "001",
@@ -67,6 +71,7 @@
         52.213809,
         4.422414
       ],
+      "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
       "code": "001",

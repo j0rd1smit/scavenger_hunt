@@ -66,8 +66,8 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     //map related
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const withingDistanceRange = 1100;
-    const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
+    const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= selectedLocation.unlockingDistanceInMeters;
+
     const ondblclickSearchArea = (location: ILocation): void => {
         if (selectedLocation !== location) {
             setSelectedLocation(location);
@@ -106,10 +106,10 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         })();
         console.log("locations updated", refHasFetched.current);
 
-    }, [locations])
+    }, [locations, selectedLocation])
 
 
-    const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= withingDistanceRange);
+    const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= location.unlockingDistanceInMeters);
     if (locationsInTheArea.length > 0) {
         locationsInTheArea.forEach(location => {
             location.isUnlocked = true;
@@ -203,7 +203,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     </Fab>
                     <MainMapView
                         ondblclickSearchArea={ondblclickSearchArea}
-                        withingDistanceRange={withingDistanceRange}
                         userLocation={geoData}
                         locations={locations}
                         followUser={followUser}

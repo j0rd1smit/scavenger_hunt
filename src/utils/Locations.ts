@@ -1,5 +1,11 @@
+export interface IGameState {
+    locations: ILocation;
+    selectedLocation: ILocation;
+}
+
 export interface ILocation {
     name: string;
+    unlockingDistanceInMeters: number;
     coords: [number, number];
     isUnlocked: boolean;
     isCompleted: boolean;

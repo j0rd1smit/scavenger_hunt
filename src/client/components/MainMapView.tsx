@@ -25,13 +25,13 @@ interface IMainMapViewProps {
     setFollowUser: SetState<boolean>;
 
     locations: ILocation[];
-    withingDistanceRange: number;
+    //withingDistanceRange: number;
     ondblclickSearchArea: (location: ILocation) => void;
 }
 
 function MainMapView(props: IMainMapViewProps): JSX.Element {
     const classes = useStyles();
-    const {setFollowUser, followUser, userLocation, locations, withingDistanceRange, ondblclickSearchArea} = props;
+    const {setFollowUser, followUser, userLocation, locations, ondblclickSearchArea} = props;
 
     const [zoom, setZoom] = useState<number>(18);
     const [mapCenter, setMapCenter] = useState<LatLngTuple>(followUser ? userLocation.coord : [0., 0.]);
@@ -98,7 +98,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
                                     color={"gray"}
                                     fillColor="gray"
                                     center={location.coords}
-                                    radius={1.5 * withingDistanceRange / metresPerPixel}
+                                    radius={1.5 * location.unlockingDistanceInMeters / metresPerPixel}
                                     icon={completedIcon}
                                     ondblclick={(_: L.LeafletMouseEvent) => ondblclickSearchArea(location)}
                                 >
