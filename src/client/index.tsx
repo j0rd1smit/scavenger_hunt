@@ -1,15 +1,16 @@
 import CssBaseline from "@material-ui/core/CssBaseline";
 import React from "react";
 import ReactDOM from "react-dom";
-import IndexPage from "./pages/IndexPage";
+import {BrowserRouter} from "react-router-dom";
+import Routes from "./routes/Routes";
 
 
 const element = (
     <React.Fragment>
         <CssBaseline/>
-        <div>
-            <IndexPage/>
-        </div>
+        <BrowserRouter>
+            <Routes/>
+        </BrowserRouter>
     </React.Fragment>
 );
 
