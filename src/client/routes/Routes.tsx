@@ -37,7 +37,7 @@ function Routes(props: IRoutesProps): JSX.Element {
     } catch (e) {
         throw e;
         //TODO window.location.reload();
-        
+        //TODO catch un authenticate error.
     }
 
 }
