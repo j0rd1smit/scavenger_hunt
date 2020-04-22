@@ -8,7 +8,8 @@ import LocationController from "./controllers/LocationController";
 const app = express();
 export const port = 8080;
 
-app.use(bodyParser.urlencoded({ extended: false, limit: "5mb"}));
+app.use(bodyParser.urlencoded({extended: false, limit: "5mb"}));
+app.use(bodyParser.json());
 
 /**
  *  Route the index page to react.

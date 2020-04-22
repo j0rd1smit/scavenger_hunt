@@ -9,11 +9,11 @@ import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
-import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
+import {useRefState, windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
-import {fetchLocations} from "../utils/LocationsUtils";
+import {fetchGameState, saveGameState} from "../utils/LocationsUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -66,7 +66,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     //map related
     const [followUser, setFollowUser] = useState<boolean>(true);
     const onClickFabCenterBtn = (_: OnClickEvent): void => setFollowUser(true);
-    const withingDistanceRange = 25;
+    const withingDistanceRange = 1100;
     const isInSearchArea = selectedLocation !== undefined && distanceInMetersBetween(selectedLocation.coords, geoData.coord) <= withingDistanceRange;
     const ondblclickSearchArea = (location: ILocation): void => {
         if (selectedLocation !== location) {
@@ -86,10 +86,27 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     };
 
     const [locations, setLocations] = useState<ILocation[]>([]);
+    const [, refHasFetched, setHasFetched] = useRefState<boolean>(false);
 
     useEffect(() => {
-        fetchLocations().then(ls => setLocations(ls.locations));
+        (async () => {
+            const gameState = await fetchGameState();
+            setLocations(gameState.locations);
+            setHasFetched(true);
+            console.log("fetched locations");
+        })();
+
     }, []);
+    useEffect(() => {
+
+        (async () => {
+            if (refHasFetched.current) {
+                await saveGameState({locations});
+            }
+        })();
+        console.log("locations updated", refHasFetched.current);
+
+    }, [locations])
 
 
     const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= withingDistanceRange);
@@ -107,6 +124,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         if (selectedLocation === location) {
             selectedLocation.isCompleted = true;
             setSelectedLocation(selectedLocation);
+            setLocations(locations);
         }
     }
     //TODO create an alert if the compass is not suported.
