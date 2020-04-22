@@ -1,7 +1,8 @@
 import {fetchLocationsUrl} from "../routes/Hrefs";
 import axios from "axios";
 import {getAuth} from "./Auth";
-import {IGameState} from "../../server/controllers/LocationController";
+import {IGameState} from "../../utils/Locations";
+
 
 export const fetchGameState = async (): Promise<IGameState> => {
     const response = await axios.get(fetchLocationsUrl, {

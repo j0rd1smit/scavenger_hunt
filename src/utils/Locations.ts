@@ -1,6 +1,14 @@
+
+export const emptyGameState  = (): IGameState => {
+    return {
+        locations: [],
+        selectedLocation: null,
+    }
+}
+
 export interface IGameState {
-    locations: ILocation;
-    selectedLocation: ILocation;
+    locations: ILocation[];
+    selectedLocation: ILocation|null;
 }
 
 export interface ILocation {

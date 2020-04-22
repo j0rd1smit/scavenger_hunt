@@ -1,21 +1,17 @@
 import {Response, Router} from "express";
 import * as fs from "fs";
 import path from "path";
-import {ILocation} from "../../utils/Locations";
 import {userAuth} from "../Auth";
 import {IBasicAuthedRequest} from "express-basic-auth";
+import {IGameState} from "../../utils/Locations";
 
 const LocationController = Router();
 
-export interface IGameState {
-    locations: ILocation[];
-}
 
 const progress: any = {};
 
 LocationController.get("/locations", userAuth, async (req: IBasicAuthedRequest, res: Response) => {
     const username = req.auth.user;
-    console.log(progress[username] === undefined);
     if (progress[username] === undefined) {
         const rawData = await fs.promises.readFile(path.resolve(__dirname, "../data/rijnsoever.json"));
         progress[username] = JSON.parse(rawData.toString("utf8"));
@@ -31,7 +27,7 @@ LocationController.post("/locations", userAuth, async (req: IBasicAuthedRequest,
     const prevGameState = progress[username];
 
     //TODO validate input.
-    if (gameStateIsValid(gameState, prevGameState)) {
+    if (prevGameState !== undefined && gameStateIsValid(gameState, prevGameState)) {
         progress[username] = gameState;
 
         res.json({

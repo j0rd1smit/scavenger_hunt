@@ -1,42 +1,51 @@
-import React, {Fragment, ReactNode} from "react";
-import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
+import React, {Fragment, } from "react";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
-const useStyles = makeStyles((theme: Theme) =>
-    createStyles({
-        root: {
-            flexGrow: 1,
-        },
-    }),
-);
+
 
 interface INoMatch404PageProps {
 
 }
 
+
+
 function NoMatch404Page(props: INoMatch404PageProps): JSX.Element {
-    const classes = useStyles();
+    // Usage
+    const [state, {}] = useGlobalGameStore();
+
     return (
         <Fragment>
-            <div className={classes.root}>
-                TODO Page cannot be found.
-                <Test>
-                    <p>hello world</p>
-                </Test>
+            <div>
+                <p>
+                    {JSON.stringify(state.gameState)}
+                </p>
+
+
+                <Test/>
             </div>
         </Fragment>
     );
 }
 
 interface ITestProps {
-    children: ReactNode
 }
 
 function Test(props: ITestProps): JSX.Element {
+
+    const [state, {fetchGameState, setSelectedLocation, markLocationAsCompleted, unlockLocations}] = useGlobalGameStore();
     return (
         <Fragment>
             <div>
-                {props.children}
+                <button onClick={e => fetchGameState()}>Fetch</button>
+                {state.gameState.locations.length > 0 && (
+                    <div>
+                        <button onClick={e => setSelectedLocation(state.gameState.locations[0])}>set selectedLocation</button>
+                        <button onClick={e => markLocationAsCompleted(state.gameState.locations[0])}>mark completed</button>
+                        <button onClick={e => unlockLocations(state.gameState.locations[0].coords)}>unlock</button>
+                    </div>
+                    )
+                }
             </div>
         </Fragment>
     );

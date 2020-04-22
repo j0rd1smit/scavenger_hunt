@@ -32,3 +32,4 @@ export const windowHeightMinusAppBarState = (): number => {
 
     return height;
 }
+

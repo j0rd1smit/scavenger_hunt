@@ -1,0 +1,111 @@
+// Defining your own state and associated actions is required
+import globalHook, {Store} from "use-global-hook";
+import React from "react";
+import {IGameState, ILocation} from "../../utils/Locations";
+import axios from "axios";
+import {fetchLocationsUrl} from "../routes/Hrefs";
+import {getAuth} from "./Auth";
+import {distanceInMetersBetween} from "./GeoUtils";
+
+
+export type GlobalState = {
+    gameState: IGameState
+}
+
+// Associated actions are what's expected to be returned from globalHook
+export type GameStateActions = {
+    fetchGameState: () => Promise<void>;
+    saveGameState: () => Promise<void>;
+    setSelectedLocation: (location: ILocation|undefined) => void;
+    markLocationAsCompleted: (location: ILocation) => void;
+    unlockLocations: (coords: [number, number]) => void;
+};
+
+type GameStateStore = Store<GlobalState, GameStateActions>;
+
+const initialState: GlobalState = {
+    gameState: {
+        locations: [],
+        selectedLocation: null,
+    },
+};
+
+const fetchGameState = async (store: GameStateStore,): Promise<void> => {
+    //TODO handle if saving fails
+    const response = await axios.get(fetchLocationsUrl, {
+        auth: getAuth(),
+    });
+
+    const gameState = await response.data;
+    console.log({...store.state, gameState});
+    store.setState({...store.state, gameState});
+}
+
+const saveGameState = async (store: GameStateStore): Promise<void> => {
+    //TODO handle if saving fails
+    const data = {gameState: store.state};
+    const options = {auth: getAuth(),}
+    await axios.post(fetchLocationsUrl, data, options);
+}
+
+const setSelectedLocation = (store: GameStateStore, location: ILocation|null): void => {
+    const gameState = {... store.state.gameState, selectedLocation: location}
+    const updatedState = {... store.state, gameState: gameState};
+    store.setState(updatedState);
+}
+
+// TODO unlock locations in the area.
+const unlockLocations = (store: GameStateStore, coords: [number, number]) => {
+    // check if something can be unlocked.
+    const shouldBeUnlocked = (location: ILocation) => !location.isUnlocked && distanceInMetersBetween(location.coords, coords) <= location.unlockingDistanceInMeters;
+    const locationThatShouldBeUnlocked = store.state.gameState.locations.filter(shouldBeUnlocked);
+
+
+    if (locationThatShouldBeUnlocked.length > 0) {
+        // the mapping function for the change.
+        const updateLocationMapping = (location: ILocation): ILocation => {
+            if (shouldBeUnlocked(location)) {
+                return {... location, isUnlocked: true};
+            }
+            return location;
+        }
+
+        // recreate game state based on changes
+        const locations = store.state.gameState.locations.map(updateLocationMapping);
+        const selectedLocation = store.state.gameState.selectedLocation === null ? null : updateLocationMapping(store.state.gameState.selectedLocation);
+        const gameState = {... store.state.gameState, locations, selectedLocation}
+        store.setState({... store.state, gameState});
+    }
+}
+
+
+const markLocationAsCompleted = (store: GameStateStore, location: ILocation): void => {
+    //create the new location
+    const updatedLocation = {... location, isCompleted: true};
+    // update the selected location if needed.
+    const selectedLocation = store.state.gameState.selectedLocation === location ? updatedLocation : store.state.gameState.selectedLocation;
+
+    // update the locations
+    const locations = store.state.gameState.locations.map((l: ILocation) => {
+        if (l === location) {
+            return updatedLocation;
+        }
+        return l;
+    });
+    // recreate the state
+    const gameState = {... store.state.gameState, locations, selectedLocation};
+    const updatedState = {... store.state, gameState};
+
+    store.setState(updatedState);
+}
+
+
+const actions = {
+    fetchGameState,
+    saveGameState,
+    setSelectedLocation,
+    markLocationAsCompleted,
+    unlockLocations,
+};
+
+export const useGlobalGameStore = globalHook<GlobalState, GameStateActions>(React, initialState, actions);

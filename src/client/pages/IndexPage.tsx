@@ -9,11 +9,12 @@ import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
-import {useRefState, windowHeightMinusAppBarState} from "../utils/ReactHelpers";
-import {ILocation} from "../../utils/Locations";
+import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
+import {emptyGameState, IGameState, ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {fetchGameState, saveGameState} from "../utils/LocationsUtils";
+
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -50,6 +51,28 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
     const geoData = createGeoDataHook();
 
+    //game state
+    const [gameState, setGameState] = useState<IGameState>(emptyGameState());
+    //fetch init data from the server.
+    useEffect(() => {
+        (async () => {
+            setGameState(await fetchGameState());
+        })();
+    }, []);
+    // save game state on the server.
+    useEffect(() => {
+        (async () => {
+            //TODO do we need a ref here?
+            try {
+                await saveGameState(gameState);
+            } catch (e) {
+                //TODO display error message.
+                console.error(e);
+            }
+        })();
+    }, [gameState])
+
+
     //container related
     const mapHeight = windowHeightMinusAppBarState();
 
@@ -77,39 +100,15 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         }
     }
 
-
-
     // drawer
     const [drawerIsOpen, setDrawerIsOpen] = useState<boolean>(false);
     const onClickMenuButton: OnClickCallback = (_: OnClickEvent): void => {
         setDrawerIsOpen(true);
     };
 
-    const [locations, setLocations] = useState<ILocation[]>([]);
-    const [, refHasFetched, setHasFetched] = useRefState<boolean>(false);
-
-    useEffect(() => {
-        (async () => {
-            const gameState = await fetchGameState();
-            setLocations(gameState.locations);
-            setHasFetched(true);
-            console.log("fetched locations");
-        })();
-
-    }, []);
-    useEffect(() => {
-
-        (async () => {
-            if (refHasFetched.current) {
-                await saveGameState({locations});
-            }
-        })();
-        console.log("locations updated", refHasFetched.current);
-
-    }, [locations, selectedLocation])
 
 
-    const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= location.unlockingDistanceInMeters);
+    const locationsInTheArea = gameState.locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= location.unlockingDistanceInMeters);
     if (locationsInTheArea.length > 0) {
         locationsInTheArea.forEach(location => {
             location.isUnlocked = true;
@@ -117,14 +116,14 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                 setPuzzelDialogIsOpenFor(selectedLocation);
             }
         });
-        setLocations(locations);
+        //TODO setLocations(locations);
     }
 
     const markLocationAsCompleted = (location: ILocation) => {
         if (selectedLocation === location) {
             selectedLocation.isCompleted = true;
             setSelectedLocation(selectedLocation);
-            setLocations(locations);
+            //TODO setLocations(locations);
         }
     }
     //TODO create an alert if the compass is not suported.
@@ -142,11 +141,11 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     selectedLocation={selectedLocation}
                     setSelectedLocation={setSelectedLocation}
                     userLocation={geoData.coord}
-                    locations={locations}
+                    locations={gameState.locations}
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
-                {locations.map(location => {
+                {gameState.locations.map(location => {
                     return (
                         <PuzzelDialog
                             key={location.name}
@@ -204,7 +203,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     <MainMapView
                         ondblclickSearchArea={ondblclickSearchArea}
                         userLocation={geoData}
-                        locations={locations}
+                        locations={gameState.locations}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
                     />
