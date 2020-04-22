@@ -18,8 +18,9 @@ function Routes(props: IRoutesProps): JSX.Element {
                 <PrivateRoute
                     exact
                     path={indexPageUrl}
-                    component={IndexPage}
-                />
+                >
+                    <IndexPage/>
+                </PrivateRoute>
                 <Route
                     exact
                     path={loginPageUrl}

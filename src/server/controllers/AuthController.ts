@@ -4,11 +4,18 @@ import {userAuth} from "../Auth";
 
 const AuthController = Router();
 
+
+export interface IAuthResponseBody {
+    authenticated: boolean;
+    username: string;
+}
+
 AuthController.get("/auth", userAuth, (req: IBasicAuthedRequest, res: Response) => {
-    res.json({
+    const body: IAuthResponseBody = {
         authenticated: true,
-        user: req.auth.user,
-    })
+        username: req.auth.user,
+    }
+    res.json(body);
 });
 
 

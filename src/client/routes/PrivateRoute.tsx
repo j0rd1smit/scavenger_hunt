@@ -12,11 +12,12 @@ interface IPrivateRouteProps extends RouteProps {
 }
 
 function PrivateRoute(props: IPrivateRouteProps): JSX.Element {
-    const {component, ...rest} = props;
+    const {children, ...rest} = props;
 
     const render = (_: any): ReactNode => {
+        console.log(isAuthenticated());
         if (isAuthenticated()) {
-            return component;
+            return children;
         }
         return (
             <Redirect
