@@ -15,6 +15,7 @@ LocationController.get("/locations", userAuth, async (req: IBasicAuthedRequest, 
     if (progress[username] === undefined) {
         const rawData = await fs.promises.readFile(path.resolve(__dirname, "../data/rijnsoever.json"));
         progress[username] = JSON.parse(rawData.toString("utf8"));
+        console.log("stored for", username);
     }
 
     res.json(progress[username]);
@@ -25,8 +26,7 @@ LocationController.post("/locations", userAuth, async (req: IBasicAuthedRequest,
     const username = req.auth.user;
     const {gameState} = req.body;
     const prevGameState = progress[username];
-
-    //TODO validate input.
+    
     if (prevGameState !== undefined && gameStateIsValid(gameState, prevGameState)) {
         progress[username] = gameState;
 
@@ -49,12 +49,17 @@ const gameStateIsValid = (gameState: IGameState|undefined|null, previousState: I
         return false;
     }
 
-    if (gameState.locations.length !== previousState.locations.length) {
+    if (objectsHaveSameKeys(gameState, previousState) && gameState.locations.length !== previousState.locations.length) {
         return false;
     }
 
     return true;
 }
 
+const objectsHaveSameKeys = (...objects: any): boolean => {
+    const allKeys = objects.reduce((keys: string[], object: object) => keys.concat(Object.keys(object)), []);
+    const union = new Set(allKeys);
+    return objects.every((object: object) => union.size === Object.keys(object).length);
+}
 
 export default LocationController;

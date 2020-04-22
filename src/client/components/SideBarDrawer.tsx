@@ -170,7 +170,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                                 <LocationListItem
                                     name={noLocationSelected}
                                     isCompleted={false}
-                                    isSelected={selectedLocation === undefined || selectedLocation === null}
+                                    isSelected={selectedLocation === undefined || selectedLocation === null || selectedLocation.isCompleted}
                                     onChangeRadioButton={onChangeRadioButton}
                                 />
                                 {locations.map((location: ILocation, idx: number) => {

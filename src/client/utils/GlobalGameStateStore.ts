@@ -49,7 +49,7 @@ const fetchGameState = async (store: GameStateStore,): Promise<void> => {
 
 const saveGameState = async (store: GameStateStore): Promise<void> => {
     //TODO handle if saving fails
-    const data = {gameState: store.state};
+    const data = {gameState: store.state.gameState};
     const options = {auth: getAuth(),}
     await axios.post(fetchLocationsUrl, data, options);
 }
@@ -86,6 +86,7 @@ const unlockLocations = (store: GameStateStore, coords: [number, number]) => {
         const selectedLocation = store.state.gameState.selectedLocation === null ? null : updateLocationMapping(store.state.gameState.selectedLocation);
         const gameState = {... store.state.gameState, locations, selectedLocation}
         store.setState({... store.state, gameState});
+        store.actions.saveGameState();
     }
 }
 
@@ -94,7 +95,7 @@ const markLocationAsCompleted = (store: GameStateStore, location: ILocation): vo
     //create the new location
     const updatedLocation = {... location, isCompleted: true};
     // update the selected location if needed.
-    const selectedLocation = store.state.gameState.selectedLocation === location ? updatedLocation : store.state.gameState.selectedLocation;
+    const selectedLocation = store.state.gameState.selectedLocation === location ? null : store.state.gameState.selectedLocation;
 
     // update the locations
     const mapLocationToUpdatedLocation = (l: ILocation) => {
@@ -109,6 +110,7 @@ const markLocationAsCompleted = (store: GameStateStore, location: ILocation): vo
     const updatedState = {... store.state, gameState};
 
     store.setState(updatedState);
+    store.actions.saveGameState();
 }
 
 const setPuzzelDialogIsOpenFor = (store: GameStateStore, location: ILocation): void => {
