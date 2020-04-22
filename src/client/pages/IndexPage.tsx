@@ -10,10 +10,10 @@ import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
-import {emptyGameState, IGameState, ILocation} from "../../utils/Locations";
+import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
-import {fetchGameState, saveGameState} from "../utils/LocationsUtils";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
 
@@ -51,26 +51,41 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
     const geoData = createGeoDataHook();
 
-    //game state
-    const [gameState, setGameState] = useState<IGameState>(emptyGameState());
+
+    const [state, {fetchGameState, unlockLocations}] = useGlobalGameStore();
+
     //fetch init data from the server.
     useEffect(() => {
         (async () => {
-            setGameState(await fetchGameState());
+            await fetchGameState();
         })();
     }, []);
-    // save game state on the server.
+
     useEffect(() => {
-        (async () => {
-            //TODO do we need a ref here?
-            try {
-                await saveGameState(gameState);
-            } catch (e) {
-                //TODO display error message.
-                console.error(e);
-            }
-        })();
-    }, [gameState])
+        unlockLocations(geoData.coord);
+    }, [geoData]);
+
+
+    //game state
+    //const [gameState, setGameState] = useState<IGameState>(emptyGameState());
+    //fetch init data from the server.
+    /*useEffect(() => {
+       (async () => {
+           setGameState(await fetchGameState());
+       })();
+   }, []);
+   // save game state on the server.
+   useEffect(() => {
+       (async () => {
+           //TODO do we need a ref here?
+           try {
+               await saveGameState(gameState);
+           } catch (e) {
+               //TODO display error message.
+               console.error(e);
+           }
+       })();
+   }, [gameState])*/
 
 
     //container related
@@ -108,25 +123,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
 
 
-    const locationsInTheArea = gameState.locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= location.unlockingDistanceInMeters);
-    if (locationsInTheArea.length > 0) {
-        locationsInTheArea.forEach(location => {
-            location.isUnlocked = true;
-            if (location === selectedLocation) {
-                setPuzzelDialogIsOpenFor(selectedLocation);
-            }
-        });
-        //TODO setLocations(locations);
-    }
-
-    const markLocationAsCompleted = (location: ILocation) => {
-        if (selectedLocation === location) {
-            selectedLocation.isCompleted = true;
-            setSelectedLocation(selectedLocation);
-            //TODO setLocations(locations);
-        }
-    }
-    //TODO create an alert if the compass is not suported.
 
     return (
         <Fragment>
@@ -141,15 +137,14 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     selectedLocation={selectedLocation}
                     setSelectedLocation={setSelectedLocation}
                     userLocation={geoData.coord}
-                    locations={gameState.locations}
+                    locations={state.gameState.locations}
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}
                 />
-                {gameState.locations.map(location => {
+                {state.gameState.locations.map(location => {
                     return (
                         <PuzzelDialog
                             key={location.name}
-                            markLocationAsCompleted={markLocationAsCompleted}
                             location={location}
                             isOpen={puzzelDialogIsOpenFor === location}
                             setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
@@ -203,7 +198,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     <MainMapView
                         ondblclickSearchArea={ondblclickSearchArea}
                         userLocation={geoData}
-                        locations={gameState.locations}
+                        locations={state.gameState.locations}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
                     />

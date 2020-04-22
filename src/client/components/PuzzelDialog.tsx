@@ -10,6 +10,7 @@ import {OnChangeEvent, OnClickCallback, OnClickEvent, SetState} from "../utils/R
 import {CameraAlt} from "@material-ui/icons";
 import QRCodeDailog from "./QRCodeDailog";
 import {ILocation, IQuestion} from "../../utils/Locations";
+import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
 
@@ -40,13 +41,13 @@ const useStyles = makeStyles((theme: Theme) =>
 interface IPuzzelDialogProps {
     isOpen: boolean;
     location: ILocation;
-    markLocationAsCompleted: SetState<ILocation>;
     setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function PuzzelDialog(props: IPuzzelDialogProps): JSX.Element {
     const classes = useStyles();
-    const {location, markLocationAsCompleted, setPuzzelDialogIsOpenFor} = props;
+    const {location, setPuzzelDialogIsOpenFor} = props;
+    const [, {markLocationAsCompleted}] = useGlobalGameStore();
 
     const [isSolved, setIsSolved] = useState<boolean>(false);
     const onSolved = (): void => {
