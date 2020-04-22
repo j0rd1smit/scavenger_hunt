@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useState} from "react";
 import NavBar from "../components/NavBar";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
@@ -13,6 +13,7 @@ import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {ILocation} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
+import {fetchLocations} from "../utils/LocationsUtils";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -84,69 +85,12 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         setDrawerIsOpen(true);
     };
 
-    const [locations, setLocations] = useState<ILocation[]>([
-            {
-                name: "Hockey club",
-                coords: [52.210860, 4.426798],
-                isUnlocked: false,
-                isCompleted: false,
-                code: "001",
-                question: {
-                    type: "OPEN",
-                    description: "The answer is test",
-                    answer: "test",
-                }
-            },
-            {
-                name: "Voetbalveld brug",
-                coords: [52.211344, 4.420593],
-                isUnlocked: false,
-                isCompleted: false,
-                code: "001",
-                question: {
-                    type: "QR_CODE",
-                    description: "Find the QR code?",
-                    answer: "test",
-                }
-            },
-            {
-                name: "Polster",
-                coords: [52.211920, 4.418950],
-                isUnlocked: false,
-                isCompleted: false,
-                code: "001",
-                question: {
-                    type: "OPEN",
-                    description: "Solve the rebus.",
-                    img: "/static/images/rebus10.jpg",
-                    answer: "test",
-                }
-            },
-            {
-                name: "Lidl",
-                coords: [52.212494, 4.417784],
-                isUnlocked: false,
-                isCompleted: false,
-                code: "001",
-                question: {
-                    type: "OPEN",
-                    description: "The answer is test",
-                    answer: "test",
-                }
-            },
-            {
-                name: "Bushalt",
-                coords: [52.213809, 4.422414],
-                isUnlocked: false,
-                isCompleted: false,
-                code: "001",
-                question: {
-                    type: "OPEN",
-                    description: "The answer is test",
-                    answer: "test",
-                }
-            }
-        ]);
+    const [locations, setLocations] = useState<ILocation[]>([]);
+
+    useEffect(() => {
+        fetchLocations().then(ls => setLocations(ls.locations));
+    }, []);
+
 
     const locationsInTheArea = locations.filter(location => !location.isUnlocked && distanceInMetersBetween(location.coords, geoData.coord) <= withingDistanceRange);
     if (locationsInTheArea.length > 0) {

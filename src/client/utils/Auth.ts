@@ -1,4 +1,4 @@
-import {isPresent} from "./utils";
+import {getOrDefault, isPresent} from "./utils";
 import axios from "axios";
 import {authUrl} from "../routes/Hrefs";
 import {IAuthResponseBody} from "../../server/controllers/AuthController";
@@ -18,7 +18,9 @@ export const authenticate = async (username: string, password: string): Promise<
     setAuthenticatedUsername(username);
     setAuthenticatedPassword(password);
     return await response.data;
-}
+};
+
+
 
 
 const usernameKey = "username";
@@ -42,4 +44,12 @@ const setAuthenticatedPassword = (v: string): void => {
 export const logout = (): void => {
     window.localStorage.removeItem(usernameKey);
     window.localStorage.removeItem(passwordKey);
+}
+
+export const getAuth = () => {
+    const auth = {
+        username: getOrDefault(getAuthenticatedUsername(), ""),
+        password: getOrDefault(getAuthenticatedPassword(), ""),
+    }
+    return auth;
 }
