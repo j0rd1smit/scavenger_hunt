@@ -12,27 +12,34 @@ interface IRoutesProps {
 }
 
 function Routes(props: IRoutesProps): JSX.Element {
-    return (
-        <Fragment>
-            <Switch>
-                <PrivateRoute
-                    exact
-                    path={indexPageUrl}
-                >
-                    <IndexPage/>
-                </PrivateRoute>
-                <Route
-                    exact
-                    path={loginPageUrl}
-                    component={LoginPage}
-                />
-                <Route
-                    path={"*"}
-                    component={NoMatch404Page}
-                />
-            </Switch>
-        </Fragment>
-    );
+    try {
+        return (
+            <Fragment>
+                <Switch>
+                    <PrivateRoute
+                        exact
+                        path={indexPageUrl}
+                    >
+                        <IndexPage/>
+                    </PrivateRoute>
+                    <Route
+                        exact
+                        path={loginPageUrl}
+                        component={LoginPage}
+                    />
+                    <Route
+                        path={"*"}
+                        component={NoMatch404Page}
+                    />
+                </Switch>
+            </Fragment>
+        );
+    } catch (e) {
+        throw e;
+        //TODO window.location.reload();
+        
+    }
+
 }
 
 export default Routes;

@@ -1,10 +1,12 @@
 import React, {Fragment, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
-import {OnClickCallback} from "../utils/ReactTypes";
+import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import InlineCompass from "./InlineCompass";
 import {getOrDefault} from "../utils/utils";
 import {isHeadingSuported} from "../service/HeadingService";
+import { useHistory } from "react-router-dom";
+import {loginPageUrl} from "../routes/Hrefs";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -61,6 +63,11 @@ function NavBar(props: INavBarProps): JSX.Element {
     }, [])
 
 
+    const history = useHistory();
+    const onClickLogout = (_: OnClickEvent): void => {
+        history.push(loginPageUrl);
+    }
+
     return (
         <Fragment>
             <div className={classes.root}>
@@ -95,7 +102,7 @@ function NavBar(props: INavBarProps): JSX.Element {
                                     </Typography>
                                 </Fragment>
                         }
-                        {showCompass &&
+                        {showCompass ?
                         <IconButton
                             edge="start"
                             className={classes.closeButton}
@@ -105,6 +112,16 @@ function NavBar(props: INavBarProps): JSX.Element {
                         >
                             <Icon>close</Icon>
                         </IconButton>
+                            :
+                            <IconButton
+                                edge="start"
+                                className={classes.closeButton}
+                                color="inherit"
+                                aria-label="menu"
+                                onClick={onClickLogout}
+                            >
+                                <Icon>logout</Icon>
+                            </IconButton>
                         }
 
                     </Toolbar>

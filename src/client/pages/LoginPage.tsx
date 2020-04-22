@@ -2,7 +2,7 @@ import React, {Fragment, useEffect, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {authenticate, isAuthenticated, logout} from "../utils/Auth";
 import {indexPageUrl} from "../routes/Hrefs";
-import {Redirect} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {
     AppBar,
     Button,
@@ -41,10 +41,7 @@ interface ILoginPageProps {
 
 function LoginPage(props: ILoginPageProps): JSX.Element {
     const classes = useStyles();
-
-    const [succesfullyAuthenticated, setSuccesfullyAuthenticated] = useState<boolean>(false);
-
-
+    const history = useHistory();
 
     const [errorMessage, setErrorMessage] = useState<string>("");
     const hasError = errorMessage.length > 0;
@@ -69,18 +66,12 @@ function LoginPage(props: ILoginPageProps): JSX.Element {
     const onClickLogin = async (e: OnClickEvent): Promise<void> => {
         try {
             const result = await authenticate(username, password)
-            setSuccesfullyAuthenticated(result.authenticated);
+            if (result.authenticated) {
+                history.push(indexPageUrl);
+            }
         } catch (e) {
             setErrorMessage("We can't sign you in with these credentials.");
         }
-    }
-
-    if (succesfullyAuthenticated) {
-        return (
-            <Redirect
-                to={indexPageUrl}
-            />
-        )
     }
 
     return (
