@@ -1,10 +1,11 @@
 import React, {Fragment} from "react";
 import {Route, Switch} from "react-router";
 import IndexPage from "../pages/IndexPage";
-import {indexPageUrl, loginPageUrl} from "./Hrefs";
+import {indexPageUrl, loginPageUrl, permissionsPageUrl} from "./Hrefs";
 import NoMatch404Page from "../pages/NoMatch404Page";
 import PrivateRoute from "./PrivateRoute";
 import LoginPage from "../pages/LoginPage";
+import PremissionPage from "../pages/PremissionPage";
 
 
 interface IRoutesProps {
@@ -26,6 +27,11 @@ function Routes(props: IRoutesProps): JSX.Element {
                         exact
                         path={loginPageUrl}
                         component={LoginPage}
+                    />
+                    <Route
+                        exact
+                        path={permissionsPageUrl}
+                        component={PremissionPage}
                     />
                     <Route
                         path={"*"}

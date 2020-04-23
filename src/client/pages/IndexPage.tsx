@@ -13,6 +13,9 @@ import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {bearingFromTo} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
+import {permissionStatusHook} from "../utils/permissionsUtils";
+import {Redirect} from "react-router-dom";
+import {permissionsPageUrl} from "../routes/Hrefs";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -94,6 +97,18 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         setDrawerIsOpen(true);
     };
 
+
+    const permissionStatus = permissionStatusHook();
+
+    if (permissionStatus === "Asking" || permissionStatus === "Denied") {
+        return (
+            <Redirect
+                to={{
+                    pathname: permissionsPageUrl,
+                }}
+            />
+        );
+    }
 
     return (
         <Fragment>

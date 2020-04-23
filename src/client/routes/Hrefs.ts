@@ -1,4 +1,5 @@
-
+//Pages
+export const permissionsPageUrl = "/permissions";
 export const indexPageUrl = "/";
 export const loginPageUrl = "/login";
 
