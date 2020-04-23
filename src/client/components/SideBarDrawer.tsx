@@ -62,6 +62,34 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
     const {setIsOpen, userLocation} = props;
 
+
+    const [orderingOption, setOrderingOption] = useState<string>("Distance");
+    const orderingOptions = ["Name", "Distance"];
+    const onChangeOrderingOption = (option: string) => {
+        if (orderingOptions.includes(option)) {
+            setOrderingOption(option);
+        }
+    }
+
+
+    const distanceComparator = (one: ILocation, other: ILocation): number => distanceInMetersBetween(one.coords, userLocation) - distanceInMetersBetween(other.coords, userLocation);
+    const nameComparator = (one: ILocation, other: ILocation): number => {
+        if (one.name < other.name) {
+            return -1;
+        }
+        if (one.name > other.name) {
+
+        }
+        return 0;
+    }
+
+    const locationComparators: {[key: string]: (one: ILocation, other: ILocation) => number;} = {
+        "Name": nameComparator,
+        "Distance": distanceComparator,
+    }
+
+
+
     return (
         <Fragment>
             <div className={classes.root}>
@@ -78,8 +106,13 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                 >
                     <List>
                         <ProgressList/>
-                        <SettingsList/>
+                        <SettingsList
+                            orderingOption={orderingOption}
+                            orderingOptions={orderingOptions}
+                            onChangeOrderingOption={onChangeOrderingOption}
+                        />
                         <LocationList
+                            locationComparator={locationComparators[orderingOption]}
                             setIsOpen={setIsOpen}
                             userLocation={userLocation}
                         />
@@ -91,17 +124,20 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
 }
 
 interface ISettingsListProps {
-
+    orderingOption: string;
+    orderingOptions: string[];
+    onChangeOrderingOption: (option: string) => void;
 }
 
 function SettingsList(props: ISettingsListProps): JSX.Element {
     const classes = useStyles();
+    const {orderingOption, orderingOptions, onChangeOrderingOption} = props;
 
     const [showSetting, setshowSetting] = useState<boolean>(false);
     const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
 
     const filterOptions = ["Completed locations", "QR-code", "Open questions"];
-    const orderingOptions = ["Name", "Distance"];
+
 
     return (
         <Fragment>
@@ -123,9 +159,11 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                             <ListItem>
                                 <ListItemIcon>
                                     <Radio
-                                        checked={orderingOptions[0] === option}
+                                        checked={orderingOption === option}
                                         name="radio-button-demo"
+                                        value={option}
                                         inputProps={{'aria-label': option}}
+                                        onChange={e => onChangeOrderingOption(e.target.value)}
                                     />
 
                                 </ListItemIcon>
@@ -194,20 +232,22 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                 >
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
-                            primary="Compation rate"
-                            secondary={
-                                `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
-                            }
-                        />
-                    </ListItem>
-                    <ListItem dense alignItems="flex-start">
-                        <ListItemText
                             primary="Locations visted"
                             secondary={
                                 `${locations.filter(e => e.isUnlocked).length} / ${locations.length}`
                             }
                         />
                     </ListItem>
+
+                    <ListItem dense alignItems="flex-start">
+                        <ListItemText
+                            primary="Locations visted"
+                            secondary={
+                                `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
+                            }
+                        />
+                    </ListItem>
+
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
                             primary="QR-code questions completed"
@@ -216,6 +256,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                             }
                         />
                     </ListItem>
+                    
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
                             primary="Open questions completed"
@@ -233,14 +274,15 @@ function ProgressList(props: IProgressListProps): JSX.Element {
 interface ILocationListProps {
     setIsOpen: (isOpen: boolean) => void;
     userLocation: LatLng;
+    locationComparator: (one: ILocation, other: ILocation) => number;
 }
 
 function LocationList(props: ILocationListProps): JSX.Element {
     const noLocationSelected = "None selected"
-    const {userLocation, setIsOpen} = props;
+    const {userLocation, setIsOpen, locationComparator} = props;
 
     const [state, {setSelectedLocation, clearSelectedLocation, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
-    const locations = state.gameState.locations;
+    const locations = state.gameState.locations.sort(locationComparator);
     const selectedLocation = state.gameState.selectedLocation;
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
