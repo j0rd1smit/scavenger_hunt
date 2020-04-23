@@ -100,7 +100,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
 
     const permissionStatus = permissionStatusHook();
 
-    if (permissionStatus === "Asking" || permissionStatus === "Denied") {
+    if (permissionStatus === "Denied") {
         return (
             <Redirect
                 to={{

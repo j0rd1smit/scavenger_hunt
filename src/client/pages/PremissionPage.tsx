@@ -74,7 +74,7 @@ function PremissionPage(props: IPremissionPageProps): JSX.Element {
 
                             <CardContent>
                                 <Typography gutterBottom variant="h5" component="h2">
-                                    Permissions
+                                    Permissions: {permissionStatus}
                                 </Typography>
                                 <Typography gutterBottom variant="body1" component="h2">
                                     We need the some permissions before you can use this application. You will be redirected after you have granted us these permissions.
@@ -106,7 +106,7 @@ function PremissionPage(props: IPremissionPageProps): JSX.Element {
                                         You have denied the requested permissions.
                                         This means you won't be able to use this application.
                                         If you had a change of heart, you can always grant us these permissions by going to the privacy settings page of your browser.
-                                        In some browser you can also change it by clicking on the small lock icon next to the url.
+                                        In some browsers you can also change it by clicking on the icon next to the url.
                                     </Typography>
                                 }
 

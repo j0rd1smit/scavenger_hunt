@@ -13,6 +13,7 @@ export const permissionStatusHook = (): GeoPermissionRequesetStatus => {
         };
         const onError = async (positionError: PositionError): Promise<void> => {
             setPermissionStatus("Denied");
+            console.log("Denied");
             await sleep(2500);
             navigator.geolocation.getCurrentPosition(onSucess, onError);
         };
