@@ -24,6 +24,9 @@ export interface ILocation {
 
 export const questionTypes: ("QR_CODE"|"OPEN")[] = ["QR_CODE", "OPEN"];
 
+export const QR_CODE_TYPE_STR = "QR_CODE";
+export const OPEN_QUESTION_TYPE_STR = "OPEN";
+
 export interface IQuestion {
     type: "QR_CODE"|"OPEN";
     description: string;

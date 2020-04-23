@@ -20,12 +20,13 @@ import {
     ExpandMore,
     Explore,
     Room,
-    Settings,
+    Sort,
     SportsEsports
 } from "@material-ui/icons";
-import {ILocation} from "../../utils/Locations";
+import {ILocation, OPEN_QUESTION_TYPE_STR, QR_CODE_TYPE_STR} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
+import {StringMap} from "../../utils/Types";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -58,19 +59,54 @@ interface IDrawerProps {
     setIsOpen: (isOpen: boolean) => void;
 }
 
+
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
     const {setIsOpen, userLocation} = props;
 
+    //filtering logic
+    const completed = "Completed locations";
+    const QRCode = "QR-code";
+    const OpenQuestion = "Open questions";
+    const filteringOptions = [completed, QRCode, OpenQuestion];
+    const [seletedFilteringOption, setSelectedFilteringOption] = useState<StringMap<boolean>>(filteringOptions.reduce((map: StringMap<boolean>, key: string) => (map[key] = true, map), {}));
 
-    const [orderingOption, setOrderingOption] = useState<string>("Distance");
+    const toggleFilteringOption = (option: string) : void => {
+        const idx = filteringOptions.indexOf(option);
+        if (idx !== -1) {
+            const updatedSeletedFilteringOption = {
+                ...seletedFilteringOption,
+            }
+            updatedSeletedFilteringOption[option] = !seletedFilteringOption[option];
+            setSelectedFilteringOption(updatedSeletedFilteringOption);
+        }
+    }
+    const locationFilter = (location: ILocation): boolean => {
+        let res = true;
+        if (!seletedFilteringOption[completed]) {
+            res = res && !location.isCompleted;
+        }
+
+        if (!seletedFilteringOption[QRCode]) {
+            res = res && location.question.type !== QR_CODE_TYPE_STR;
+        }
+
+        if (!seletedFilteringOption[OpenQuestion]) {
+            res = res && location.question.type !== OPEN_QUESTION_TYPE_STR;
+        }
+
+        return res;
+    }
+
+
+    // ordering logic.
     const orderingOptions = ["Name", "Distance"];
+    const [orderingOption, setOrderingOption] = useState<string>(orderingOptions[1]);
     const onChangeOrderingOption = (option: string) => {
         if (orderingOptions.includes(option)) {
             setOrderingOption(option);
         }
     }
-
 
     const distanceComparator = (one: ILocation, other: ILocation): number => distanceInMetersBetween(one.coords, userLocation) - distanceInMetersBetween(other.coords, userLocation);
     const nameComparator = (one: ILocation, other: ILocation): number => {
@@ -110,8 +146,13 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                             orderingOption={orderingOption}
                             orderingOptions={orderingOptions}
                             onChangeOrderingOption={onChangeOrderingOption}
+
+                            filteringOptions={filteringOptions}
+                            seletedFilteringOption={seletedFilteringOption}
+                            toggleFilteringOption={toggleFilteringOption}
                         />
                         <LocationList
+                            locationFilter={locationFilter}
                             locationComparator={locationComparators[orderingOption]}
                             setIsOpen={setIsOpen}
                             userLocation={userLocation}
@@ -124,28 +165,42 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
 }
 
 interface ISettingsListProps {
+    //ordering
     orderingOption: string;
     orderingOptions: string[];
     onChangeOrderingOption: (option: string) => void;
+
+    //filtering
+    filteringOptions: string[];
+    seletedFilteringOption: StringMap<boolean>;
+    toggleFilteringOption: (option: string) => void;
 }
 
 function SettingsList(props: ISettingsListProps): JSX.Element {
     const classes = useStyles();
-    const {orderingOption, orderingOptions, onChangeOrderingOption} = props;
+    const {
+        orderingOption,
+        orderingOptions,
+        onChangeOrderingOption,
+
+        filteringOptions,
+        seletedFilteringOption,
+        toggleFilteringOption,
+    } = props;
 
     const [showSetting, setshowSetting] = useState<boolean>(false);
     const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
 
-    const filterOptions = ["Completed locations", "QR-code", "Open questions"];
+
 
 
     return (
         <Fragment>
             <ListItem button onClick={onClickShowSettingsButton}>
                 <ListItemIcon>
-                    <Settings/>
+                    <Sort/>
                 </ListItemIcon>
-                <ListItemText primary="Location settings"/>
+                <ListItemText primary="Location sorting"/>
                 {showSetting ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
             <Collapse in={showSetting}>
@@ -156,7 +211,7 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                     <ListSubheader>{"Location ordering"}</ListSubheader>
                     {orderingOptions.map(option => {
                         return (
-                            <ListItem>
+                            <ListItem key={option}>
                                 <ListItemIcon>
                                     <Radio
                                         checked={orderingOption === option}
@@ -175,13 +230,13 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                     })}
 
                     <ListSubheader>{"Location filters"}</ListSubheader>
-                    {filterOptions.map(option => {
+                    {filteringOptions.map(option => {
                         return (
-                            <ListItem>
+                            <ListItem key={option}>
                                 <ListItemIcon>
                                     <Checkbox
-
-                                        checked={true}
+                                        checked={seletedFilteringOption[option]}
+                                        onChange={e => toggleFilteringOption(option)}
                                         tabIndex={-1}
                                         disableRipple
                                         inputProps={{ 'aria-labelledby': option }}
@@ -256,7 +311,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                             }
                         />
                     </ListItem>
-                    
+
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
                             primary="Open questions completed"
@@ -274,15 +329,17 @@ function ProgressList(props: IProgressListProps): JSX.Element {
 interface ILocationListProps {
     setIsOpen: (isOpen: boolean) => void;
     userLocation: LatLng;
+
     locationComparator: (one: ILocation, other: ILocation) => number;
+    locationFilter: (e: ILocation) => boolean;
 }
 
 function LocationList(props: ILocationListProps): JSX.Element {
     const noLocationSelected = "None selected"
-    const {userLocation, setIsOpen, locationComparator} = props;
+    const {userLocation, setIsOpen, locationComparator, locationFilter} = props;
 
     const [state, {setSelectedLocation, clearSelectedLocation, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
-    const locations = state.gameState.locations.sort(locationComparator);
+    const locations = state.gameState.locations.filter(locationFilter).sort(locationComparator);
     const selectedLocation = state.gameState.selectedLocation;
 
     const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
