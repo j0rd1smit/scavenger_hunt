@@ -285,9 +285,10 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                     disablePadding
                     className={classes.progressList}
                 >
+                    <ListSubheader>{"Exploration"}</ListSubheader>
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
-                            primary="Locations visted"
+                            primary="Visted"
                             secondary={
                                 `${locations.filter(e => e.isUnlocked).length} / ${locations.length}`
                             }
@@ -296,16 +297,17 @@ function ProgressList(props: IProgressListProps): JSX.Element {
 
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
-                            primary="Locations visted"
+                            primary="Completed"
                             secondary={
                                 `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
                             }
                         />
                     </ListItem>
 
+                    <ListSubheader>{"Puzzles"}</ListSubheader>
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
-                            primary="QR-code questions completed"
+                            primary="QR-code"
                             secondary={
                                 `${locations.filter(e => e.question.type == "QR_CODE" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "QR_CODE").length}`
                             }
@@ -314,7 +316,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
 
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
-                            primary="Open questions completed"
+                            primary="Open questions"
                             secondary={
                                 `${locations.filter(e => e.question.type === "OPEN" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "OPEN").length}`
                             }
