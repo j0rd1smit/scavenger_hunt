@@ -2,7 +2,6 @@ import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
 import {
-    Button,
     Checkbox,
     Collapse,
     List,
@@ -12,7 +11,7 @@ import {
     Radio,
     SwipeableDrawer
 } from "@material-ui/core";
-import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
+import {OnClickEvent} from "../utils/ReactTypes";
 import {
     CheckCircle,
     EditLocation,
@@ -23,7 +22,7 @@ import {
     Sort,
     SportsEsports, VpnKey
 } from "@material-ui/icons";
-import {ILocation, OPEN_QUESTION_TYPE_STR, QR_CODE_TYPE_STR} from "../../utils/Locations";
+import {ILocation, mapCodesToMaskedFormat, OPEN_QUESTION_TYPE_STR, QR_CODE_TYPE_STR} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {StringMap} from "../../utils/Types";
@@ -266,25 +265,12 @@ function CodesList(props: ICodesListProps): JSX.Element {
 
     const [state, {}] = useGlobalGameStore();
     const {codes, locations} = state.gameState;
+    const nCompletedLocation = locations.filter(e => e.isCompleted).length;
 
     const [show, setShow] = useState<boolean>(false);
     const onClickShowButton = (e: OnClickEvent) => setShow(!show);
 
-    const nUnlockedLocations = locations.filter(e => e.isCompleted).length;
-    let nCodeCharsToShow = nUnlockedLocations;
-    const maskedCodes: string[] = [];
-    for (let i = 0; i < codes.length; i++) {
-        const code = codes[i];
-        maskedCodes.push("");
-        for (let j = 0; j < code.code.length; j++) {
-            if (nCodeCharsToShow > 0) {
-                maskedCodes[i] += code.code[j];
-                nCodeCharsToShow -= 1;
-            } else {
-                maskedCodes[i] += "?";
-            }
-        }
-    }
+
 
     return (
         <Fragment>
@@ -301,7 +287,7 @@ function CodesList(props: ICodesListProps): JSX.Element {
                     disablePadding
                     className={classes.progressList}
                 >
-                    {codes.map((code, i) =>
+                    {mapCodesToMaskedFormat(codes, nCompletedLocation).map((code, i) =>
                     <ListItem key={i}>
                         <ListItemAvatar>
                             <ListItemIcon>
@@ -310,7 +296,7 @@ function CodesList(props: ICodesListProps): JSX.Element {
                         </ListItemAvatar>
                         <ListItemText
                             primary={code.name}
-                            secondary={maskedCodes[i]}
+                            secondary={code.code}
                         />
                     </ListItem>
                     )}
@@ -404,7 +390,7 @@ function LocationList(props: ILocationListProps): JSX.Element {
     const noLocationSelected = "None selected"
     const {userLocation, setIsOpen, locationComparator, locationFilter} = props;
 
-    const [state, {setSelectedLocation, clearSelectedLocation, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
+    const [state, {setSelectedLocation, clearSelectedLocation}] = useGlobalGameStore();
     const locations = state.gameState.locations.filter(locationFilter).sort(locationComparator);
     const selectedLocation = state.gameState.selectedLocation;
 
@@ -454,7 +440,6 @@ function LocationList(props: ILocationListProps): JSX.Element {
                                 distance={distanceInMetersBetween(userLocation, location.coords)}
                                 isSelected={selectedLocation?.name === location.name}
                                 onChangeRadioButton={onChangeRadioButton}
-                                onClickBtn={_ => setPuzzelDialogIsOpenFor(location)}
                             />
                         );
                     })}
@@ -471,12 +456,11 @@ interface ILocationListItem {
     isCompleted: boolean;
     isSelected: boolean;
     onChangeRadioButton: (event: React.ChangeEvent<HTMLInputElement>) => void;
-    onClickBtn?: OnClickCallback;
 }
 
 function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
-    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected, onClickBtn} = props;
+    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected} = props;
 
     return (
         <ListItem>
@@ -503,7 +487,7 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                 }
             </ListItemIcon>
             <ListItemText
-                primary={<Button color="primary" disabled={onClickBtn === undefined} onClick={onClickBtn}>{name}</Button>}
+                primary={name}
                 secondary={(
                     distance !== undefined && direction !== undefined && (
                         <span>

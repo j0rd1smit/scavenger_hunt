@@ -9,7 +9,7 @@ import {
 import {OnChangeEvent, OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CameraAlt} from "@material-ui/icons";
 import QRCodeDailog from "./QRCodeDailog";
-import {ILocation, IQuestion} from "../../utils/Locations";
+import {findLastUnlockedCode, ILocation, IQuestion} from "../../utils/Locations";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
@@ -236,18 +236,33 @@ interface IAnswerContentProps {
 function AnswerContent(props: IAnswerContentProps): JSX.Element {
     const {handleOnClose} = props;
 
+    const [state, {}] = useGlobalGameStore();
+    const {codes, locations} = state.gameState;
+
+    const lastUnlockedCode = findLastUnlockedCode(codes, locations);
+
     return (
         <Fragment>
             <DialogContent>
                 <Typography variant="body1" display="block" gutterBottom>
                     You solved it. Well done!
+                    {lastUnlockedCode === undefined ?
+                        " You have already unlocked all the codes, so I can't give you anymore."
+                        :
+                        ` You unlocked a piece of ${lastUnlockedCode.name}:`
+                    }
                 </Typography>
-                <Typography variant="body1" display="block" gutterBottom>
-                    The code is:
-                </Typography>
-                <Typography align={"center"} variant="overline" display="block" gutterBottom>
-                    999
-                </Typography>
+                {lastUnlockedCode !== undefined &&
+                    <Fragment>
+                        <Typography align={"center"} variant="button" display="block" gutterBottom>
+                            {lastUnlockedCode.code}
+                        </Typography>
+                        <Typography variant="caption" display="block" gutterBottom>
+                            If you need to see this code again, you can find it in the sidebar under "Unlocked codes".
+                        </Typography>
+                    </Fragment>
+                }
+
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleOnClose} color="primary">
