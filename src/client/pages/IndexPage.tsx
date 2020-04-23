@@ -103,7 +103,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     onMenuButtonClick={onClickMenuButton}
                 />
                 <SideBarDrawer
-                    setPuzzelDialogIsOpenFor={setPuzzelDialogIsOpenFor}
                     userLocation={geoData.coord}
                     isOpen={drawerIsOpen}
                     setIsOpen={setDrawerIsOpen}

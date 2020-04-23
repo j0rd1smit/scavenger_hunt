@@ -1,17 +1,8 @@
 import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
-import {
-    Button,
-    Collapse,
-    List,
-    ListItem,
-    ListItemIcon,
-    ListItemText,
-    Radio,
-    SwipeableDrawer
-} from "@material-ui/core";
-import {OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
+import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
+import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import {
     CheckCircle,
     EditLocation,
@@ -50,36 +41,17 @@ interface IDrawerProps {
     userLocation: LatLng;
     isOpen: boolean;
     setIsOpen: (isOpen: boolean) => void;
-    setPuzzelDialogIsOpenFor: SetState<ILocation|undefined>;
 }
 
 function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
-    const noLocationSelected = "None selected"
-    const [state, {setSelectedLocation, clearSelectedLocation}] = useGlobalGameStore();
-    const locations = state.gameState.locations;
-    const selectedLocation = state.gameState.selectedLocation;
-
-    const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
-    const [showProgress, setShowProgress] = useState<boolean>(true);
-    const [showSetting, setshowSetting] = useState<boolean>(false);
-
-    const onClickProgressButton = (e: OnClickEvent) => setShowProgress(!showProgress);
-    const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
-    const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
+    const {setIsOpen, userLocation} = props;
 
 
-    const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const location = locations.find((e: ILocation) => e.name === event.target.value);
-        if (location) {
-            setSelectedLocation(location);
-        }
-        else {
-            clearSelectedLocation();
-        }
 
-        props.setIsOpen(false);
-    };
+
+
+
 
     return (
         <Fragment>
@@ -96,102 +68,175 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     disableDiscovery={!isIos()}
                 >
                     <List>
-                        <ListItem button onClick={onClickShowSettingsButton}>
-                            <ListItemIcon>
-                                <Settings/>
-                            </ListItemIcon>
-                            <ListItemText primary="Setting"/>
-                            {showSetting ? <ExpandLess/> : <ExpandMore/>}
-                        </ListItem>
-                        <Collapse in={showSetting}>
-                            todo: hide completed locations, sort options, filter question types, notify if close to location your are not tracking.
-                        </Collapse>
-
-                        <ListItem button onClick={onClickProgressButton}>
-                            <ListItemIcon>
-                                <SportsEsports/>
-                            </ListItemIcon>
-                            <ListItemText primary="Progress"/>
-                            {showProgress ? <ExpandLess/> : <ExpandMore/>}
-                        </ListItem>
-                        <Collapse in={showProgress}>
-                            <List
-                                component="div"
-                                disablePadding
-                                className={classes.locationList}
-                            >
-                                <ListItem dense alignItems="flex-start">
-                                    <ListItemText
-                                        primary="Compation rate"
-                                        secondary={
-                                            `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem dense alignItems="flex-start">
-                                    <ListItemText
-                                        primary="Locations visted"
-                                        secondary={
-                                            `${locations.filter(e => e.isUnlocked).length} / ${locations.length}`
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem dense alignItems="flex-start">
-                                    <ListItemText
-                                        primary="QR-code questions completed"
-                                        secondary={
-                                            `${locations.filter(e => e.question.type == "QR_CODE" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "QR_CODE").length}`
-                                        }
-                                    />
-                                </ListItem>
-                                <ListItem dense alignItems="flex-start">
-                                    <ListItemText
-                                        primary="Open questions completed"
-                                        secondary={
-                                            `${locations.filter(e => e.question.type === "OPEN" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "OPEN").length}`
-                                        }
-                                    />
-                                </ListItem>
-                            </List>
-                        </Collapse>
-
-                        <ListItem button onClick={onClickTrackableLocationButton}>
-                            <ListItemIcon>
-                                <EditLocation/>
-                            </ListItemIcon>
-                            <ListItemText primary="Locations"/>
-                            {showTrackableLocations ? <ExpandLess/> : <ExpandMore/>}
-                        </ListItem>
-                        <Collapse in={showTrackableLocations}>
-                            <List
-                                component="div"
-                                disablePadding
-                            >
-                                <LocationListItem
-                                    name={noLocationSelected}
-                                    isCompleted={false}
-                                    isSelected={selectedLocation === undefined || selectedLocation === null || selectedLocation.isCompleted}
-                                    onChangeRadioButton={onChangeRadioButton}
-                                />
-                                {locations.map((location: ILocation, idx: number) => {
-                                    return (
-                                        <LocationListItem
-                                            key={idx}
-                                            name={location.name}
-                                            isCompleted={location.isCompleted}
-                                            direction={bearingFromTo(props.userLocation, location.coords)}
-                                            distance={distanceInMetersBetween(props.userLocation, location.coords)}
-                                            isSelected={selectedLocation?.name === location.name}
-                                            onChangeRadioButton={onChangeRadioButton}
-                                            onClickBtn={_ => props.setPuzzelDialogIsOpenFor(location)}
-                                        />
-                                    );
-                                })}
-                            </List>
-                        </Collapse>
+                        <SettingsList/>
+                        <ProgressList/>
+                        <LocationList
+                            setIsOpen={setIsOpen}
+                            userLocation={userLocation}
+                        />
                     </List>
                 </SwipeableDrawer>
             </div>
+        </Fragment>
+    );
+}
+
+interface ISettingsListProps {
+
+}
+
+function SettingsList(props: ISettingsListProps): JSX.Element {
+    const [showSetting, setshowSetting] = useState<boolean>(false);
+    const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
+
+    return (
+        <Fragment>
+            <ListItem button onClick={onClickShowSettingsButton}>
+                <ListItemIcon>
+                    <Settings/>
+                </ListItemIcon>
+                <ListItemText primary="Setting"/>
+                {showSetting ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={showSetting}>
+
+            </Collapse>
+        </Fragment>
+    );
+}
+
+interface IProgressListProps {
+
+}
+
+function ProgressList(props: IProgressListProps): JSX.Element {
+    const classes = useStyles();
+
+    const [state, {}] = useGlobalGameStore();
+    const locations = state.gameState.locations;
+
+    const [showProgress, setShowProgress] = useState<boolean>(true);
+    const onClickProgressButton = (e: OnClickEvent) => setShowProgress(!showProgress);
+
+
+    return (
+        <Fragment>
+            <ListItem button onClick={onClickProgressButton}>
+                <ListItemIcon>
+                    <SportsEsports/>
+                </ListItemIcon>
+                <ListItemText primary="Progress"/>
+                {showProgress ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={showProgress}>
+                <List
+                    component="div"
+                    disablePadding
+                    className={classes.locationList}
+                >
+                    <ListItem dense alignItems="flex-start">
+                        <ListItemText
+                            primary="Compation rate"
+                            secondary={
+                                `${locations.filter(e => e.isCompleted).length} / ${locations.length}`
+                            }
+                        />
+                    </ListItem>
+                    <ListItem dense alignItems="flex-start">
+                        <ListItemText
+                            primary="Locations visted"
+                            secondary={
+                                `${locations.filter(e => e.isUnlocked).length} / ${locations.length}`
+                            }
+                        />
+                    </ListItem>
+                    <ListItem dense alignItems="flex-start">
+                        <ListItemText
+                            primary="QR-code questions completed"
+                            secondary={
+                                `${locations.filter(e => e.question.type == "QR_CODE" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "QR_CODE").length}`
+                            }
+                        />
+                    </ListItem>
+                    <ListItem dense alignItems="flex-start">
+                        <ListItemText
+                            primary="Open questions completed"
+                            secondary={
+                                `${locations.filter(e => e.question.type === "OPEN" && e.isCompleted).length} / ${locations.filter(e => e.question.type == "OPEN").length}`
+                            }
+                        />
+                    </ListItem>
+                </List>
+            </Collapse>
+        </Fragment>
+    )
+}
+
+interface ILocationListProps {
+    setIsOpen: (isOpen: boolean) => void;
+    userLocation: LatLng;
+}
+
+function LocationList(props: ILocationListProps): JSX.Element {
+    const noLocationSelected = "None selected"
+    const {userLocation, setIsOpen} = props;
+
+    const [state, {setSelectedLocation, clearSelectedLocation, setPuzzelDialogIsOpenFor}] = useGlobalGameStore();
+    const locations = state.gameState.locations;
+    const selectedLocation = state.gameState.selectedLocation;
+
+    const [showTrackableLocations, setShowTrackableLocations] = useState<boolean>(true);
+
+    const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
+
+    const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const location = locations.find((e: ILocation) => e.name === event.target.value);
+        if (location) {
+            setSelectedLocation(location);
+        } else {
+            clearSelectedLocation();
+        }
+
+        setIsOpen(false);
+    };
+
+
+    return (
+        <Fragment>
+            <ListItem button onClick={onClickTrackableLocationButton}>
+                <ListItemIcon>
+                    <EditLocation/>
+                </ListItemIcon>
+                <ListItemText primary="Locations"/>
+                {showTrackableLocations ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={showTrackableLocations}>
+                <List
+                    component="div"
+                    disablePadding
+                >
+                    <LocationListItem
+                        name={noLocationSelected}
+                        isCompleted={false}
+                        isSelected={selectedLocation === undefined || selectedLocation === null || selectedLocation.isCompleted}
+                        onChangeRadioButton={onChangeRadioButton}
+                    />
+                    {locations.map((location: ILocation, idx: number) => {
+                        return (
+                            <LocationListItem
+                                key={idx}
+                                name={location.name}
+                                isCompleted={location.isCompleted}
+                                direction={bearingFromTo(userLocation, location.coords)}
+                                distance={distanceInMetersBetween(userLocation, location.coords)}
+                                isSelected={selectedLocation?.name === location.name}
+                                onChangeRadioButton={onChangeRadioButton}
+                                onClickBtn={_ => setPuzzelDialogIsOpenFor(location)}
+                            />
+                        );
+                    })}
+                </List>
+            </Collapse>
         </Fragment>
     );
 }
