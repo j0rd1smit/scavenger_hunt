@@ -1,7 +1,17 @@
 import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
-import {Button, Collapse, List, ListItem, ListItemIcon, ListItemText, Radio, SwipeableDrawer} from "@material-ui/core";
+import {
+    Button,
+    Checkbox,
+    Collapse,
+    List,
+    ListItem,
+    ListItemIcon,
+    ListItemText, ListSubheader,
+    Radio,
+    SwipeableDrawer
+} from "@material-ui/core";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import {
     CheckCircle,
@@ -23,7 +33,12 @@ const useStyles = makeStyles((theme: Theme) =>
         root: {
             flexGrow: 1,
         },
-        locationList: {
+        progressList: {
+            "padding-right": 30,
+            position: "relative",
+            paddingLeft: theme.spacing(2),
+        },
+        settingsList: {
             "padding-right": 30,
             position: "relative",
         },
@@ -47,12 +62,6 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const classes = useStyles();
     const {setIsOpen, userLocation} = props;
 
-
-
-
-
-
-
     return (
         <Fragment>
             <div className={classes.root}>
@@ -68,8 +77,8 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                     disableDiscovery={!isIos()}
                 >
                     <List>
-                        <SettingsList/>
                         <ProgressList/>
+                        <SettingsList/>
                         <LocationList
                             setIsOpen={setIsOpen}
                             userLocation={userLocation}
@@ -86,8 +95,13 @@ interface ISettingsListProps {
 }
 
 function SettingsList(props: ISettingsListProps): JSX.Element {
+    const classes = useStyles();
+
     const [showSetting, setshowSetting] = useState<boolean>(false);
     const onClickShowSettingsButton = (e: OnClickEvent) => setshowSetting(!showSetting);
+
+    const filterOptions = ["Completed locations", "QR-code", "Open questions"];
+    const orderingOptions = ["Name", "Distance"];
 
     return (
         <Fragment>
@@ -95,11 +109,55 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                 <ListItemIcon>
                     <Settings/>
                 </ListItemIcon>
-                <ListItemText primary="Setting"/>
+                <ListItemText primary="Location settings"/>
                 {showSetting ? <ExpandLess/> : <ExpandMore/>}
             </ListItem>
             <Collapse in={showSetting}>
+                <List
+                    component="div"
+                    className={classes.settingsList}
+                >
+                    <ListSubheader>{"Location ordering"}</ListSubheader>
+                    {orderingOptions.map(option => {
+                        return (
+                            <ListItem>
+                                <ListItemIcon>
+                                    <Radio
+                                        checked={orderingOptions[0] === option}
+                                        name="radio-button-demo"
+                                        inputProps={{'aria-label': option}}
+                                    />
 
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={option}
+                                />
+                            </ListItem>
+                        );
+                    })}
+
+                    <ListSubheader>{"Location filters"}</ListSubheader>
+                    {filterOptions.map(option => {
+                        return (
+                            <ListItem>
+                                <ListItemIcon>
+                                    <Checkbox
+
+                                        checked={true}
+                                        tabIndex={-1}
+                                        disableRipple
+                                        inputProps={{ 'aria-labelledby': option }}
+                                    />
+
+                                </ListItemIcon>
+                                <ListItemText
+                                    primary={option}
+                                />
+                            </ListItem>
+                        );
+                    })}
+
+                </List>
             </Collapse>
         </Fragment>
     );
@@ -115,7 +173,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
     const [state, {}] = useGlobalGameStore();
     const locations = state.gameState.locations;
 
-    const [showProgress, setShowProgress] = useState<boolean>(true);
+    const [showProgress, setShowProgress] = useState<boolean>(false);
     const onClickProgressButton = (e: OnClickEvent) => setShowProgress(!showProgress);
 
 
@@ -132,7 +190,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                 <List
                     component="div"
                     disablePadding
-                    className={classes.locationList}
+                    className={classes.progressList}
                 >
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
