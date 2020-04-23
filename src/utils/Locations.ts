@@ -1,14 +1,9 @@
 import {distanceInMetersBetween} from "../client/utils/GeoUtils";
 
-export const emptyGameState  = (): IGameState => {
-    return {
-        locations: [],
-        selectedLocation: null,
-    }
-}
 
 export interface IGameState {
     locations: ILocation[];
+    codes: ICode[];
     selectedLocation: ILocation|null;
 }
 
@@ -22,10 +17,10 @@ export interface ILocation {
     question: IQuestion;
 }
 
-export const questionTypes: ("QR_CODE"|"OPEN")[] = ["QR_CODE", "OPEN"];
-
 export const QR_CODE_TYPE_STR = "QR_CODE";
 export const OPEN_QUESTION_TYPE_STR = "OPEN";
+export const questionTypes: ("QR_CODE"|"OPEN")[] = [QR_CODE_TYPE_STR, OPEN_QUESTION_TYPE_STR];
+
 
 export interface IQuestion {
     type: "QR_CODE"|"OPEN";
@@ -36,4 +31,9 @@ export interface IQuestion {
 
 export const isInTheSearchArea = (location: ILocation, userLocation: [number, number]): boolean => {
     return distanceInMetersBetween(location.coords, userLocation) <= location.unlockingDistanceInMeters;
+}
+
+export interface ICode {
+    name: string;
+    code: string;
 }

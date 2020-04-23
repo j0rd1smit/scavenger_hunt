@@ -26,7 +26,7 @@ LocationController.post("/locations", userAuth, async (req: IBasicAuthedRequest,
     const username = req.auth.user;
     const {gameState} = req.body;
     const prevGameState = progress[username];
-    
+
     if (prevGameState !== undefined && gameStateIsValid(gameState, prevGameState)) {
         progress[username] = gameState;
 

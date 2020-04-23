@@ -32,6 +32,7 @@ const initialState: GlobalState = {
     gameState: {
         locations: [],
         selectedLocation: null,
+        codes: [],
     },
     puzzelDialogIsOpenFor: "",
 };

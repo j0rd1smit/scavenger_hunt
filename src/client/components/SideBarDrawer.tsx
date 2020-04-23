@@ -6,7 +6,7 @@ import {
     Checkbox,
     Collapse,
     List,
-    ListItem,
+    ListItem, ListItemAvatar,
     ListItemIcon,
     ListItemText, ListSubheader,
     Radio,
@@ -18,10 +18,10 @@ import {
     EditLocation,
     ExpandLess,
     ExpandMore,
-    Explore,
+    Explore, LockOpen,
     Room,
     Sort,
-    SportsEsports
+    SportsEsports, VpnKey
 } from "@material-ui/icons";
 import {ILocation, OPEN_QUESTION_TYPE_STR, QR_CODE_TYPE_STR} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
@@ -142,6 +142,7 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
                 >
                     <List>
                         <ProgressList/>
+                        <CodesList/>
                         <SettingsList
                             orderingOption={orderingOption}
                             orderingOptions={orderingOptions}
@@ -250,6 +251,69 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                         );
                     })}
 
+                </List>
+            </Collapse>
+        </Fragment>
+    );
+}
+
+interface ICodesListProps {
+
+}
+
+function CodesList(props: ICodesListProps): JSX.Element {
+    const classes = useStyles();
+
+    const [state, {}] = useGlobalGameStore();
+    const {codes, locations} = state.gameState;
+
+    const [show, setShow] = useState<boolean>(false);
+    const onClickShowButton = (e: OnClickEvent) => setShow(!show);
+
+    const nUnlockedLocations = locations.filter(e => e.isCompleted).length;
+    let nCodeCharsToShow = nUnlockedLocations;
+    const maskedCodes: string[] = [];
+    for (let i = 0; i < codes.length; i++) {
+        const code = codes[i];
+        maskedCodes.push("");
+        for (let j = 0; j < code.code.length; j++) {
+            if (nCodeCharsToShow > 0) {
+                maskedCodes[i] += code.code[j];
+                nCodeCharsToShow -= 1;
+            } else {
+                maskedCodes[i] += "?";
+            }
+        }
+    }
+
+    return (
+        <Fragment>
+            <ListItem button onClick={onClickShowButton}>
+                <ListItemIcon>
+                    <LockOpen/>
+                </ListItemIcon>
+                <ListItemText primary="Unlocked codes"/>
+                {show ? <ExpandLess/> : <ExpandMore/>}
+            </ListItem>
+            <Collapse in={show}>
+                <List
+                    component="div"
+                    disablePadding
+                    className={classes.progressList}
+                >
+                    {codes.map((code, i) =>
+                    <ListItem key={i}>
+                        <ListItemAvatar>
+                            <ListItemIcon>
+                                <VpnKey />
+                            </ListItemIcon>
+                        </ListItemAvatar>
+                        <ListItemText
+                            primary={code.name}
+                            secondary={maskedCodes[i]}
+                        />
+                    </ListItem>
+                    )}
                 </List>
             </Collapse>
         </Fragment>

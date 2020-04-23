@@ -1,5 +1,19 @@
 {
   "selectedLocation": null,
+  "codes": [
+    {
+      "name": "Code 1",
+      "code": "093"
+    },
+    {
+      "name": "Code 2",
+      "code": "173"
+    },
+    {
+      "name": "Code 3",
+      "code": "304"
+    }
+  ],
   "locations": [
     {
       "name": "Hockey club",
