@@ -1,33 +1,67 @@
-Onder de biltlaan brug
-52.209794, 4.424142
-Ik kijk neer op iedereen
+1)
+Name: neuspunt
+52.209069, 4.420450
+Question: Solve the anagram: neuspunt. There is a hint at your location.
+Answer: neptunus
 
+2)
+Name: Parking
+52.208136, 4.417812
+Question: How many parking sports are there?
+Answer: 8 + 5 + 5 + 7 + 8 = 33
 
-Handbal veld rijnsoever
-52.208381, 4.418026
-Edwin van der sar
-
-Polster
+3)
+Name: Major and Minor
 52.211917, 4.418950
-Ik ben het helderst licht.
-Ik wijs je wel de weg.
+Question: Which is the correct start?
+Answer: 8
 
+4)
 Rotsen in melkweg.
+Name: Boulder
 52.211433, 4.411963
 Ik sta in de branding
+Question:
+Answer
 
+5)
+Crossroads
+52.214658, 4.414871
+Question: You are at a cross of three streets. What do all these streeds have in common? We are all ...
+Answer: gods
 
-Juno brug
-52.214752, 4.414952
-Waar is mijn kerstbook gebleven?
-
-
-School boord lidl
+6)
+Name: High five
 52.212554, 4.417291
 High five.
+QR CODE
 
-
-Jaap Bergmanstraat vijver
+7)
+Name: Fishing trip
 52.208050, 4.420369
-Ik ben meer verborgen dan je denk
-Ik hoop dat ze bijten.
+QR CODE
+
+8)
+Name: Pniëlkerk
+52.206666, 4.420398
+Question: Solve the anagram: prikkëlen. There is a hint at your location.
+Answer: Pniëlkerk
+
+9)
+Name: Home sweet home
+52.208220, 4.415638
+Question: How many balcony doors are there in our old flat? (Please enter a number)
+Answer: 8 + 8 = 16
+
+
+
+11)
+Name: On the rocks
+52.214490, 4.413303
+Riddle: Ik ben zacht genoeg om je huid te strelen, licht genoeg om in de lucht te zweven, en sterk genoeg om rotsen te splijten. Wat ben ik
+Answer: water
+
+12)
+Name: The bridge
+52.211308, 4.420546
+QR_CODE

@@ -1,0 +1,100 @@
+{
+  "selectedLocation": null,
+  "codes": [
+    {
+      "name": "Code 1",
+      "code": "093"
+    },
+    {
+      "name": "Code 2",
+      "code": "173"
+    },
+    {
+      "name": "Code 3",
+      "code": "304"
+    }
+  ],
+  "locations": [
+    {
+      "name": "Hockey club",
+      "coords": [
+        52.210860,
+        4.426798
+      ],
+      "unlockingDistanceInMeters": 1000,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "code": "001",
+      "question": {
+        "type": "OPEN",
+        "description": "The answer is test",
+        "answer": "test"
+      }
+    },
+    {
+      "name": "Voetbalveld brug",
+      "coords": [
+        52.211344,
+        4.420593
+      ],
+      "unlockingDistanceInMeters": 100,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "code": "001",
+      "question": {
+        "type": "QR_CODE",
+        "description": "Find the QR code?",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Polster",
+      "coords": [
+        52.211920,
+        4.418950
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "code": "001",
+      "question": {
+        "type": "OPEN",
+        "description": "Solve the rebus.",
+        "img": "/static/images/rebus10.jpg",
+        "answer": "ze windt er geen doekjes om"
+      }
+    },
+    {
+      "name": "Lidl",
+      "coords": [
+        52.212494,
+        4.417784
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "code": "001",
+      "question": {
+        "type": "OPEN",
+        "description": "The answer is test",
+        "answer": "test"
+      }
+    },
+    {
+      "name": "Bushalt",
+      "coords": [
+        52.213809,
+        4.422414
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "code": "001",
+      "question": {
+        "type": "OPEN",
+        "description": "The answer is test",
+        "answer": "test"
+      }
+    }
+  ]
+}

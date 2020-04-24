@@ -17,12 +17,18 @@ import {
     EditLocation,
     ExpandLess,
     ExpandMore,
-    Explore, LockOpen,
+    Explore, FilterCenterFocus, LockOpen,
     Room,
     Sort,
     SportsEsports, VpnKey
 } from "@material-ui/icons";
-import {ILocation, mapCodesToMaskedFormat, OPEN_QUESTION_TYPE_STR, QR_CODE_TYPE_STR} from "../../utils/Locations";
+import {
+    ILocation,
+    IQuestion,
+    mapCodesToMaskedFormat,
+    OPEN_QUESTION_TYPE_STR,
+    QR_CODE_TYPE_STR
+} from "../../utils/Locations";
 import {bearingFromTo, distanceInMetersBetween, LatLng} from "../utils/GeoUtils";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {StringMap} from "../../utils/Types";
@@ -439,6 +445,7 @@ function LocationList(props: ILocationListProps): JSX.Element {
                                 direction={bearingFromTo(userLocation, location.coords)}
                                 distance={distanceInMetersBetween(userLocation, location.coords)}
                                 isSelected={selectedLocation?.name === location.name}
+                                question={location.question}
                                 onChangeRadioButton={onChangeRadioButton}
                             />
                         );
@@ -456,11 +463,12 @@ interface ILocationListItem {
     isCompleted: boolean;
     isSelected: boolean;
     onChangeRadioButton: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    question?: IQuestion;
 }
 
 function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
-    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected} = props;
+    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected, question} = props;
 
     return (
         <ListItem>
@@ -494,7 +502,7 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                      <Room className={classes.directionIcon}
                            fontSize={"small"}/>{Math.round(distance)}m <Explore
                             className={classes.directionIcon} fontSize={"small"}/>{Math.round(direction)}°
-                                                    </span>)
+                            {question?.type === "QR_CODE" && <FilterCenterFocus className={classes.directionIcon}/>}</span>)
                 )}
 
             />

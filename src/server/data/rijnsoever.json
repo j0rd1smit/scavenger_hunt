@@ -16,84 +16,195 @@
   ],
   "locations": [
     {
-      "name": "Hockey club",
+      "name": "The bridge",
       "coords": [
-        52.210860,
-        4.426798
+        52.211308, 4.420546
       ],
-      "unlockingDistanceInMeters": 1000,
+      "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
-      "code": "001",
-      "question": {
-        "type": "OPEN",
-        "description": "The answer is test",
-        "answer": "test"
-      }
-    },
-    {
-      "name": "Voetbalveld brug",
-      "coords": [
-        52.211344,
-        4.420593
-      ],
-      "unlockingDistanceInMeters": 100,
-      "isUnlocked": false,
-      "isCompleted": false,
-      "code": "001",
       "question": {
         "type": "QR_CODE",
-        "description": "Find the QR code?",
-        "answer": "test"
+        "description": "Can you find the QR code?",
+        "img": "/static/images/bridge.jpg",
+        "answer": "Merel is jarig!"
       }
     },
+
     {
-      "name": "Polster",
+      "name": "Willow",
       "coords": [
-        52.211920,
-        4.418950
+        52.210607, 4.413336
       ],
       "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
-      "code": "001",
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/willow.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Fishing trip",
+      "coords": [
+        52.208050, 4.420369
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/fishing.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "High five",
+      "coords": [
+        52.212554, 4.417291
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/high_five.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Boulder",
+      "coords": [
+        52.211433, 4.411963
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/Boulder.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    
+    {
+      "name": "Rijnsoever",
+      "coords": [
+        52.209830, 4.420280
+      ],
+      "unlockingDistanceInMeters": 10,
+      "isUnlocked": false,
+      "isCompleted": false,
       "question": {
         "type": "OPEN",
-        "description": "Solve the rebus.",
+        "description": "Solve the rebus in dutch.",
         "img": "/static/images/rebus10.jpg",
-        "answer": "test"
+        "answer": "ze windt er geen doekjes om"
       }
     },
     {
-      "name": "Lidl",
+      "name": "Neuspunt",
       "coords": [
-        52.212494,
-        4.417784
+        52.209069, 4.420450
+      ],
+      "unlockingDistanceInMeters": 10,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "Solve the anagram: neuspunt. There is a hint at your location.",
+        "answer": "neptunus"
+      }
+    },
+    {
+      "name": "Parking",
+      "coords": [
+        52.208136, 4.417812
+      ],
+      "unlockingDistanceInMeters": 10,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "How many parking sports are there?",
+        "answer": "33"
+      }
+    },
+    {
+      "name": "Major and Minor",
+      "coords": [
+        52.211917, 4.418950
       ],
       "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
-      "code": "001",
       "question": {
         "type": "OPEN",
-        "description": "The answer is test",
-        "answer": "test"
+        "description": "Which is the correct star? Please enter a number.",
+        "answer": "8",
+        "img": "/static/images/ursa_minor_and_major.png"
+      }
+    },
+
+    {
+      "name": "Crossroads",
+      "coords": [
+        52.214658, 4.414871
+      ],
+      "unlockingDistanceInMeters": 10,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "You are at a cross of three streets. What do all these streeds have in common? We are all ...",
+        "answer": "gods"
       }
     },
     {
-      "name": "Bushalt",
+      "name": "Prikkëlen",
       "coords": [
-        52.213809,
-        4.422414
+        52.206666, 4.420398
       ],
       "unlockingDistanceInMeters": 25,
       "isUnlocked": false,
       "isCompleted": false,
-      "code": "001",
       "question": {
         "type": "OPEN",
-        "description": "The answer is test",
-        "answer": "test"
+        "description": "Solve the anagram: prikkëlen. There is a hint at your location.",
+        "answer": "pniëlkerk"
+      }
+    },
+    {
+      "name": "Home sweet home",
+      "coords": [
+        52.208220, 4.415638
+      ],
+      "unlockingDistanceInMeters": 10,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "How many balcony doors are there in our old flat? (Please enter a number)",
+        "answer": "16"
+      }
+    },
+    {
+      "name": "On the rocks",
+      "coords": [
+        52.214490, 4.413303
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": false,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "Ik ben zacht genoeg om je huid te strelen, licht genoeg om in de lucht te zweven, en sterk genoeg om rotsen te splijten. Wat ben ik?",
+        "answer": "water"
       }
     }
   ]

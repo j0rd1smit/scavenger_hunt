@@ -139,6 +139,7 @@ function QRCodeQuestionContent(props: IQRCodeQuestionContentProps): JSX.Element 
                 {question.img !== undefined &&
                 <img
                     src={question.img}
+                    alt={question.img}
                     className={classes.cover}
                 />
                 }
@@ -198,7 +199,8 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
                 </DialogContentText>
                 {question.img !== undefined &&
                 <img
-                    src={"/static/images/rebus10.jpg"}
+                    src={question.img}
+                    alt={question.img}
                     className={classes.cover}
                 />
                 }
