@@ -94,3 +94,5 @@ typings/
 
 # Serverless directories
 .serverless
+server.cert
+server.key

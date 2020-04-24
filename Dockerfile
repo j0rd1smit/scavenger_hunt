@@ -1,4 +1,4 @@
-FROM node:8
+FROM node:12
 # Create app directory
 WORKDIR /usr/src/app
 # Install app dependencies
@@ -8,8 +8,14 @@ RUN npm install
 # Bundle app source
 COPY . .
 #Expose the server port
-EXPOSE 8080
+EXPOSE 80
+EXPOSE 443
 #Compiles the project.
 RUN npm run-script build
+
+#variable
+ENV key=""
+ENV cert=""
+
 #Starts the server.
-CMD npm start
+CMD npm start -- --key=$key --cert=$cert

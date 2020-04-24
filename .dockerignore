@@ -3,4 +3,7 @@ uploads
 .idea
 build
 
+server.cert
+server.key
+
 npm-debug.log
