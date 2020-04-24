@@ -173,7 +173,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         <Navigation/>
                     </Fab>
                     <MainMapView
-                        userLocation={geoData}
                         followUser={followUser}
                         setFollowUser={setFollowUser}
                     />

@@ -17,6 +17,10 @@ const argv = yargs.options({
         alias: 'c',
         default: 'server.cert',
         description: 'https server.cert file'
+    },
+    dev: {
+        type: 'boolean',
+        default: false,
     }
 }).argv;
 
@@ -62,7 +66,11 @@ https.createServer({
 /**
  * redirect http to https.
  */
-http.createServer(function (req, res) {
-    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-    res.end();
-}).listen(httpPort);
+if (!argv.dev) {
+    http.createServer(function (req, res) {
+        res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+        res.end();
+    }).listen(httpPort);
+} else {
+    http.createServer(app).listen(httpPort, () => console.log(`Listening on port for http in dev mode.`))
+}

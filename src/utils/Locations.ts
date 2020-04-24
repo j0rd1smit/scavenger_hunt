@@ -68,8 +68,8 @@ export const nUnlockableCodes = (codes: ICode[]): number => {
 }
 
 export const findLastUnlockedCode = (codes: ICode[], locations: ILocation[]): ICode|undefined => {
-    //const nUnlockedLocations = locations.filter(e => e.isCompleted).length;
-    const nUnlockedLocations = 9;
+    const nUnlockedLocations = locations.filter(e => e.isCompleted).length;
+
     if (nUnlockedLocations > nUnlockableCodes(codes)) {
         return undefined;
     }

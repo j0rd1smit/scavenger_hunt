@@ -43,8 +43,8 @@ module.exports = {
         disableHostCheck: true,
         open: true,
         proxy: {
-            "/api": "http://localhost:8080",
-            "/static": "http://localhost:8080",
+            "/api": "http://localhost",
+            "/static": "http://localhost",
         },
         host: ip.address(),
         https: true,

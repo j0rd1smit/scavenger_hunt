@@ -15,6 +15,13 @@ export const createGeoDataHook = (options: GeoOptions | undefined = undefined): 
         const service = new GeolocationService(getOrDefault(options, new GeoOptions()), [callback]);
         service.start();
 
+/*        setInterval(function() {
+            const coord: [number, number] = [52.203819100000004 + Math.random() * 0.0001, 4.4317996 + Math.random() * 0.0001]
+            const data2: GeoData = {coord, accuracy: 100};
+            setState(data2);
+        }, 500);*/
+
+
         return () => {
             service.stop();
         };
@@ -54,6 +61,7 @@ export default class GeolocationService {
     private onSuccess = (pos: Position) => {
         if (pos.coords?.accuracy !== undefined && pos.coords.latitude !== undefined && pos.coords.longitude != undefined) {
             const data = new GeoData(pos.coords.accuracy, [pos.coords.latitude, pos.coords.longitude]);
+            console.log(data);
             if (distanceInMetersBetween(data.coord, this.lastLocation.coord) > 5) {
                 this.callbacks.forEach((callback: GeolocationServiceCallback) => callback(data));
                 this.lastLocation = data;

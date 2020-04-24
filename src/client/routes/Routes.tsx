@@ -41,6 +41,7 @@ function Routes(props: IRoutesProps): JSX.Element {
             </Fragment>
         );
     } catch (e) {
+        alert(e.message);
         window.location.reload();
         throw e;
         //TODO catch un authenticate error.
