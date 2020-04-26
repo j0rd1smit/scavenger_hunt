@@ -55,6 +55,9 @@ const useStyles = makeStyles((theme: Theme) =>
         inline: {
             display: 'inline',
         },
+        locationLabel: {
+            cursor: "pointer",
+        }
     }),
 );
 
@@ -404,8 +407,8 @@ function LocationList(props: ILocationListProps): JSX.Element {
 
     const onClickTrackableLocationButton = (e: OnClickEvent) => setShowTrackableLocations(!showTrackableLocations);
 
-    const onChangeRadioButton = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const location = locations.find((e: ILocation) => e.name === event.target.value);
+    const changeLocationTo = (value: string): void => {
+        const location = locations.find((e: ILocation) => e.name === value);
         if (location) {
             setSelectedLocation(location);
         } else {
@@ -434,7 +437,7 @@ function LocationList(props: ILocationListProps): JSX.Element {
                         name={noLocationSelected}
                         isCompleted={false}
                         isSelected={selectedLocation === undefined || selectedLocation === null || selectedLocation.isCompleted}
-                        onChangeRadioButton={onChangeRadioButton}
+                        changeLocationTo={changeLocationTo}
                     />
                     {locations.map((location: ILocation, idx: number) => {
                         return (
@@ -446,7 +449,7 @@ function LocationList(props: ILocationListProps): JSX.Element {
                                 distance={distanceInMetersBetween(userLocation, location.coords)}
                                 isSelected={selectedLocation?.name === location.name}
                                 question={location.question}
-                                onChangeRadioButton={onChangeRadioButton}
+                                changeLocationTo={changeLocationTo}
                             />
                         );
                     })}
@@ -462,14 +465,16 @@ interface ILocationListItem {
     direction?: number;
     isCompleted: boolean;
     isSelected: boolean;
-    onChangeRadioButton: (event: React.ChangeEvent<HTMLInputElement>) => void;
     question?: IQuestion;
+    changeLocationTo: (name: string) => void;
 }
 
 function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
-    const {name, isCompleted, distance, direction, onChangeRadioButton, isSelected, question} = props;
+    const {name, isCompleted, distance, direction, changeLocationTo, isSelected, question} = props;
 
+    const onChangeRadioButton = (e: React.ChangeEvent<HTMLInputElement>) => changeLocationTo(e.target.name);
+    const onClickLabel = (e: OnClickEvent) => changeLocationTo(name);
     return (
         <ListItem>
             <ListItemIcon>
@@ -495,6 +500,8 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
                 }
             </ListItemIcon>
             <ListItemText
+                className={classes.locationLabel}
+                onClick={onClickLabel}
                 primary={name}
                 secondary={(
                     distance !== undefined && direction !== undefined && (

@@ -44,7 +44,6 @@ const fetchGameState = async (store: GameStateStore,): Promise<void> => {
     });
 
     const gameState = await response.data;
-    console.log({...store.state, gameState});
     store.setState({...store.state, gameState});
 }
 
