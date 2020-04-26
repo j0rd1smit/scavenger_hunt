@@ -3,6 +3,7 @@ build docker
 ```
 docker build -t j0rd1smit/treasure_trails .
 docker push j0rd1smit/treasure_trails
+
 ```
 
 update server

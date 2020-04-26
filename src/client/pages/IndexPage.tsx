@@ -150,7 +150,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                             placement={"left"}
                             title="Answer the question"
                             aria-label="Center"
-                            open={isInTheSearchArea(selectedLocation, geoData.coord)}
+                            open={puzzelDialogIsOpenFor !== selectedLocation.name && isInTheSearchArea(selectedLocation, geoData.coord)}
                             arrow>
                             <Fab
                                 color="primary"
