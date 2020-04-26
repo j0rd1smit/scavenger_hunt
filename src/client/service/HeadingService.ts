@@ -70,3 +70,14 @@ export const isHeadingSuported = async (): Promise<boolean> => {
     return false;
 
 }
+
+export const compassIsSupportedHook = (): boolean => {
+    const [compassIsSupported, setCompassIsSupported] = useState<boolean>(false);
+    useEffect(() => {
+        isHeadingSuported().then((isSupported: boolean) => {
+            setCompassIsSupported(isSupported)
+        });
+    }, []);
+
+    return compassIsSupported;
+}

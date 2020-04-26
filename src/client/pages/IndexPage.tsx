@@ -5,12 +5,10 @@ import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
-import CompassPullOver from "../components/CompassPullOver";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
-import {bearingFromTo} from "../utils/GeoUtils";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {permissionStatusHook} from "../utils/permissionsUtils";
@@ -67,11 +65,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
     useEffect(() => {
         unlockLocations(geoData.coord);
     }, [geoData, locations]);
-
-    //TODO remove
-    useEffect(() => {
-        console.log(state);
-    }, [state])
 
     //container related
     const mapHeight = windowHeightMinusAppBarState();
@@ -138,9 +131,6 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                 >
                     {selectedLocation && !selectedLocation?.isCompleted &&
                     <div>
-                        <CompassPullOver
-                            bearingComparedToCurrentLocation={bearingFromTo(geoData.coord, selectedLocation.coords)}
-                        />
                         <LocationPullOver
                             userLocation={geoData.coord}
                             location={selectedLocation}

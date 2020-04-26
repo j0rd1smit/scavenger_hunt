@@ -4,7 +4,7 @@ import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import InlineCompass from "./InlineCompass";
 import {getOrDefault} from "../utils/utils";
-import {isHeadingSuported} from "../service/HeadingService";
+import {compassIsSupportedHook} from "../service/HeadingService";
 import { useHistory } from "react-router-dom";
 import {loginPageUrl} from "../routes/Hrefs";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
@@ -43,13 +43,9 @@ function NavBar(props: INavBarProps): JSX.Element {
 
     const bearingComparedToCurrentLocation = selectedLocation !== null ? bearingFromTo(props.geoData.coord, selectedLocation.coords) : undefined;
 
-    const [compassIsSupported, setCompassIsSupported] = useState<boolean>(false);
+    const compassIsSupported = compassIsSupportedHook();
     const showCompass = compassIsSupported && bearingComparedToCurrentLocation !== undefined;
-    useEffect(() => {
-        isHeadingSuported().then((isSupported: boolean) => {
-            setCompassIsSupported(isSupported)
-        });
-    }, []);
+
 
     const containerRef = useRef<HTMLDivElement>(null);
     const [containerWidth, setContainerWidth] = useState<number>(0);
