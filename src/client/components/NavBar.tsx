@@ -1,9 +1,9 @@
 import React, {Fragment, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
-import {AppBar, Icon, IconButton, Toolbar, Typography} from "@material-ui/core";
+import {AppBar, Icon, IconButton, Toolbar, Tooltip, Typography} from "@material-ui/core";
 import {OnClickCallback, OnClickEvent} from "../utils/ReactTypes";
 import InlineCompass from "./InlineCompass";
-import {getOrDefault} from "../utils/utils";
+import {getOrDefault, isPresent} from "../utils/utils";
 import {compassIsSupportedHook} from "../service/HeadingService";
 import { useHistory } from "react-router-dom";
 import {loginPageUrl} from "../routes/Hrefs";
@@ -27,6 +27,9 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         compassContainer: {
             flexGrow: 1,
+        },
+        pickNewLocationTooltip: {
+            zIndex: 1119,
         }
     }),
 );
@@ -34,12 +37,17 @@ const useStyles = makeStyles((theme: Theme) =>
 export interface INavBarProps {
     onMenuButtonClick: OnClickCallback;
     geoData: GeoData;
+    sidebarIsOpen: boolean;
 }
 
 function NavBar(props: INavBarProps): JSX.Element {
     const classes = useStyles();
+    const {sidebarIsOpen} = props;
+
     const [state, {clearSelectedLocation}] = useGlobalGameStore();
-    const selectedLocation = state.gameState.selectedLocation;
+    const {selectedLocation, locations} = state.gameState;
+
+    const showChooseNextLocationTooltip = !sidebarIsOpen && !isPresent(selectedLocation) && locations.filter(e => !e.isCompleted && !e.isUnlocked).length > 0;
 
     const bearingComparedToCurrentLocation = selectedLocation !== null ? bearingFromTo(props.geoData.coord, selectedLocation.coords) : undefined;
 
@@ -75,16 +83,22 @@ function NavBar(props: INavBarProps): JSX.Element {
             <div className={classes.root}>
                 <AppBar position="static" ref={containerRef}>
                     <Toolbar>
-
-                        <IconButton
-                            edge="start"
-                            className={classes.menuButton}
-                            color="inherit"
-                            aria-label="menu"
-                            onClick={props.onMenuButtonClick}
-                        >
-                            <Icon>menu</Icon>
-                        </IconButton>
+                        <Tooltip
+                            className={classes.pickNewLocationTooltip}
+                            title="Pick a new location"
+                            aria-label="Pick a new location"
+                            open={showChooseNextLocationTooltip}
+                            arrow>
+                            <IconButton
+                                edge="start"
+                                className={classes.menuButton}
+                                color="inherit"
+                                aria-label="menu"
+                                onClick={props.onMenuButtonClick}
+                            >
+                                <Icon>menu</Icon>
+                            </IconButton>
+                        </Tooltip>
 
                         {
                             showCompass && bearingComparedToCurrentLocation !== undefined ?

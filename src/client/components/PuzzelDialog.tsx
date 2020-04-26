@@ -13,7 +13,6 @@ import {findLastUnlockedCode, ILocation, IQuestion} from "../../utils/Locations"
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
-
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
@@ -234,7 +233,7 @@ interface IAnswerContentProps {
     handleOnClose: OnClickCallback;
 }
 
-//TODO seperate this in to a seperate view.
+
 function AnswerContent(props: IAnswerContentProps): JSX.Element {
     const {handleOnClose} = props;
 
@@ -261,6 +260,7 @@ function AnswerContent(props: IAnswerContentProps): JSX.Element {
                         </Typography>
                         <Typography variant="caption" display="block" gutterBottom>
                             If you need to see this code again, you can find it in the sidebar under "Unlocked codes".
+                            We you are ready, please select your location in the sidebar.
                         </Typography>
                     </Fragment>
                 }

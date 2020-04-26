@@ -6,7 +6,7 @@ import SideBarDrawer from "../components/SideBarDrawer";
 import MainMapView from "../components/MainMapView";
 import PuzzelDialog from "../components/PuzzelDialog";
 import LocationPullOver from "../components/LocationPullOver";
-import {Fab} from "@material-ui/core";
+import {Fab, Tooltip} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
 import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {createGeoDataHook} from "../service/GeolocationService";
@@ -14,6 +14,8 @@ import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {permissionStatusHook} from "../utils/permissionsUtils";
 import {Redirect} from "react-router-dom";
 import {permissionsPageUrl} from "../routes/Hrefs";
+import {isPresent} from "../utils/utils";
+import {isInTheSearchArea} from "../../utils/Locations";
 
 
 const useStyles = makeStyles((theme: Theme) =>
@@ -109,6 +111,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                 <NavBar
                     geoData={geoData}
                     onMenuButtonClick={onClickMenuButton}
+                    sidebarIsOpen={drawerIsOpen}
                 />
                 <SideBarDrawer
                     userLocation={geoData.coord}
@@ -138,30 +141,49 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                     </div>
                     }
                     {selectedLocation &&
-                        <Fab
-                            className={classes.fabAnswerQuestion}
-                            color="primary"
-                            aria-label="center"
-                            onClick={onClickFabAnswerQuestion}
-                            style={{
-                                bottom: selectedLocationOffSet + 4 * spacing  + fabSize,
-                            }}
-                        >
-                            <RateReview/>
-                        </Fab>
+                    <div
+                        className={classes.fabAnswerQuestion}
+                        style={{
+                            bottom: selectedLocationOffSet + 4 * spacing  + fabSize,
+                        }}>
+                        <Tooltip
+                            placement={"left"}
+                            title="Answer the question"
+                            aria-label="Center"
+                            open={isInTheSearchArea(selectedLocation, geoData.coord)}
+                            arrow>
+                            <Fab
+                                color="primary"
+                                aria-label="center"
+                                onClick={onClickFabAnswerQuestion}
+                            >
+                                <RateReview/>
+                            </Fab>
+                        </Tooltip>
+                    </div>
                     }
-
-                    <Fab
+                    <div
                         className={classes.fabCenter}
-                        color="primary"
-                        aria-label="center"
-                        onClick={onClickFabCenterBtn}
                         style={{
                             bottom: selectedLocationOffSet + 2 * spacing,
-                        }}
-                    >
-                        <Navigation/>
-                    </Fab>
+                        }}>
+                        <Tooltip
+                            placement={isPresent(selectedLocation) ? "left" : "top"}
+                            title="Center"
+                            aria-label="Center"
+                            enterTouchDelay={10}
+                            arrow>
+                            <Fab
+
+                                color="primary"
+                                aria-label="center"
+                                onClick={onClickFabCenterBtn}
+
+                            >
+                                <Navigation/>
+                            </Fab>
+                        </Tooltip>
+                    </div>
                     <MainMapView
                         followUser={followUser}
                         setFollowUser={setFollowUser}

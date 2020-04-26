@@ -45,6 +45,7 @@ const fetchGameState = async (store: GameStateStore,): Promise<void> => {
 
     const gameState = await response.data;
     store.setState({...store.state, gameState});
+
 }
 
 const saveGameState = async (store: GameStateStore): Promise<void> => {
@@ -101,6 +102,8 @@ const markLocationAsCompleted = (store: GameStateStore, location: ILocation): vo
     // update the selected location if needed.
     const selectedLocation = store.state.gameState.selectedLocation === location ? null : store.state.gameState.selectedLocation;
 
+
+
     // update the locations
     const mapLocationToUpdatedLocation = (l: ILocation) => {
         if (l === location) {
@@ -109,12 +112,15 @@ const markLocationAsCompleted = (store: GameStateStore, location: ILocation): vo
         return l;
     }
     const locations = store.state.gameState.locations.map(mapLocationToUpdatedLocation);
+
+
     // recreate the state
     const gameState = {... store.state.gameState, locations, selectedLocation};
     const updatedState = {... store.state, gameState};
 
     store.setState(updatedState);
     store.actions.saveGameState();
+
 }
 
 const setPuzzelDialogIsOpenFor = (store: GameStateStore, location: ILocation): void => {
