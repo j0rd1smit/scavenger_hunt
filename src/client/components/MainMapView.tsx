@@ -1,4 +1,4 @@
-import React, {Fragment, useState} from "react";
+import React, {Fragment, useEffect, useRef, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {CircleMarker, Map, Marker, Popup, TileLayer, Viewport} from "react-leaflet";
 import {LatLngTuple} from "leaflet";
@@ -8,8 +8,9 @@ import L from 'leaflet'
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {ILocation} from "../../utils/Locations";
-import {bearingFromTo} from "../utils/GeoUtils";
+import {bearingFromTo, distanceInMetersBetween} from "../utils/GeoUtils";
 import {compassIsSupportedHook} from "../service/HeadingService";
+import GeoData from "../service/GeoData";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -38,6 +39,19 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
 
         const {setFollowUser, followUser,} = props;
         const userLocation = createGeoDataHook();
+        const prevUserLocation = useRef<undefined|GeoData>(undefined);
+
+        useEffect(() => {
+            if (prevUserLocation.current === undefined) {
+                console.log("init prevUserLocation")
+                prevUserLocation.current = userLocation;
+            }
+            if (distanceInMetersBetween(prevUserLocation.current.coord, userLocation.coord) > 25) {
+                setMapCenter(userLocation.coord);
+                console.log("update prevUserLocation")
+                prevUserLocation.current = userLocation;
+            }
+        }, [userLocation]);
 
 
         const [zoom, setZoom] = useState<number>(18);
