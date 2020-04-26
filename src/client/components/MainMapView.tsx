@@ -119,7 +119,7 @@ function MainMapView(props: IMainMapViewProps): JSX.Element {
             return (
                 <Fragment key={"directionMarker"}>
                     <Marker  position={userLocation.coord} icon={userIcon}>
-                        <Popup>You are currently here.</Popup>
+                        <Popup>This is the direction towards the selected location.</Popup>
                     </Marker>
                     <CircleMarker center={userLocation.coord} fillColor="blue"
                                   radius={userLocation.accuracy / metresPerPixel}/>
