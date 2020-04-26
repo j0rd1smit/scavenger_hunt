@@ -77,7 +77,12 @@ function SideBarDrawer(props: IDrawerProps): JSX.Element {
     const QRCode = "QR-code";
     const OpenQuestion = "Open questions";
     const filteringOptions = [completed, QRCode, OpenQuestion];
-    const [seletedFilteringOption, setSelectedFilteringOption] = useState<StringMap<boolean>>(filteringOptions.reduce((map: StringMap<boolean>, key: string) => (map[key] = true, map), {}));
+    const filteringOptionsDefaults: StringMap<boolean> = {};
+    filteringOptionsDefaults[completed] = false;
+    filteringOptionsDefaults[QRCode] = true;
+    filteringOptionsDefaults[OpenQuestion] = true;
+
+    const [seletedFilteringOption, setSelectedFilteringOption] = useState<StringMap<boolean>>(filteringOptionsDefaults);
 
     const toggleFilteringOption = (option: string) : void => {
         const idx = filteringOptions.indexOf(option);
@@ -217,7 +222,7 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                     component="div"
                     className={classes.settingsList}
                 >
-                    <ListSubheader>{"Location ordering"}</ListSubheader>
+                    <ListSubheader disableSticky>{"Location ordering"}</ListSubheader>
                     {orderingOptions.map(option => {
                         return (
                             <ListItem key={option}>
@@ -238,7 +243,7 @@ function SettingsList(props: ISettingsListProps): JSX.Element {
                         );
                     })}
 
-                    <ListSubheader>{"Location filters"}</ListSubheader>
+                    <ListSubheader disableSticky>{"Location filters"}</ListSubheader>
                     {filteringOptions.map(option => {
                         return (
                             <ListItem key={option}>
@@ -344,7 +349,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                     disablePadding
                     className={classes.progressList}
                 >
-                    <ListSubheader>{"Exploration"}</ListSubheader>
+                    <ListSubheader disableSticky>{"Exploration"}</ListSubheader>
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
                             primary="Visted"
@@ -363,7 +368,7 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                         />
                     </ListItem>
 
-                    <ListSubheader>{"Puzzles"}</ListSubheader>
+                    <ListSubheader disableSticky>{"Puzzles"}</ListSubheader>
                     <ListItem dense alignItems="flex-start">
                         <ListItemText
                             primary="QR-code"
@@ -473,7 +478,7 @@ function LocationListItem(props: ILocationListItem): JSX.Element {
     const classes = useStyles();
     const {name, isCompleted, distance, direction, changeLocationTo, isSelected, question} = props;
 
-    const onChangeRadioButton = (e: React.ChangeEvent<HTMLInputElement>) => changeLocationTo(e.target.name);
+    const onChangeRadioButton = (e: React.ChangeEvent<HTMLInputElement>) => changeLocationTo(name);
     const onClickLabel = (e: OnClickEvent) => changeLocationTo(name);
     return (
         <ListItem>

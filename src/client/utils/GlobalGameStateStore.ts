@@ -49,9 +49,13 @@ const fetchGameState = async (store: GameStateStore,): Promise<void> => {
 
 const saveGameState = async (store: GameStateStore): Promise<void> => {
     //TODO handle if saving fails
-    const data = {gameState: store.state.gameState};
-    const options = {auth: getAuth(),}
-    await axios.post(fetchLocationsUrl, data, options);
+    try {
+        const data = {gameState: store.state.gameState};
+        const options = {auth: getAuth(),}
+        await axios.post(fetchLocationsUrl, data, options);
+    } catch (e) {
+        console.error(e);
+    }
 }
 
 const setSelectedLocation = (store: GameStateStore, location: ILocation): void => {

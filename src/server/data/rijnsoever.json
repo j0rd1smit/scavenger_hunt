@@ -97,7 +97,7 @@
       "coords": [
         52.209830, 4.420280
       ],
-      "unlockingDistanceInMeters": 10,
+      "unlockingDistanceInMeters": 15,
       "isUnlocked": false,
       "isCompleted": false,
       "question": {
@@ -112,7 +112,7 @@
       "coords": [
         52.209069, 4.420450
       ],
-      "unlockingDistanceInMeters": 10,
+      "unlockingDistanceInMeters": 15,
       "isUnlocked": false,
       "isCompleted": false,
       "question": {
@@ -126,7 +126,7 @@
       "coords": [
         52.208136, 4.417812
       ],
-      "unlockingDistanceInMeters": 10,
+      "unlockingDistanceInMeters": 15,
       "isUnlocked": false,
       "isCompleted": false,
       "question": {
@@ -156,7 +156,7 @@
       "coords": [
         52.214658, 4.414871
       ],
-      "unlockingDistanceInMeters": 10,
+      "unlockingDistanceInMeters": 15,
       "isUnlocked": false,
       "isCompleted": false,
       "question": {
@@ -184,12 +184,12 @@
       "coords": [
         52.208220, 4.415638
       ],
-      "unlockingDistanceInMeters": 10,
+      "unlockingDistanceInMeters": 15,
       "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
-        "description": "How many balcony doors are there in our old flat? (Please enter a number)",
+        "description": "How many balcony doors are there in our old flat-building? (Please enter a number)",
         "answer": "16"
       }
     },
