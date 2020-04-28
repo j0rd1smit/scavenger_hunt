@@ -15,8 +15,6 @@ import {permissionStatusHook} from "../utils/permissionsUtils";
 import {Redirect} from "react-router-dom";
 import {permissionsPageUrl} from "../routes/Hrefs";
 import {isPresent} from "../utils/utils";
-import {isInTheSearchArea} from "../../utils/Locations";
-
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -150,7 +148,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                             placement={"left"}
                             title="Answer the question"
                             aria-label="Center"
-                            open={puzzelDialogIsOpenFor !== selectedLocation.name && isInTheSearchArea(selectedLocation, geoData.coord)}
+                            open={puzzelDialogIsOpenFor !== selectedLocation.name && selectedLocation.isUnlocked}
                             arrow>
                             <Fab
                                 color="primary"

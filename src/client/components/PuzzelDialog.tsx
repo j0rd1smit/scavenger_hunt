@@ -179,8 +179,10 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
         setUserAnswer(e.target.value);
     }
 
+    const reg = new RegExp(question.answer, 'g');
     const onSubmit = (e: OnClickEvent): void => {
-        if (userAnswer.toLowerCase() === question.answer.toLowerCase()) {
+        //if (userAnswer.toLowerCase() === question.answer.toLowerCase()) {
+        if (userAnswer.toLowerCase().match(reg)) {
             setAnswerHelperText("");
             setIsIncorrect(false);
             onSolved();

@@ -114,7 +114,7 @@ function NavBar(props: INavBarProps): JSX.Element {
                                 <Fragment>
 
                                     <Typography variant="h6" className={classes.title}>
-                                        Treasure Trails
+                                        Merel's Treasure Trail
                                     </Typography>
                                 </Fragment>
                         }

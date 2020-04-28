@@ -80,7 +80,7 @@ function LoginPage(props: ILoginPageProps): JSX.Element {
                 <AppBar position="static">
                     <Toolbar>
                         <Typography variant="h6" className={classes.title}>
-                            Treasure Trails
+                            Merel's Treasure Trail
                         </Typography>
                     </Toolbar>
                 </AppBar>

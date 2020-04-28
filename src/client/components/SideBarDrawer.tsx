@@ -2,8 +2,9 @@ import React, {Fragment, useState} from "react";
 import {createStyles, makeStyles, Theme} from "@material-ui/core/styles";
 import {isIos} from "../utils/utils";
 import {
+    Button,
     Checkbox,
-    Collapse,
+    Collapse, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle,
     List,
     ListItem, ListItemAvatar,
     ListItemIcon,
@@ -327,11 +328,21 @@ interface IProgressListProps {
 function ProgressList(props: IProgressListProps): JSX.Element {
     const classes = useStyles();
 
-    const [state, {}] = useGlobalGameStore();
+    const [state, {resetGameState}] = useGlobalGameStore();
     const locations = state.gameState.locations;
 
     const [showProgress, setShowProgress] = useState<boolean>(false);
     const onClickProgressButton = (e: OnClickEvent) => setShowProgress(!showProgress);
+
+    const [openResetProgressDialog, setOpenResetProgressDialog] = useState<boolean>(false);
+
+    const onClickResetProgressButton = (_: OnClickEvent) => setOpenResetProgressDialog(true);
+    const onClickCancelResetProgress = (_: OnClickEvent) => setOpenResetProgressDialog(false);
+
+    const onClickAcceptResetProgress = async (_: OnClickEvent) => {
+        await resetGameState();
+        setOpenResetProgressDialog(false);
+    }
 
 
     return (
@@ -386,8 +397,36 @@ function ProgressList(props: IProgressListProps): JSX.Element {
                             }
                         />
                     </ListItem>
+
+                    <ListItem dense button alignItems="flex-start" onClick={onClickResetProgressButton}>
+                        <ListItemText
+                            primary="Reset Progress"
+                        />
+                    </ListItem>
                 </List>
             </Collapse>
+
+            <Dialog
+                open={openResetProgressDialog}
+                onClose={onClickCancelResetProgress}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">{"Reset your progress"}</DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        You are about to reset your progress. Are you sure you want to do this?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={onClickCancelResetProgress} color="primary">
+                        No
+                    </Button>
+                    <Button onClick={onClickAcceptResetProgress} color="primary" autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
         </Fragment>
     )
 }

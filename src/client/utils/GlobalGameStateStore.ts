@@ -17,6 +17,9 @@ export type GlobalState = {
 export type GameStateActions = {
     fetchGameState: () => Promise<void>;
     saveGameState: () => Promise<void>;
+    resetGameState: () => Promise<void>;
+
+
     clearSelectedLocation: () => void;
     setSelectedLocation: (location: ILocation|undefined) => void;
     markLocationAsCompleted: (location: ILocation) => void;
@@ -57,6 +60,12 @@ const saveGameState = async (store: GameStateStore): Promise<void> => {
     } catch (e) {
         console.error(e);
     }
+}
+
+const resetGameState = async (store: GameStateStore): Promise<void> => {
+    const options = {auth: getAuth(),}
+    await axios.delete(fetchLocationsUrl, options);
+    await fetchGameState(store);
 }
 
 const setSelectedLocation = (store: GameStateStore, location: ILocation): void => {
@@ -135,6 +144,8 @@ const closePuzzelDialog = (store: GameStateStore): void => {
 const actions = {
     fetchGameState,
     saveGameState,
+    resetGameState,
+
     setSelectedLocation,
     markLocationAsCompleted,
     unlockLocations,

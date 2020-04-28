@@ -9,20 +9,28 @@ const LocationController = Router();
 
 
 const progress: any = {};
-
-LocationController.get("/locations", userAuth, async (req: IBasicAuthedRequest, res: Response) => {
+const herf = "/locations";
+LocationController.get(herf, userAuth, async (req: IBasicAuthedRequest, res: Response) => {
     const username = req.auth.user;
     if (progress[username] === undefined) {
-        const rawData = await fs.promises.readFile(path.resolve(__dirname, "../data/rijnsoever.json"));
+        const rawData = await fs.promises.readFile(path.resolve(__dirname, "../data/leiden.json"));
         progress[username] = JSON.parse(rawData.toString("utf8"));
         console.log("stored for", username);
     }
 
     res.json(progress[username]);
-
 });
 
-LocationController.post("/locations", userAuth, async (req: IBasicAuthedRequest, res: Response) => {
+LocationController.delete(herf, userAuth, async (req: IBasicAuthedRequest, res: Response) => {
+    const username = req.auth.user;
+    if (progress[username] !== undefined) {
+        delete progress[username];
+    }
+
+    res.json({succes: true, message: "You progress have been delete."})
+});
+
+LocationController.post(herf, userAuth, async (req: IBasicAuthedRequest, res: Response) => {
     const username = req.auth.user;
     const {gameState} = req.body;
     const prevGameState = progress[username];
@@ -41,7 +49,6 @@ LocationController.post("/locations", userAuth, async (req: IBasicAuthedRequest,
             message: "gameState was not provided in the body."
         });
     }
-
 });
 
 const gameStateIsValid = (gameState: IGameState|undefined|null, previousState: IGameState): boolean => {

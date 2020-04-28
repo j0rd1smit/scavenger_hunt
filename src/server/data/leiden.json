@@ -1,0 +1,266 @@
+{
+  "selectedLocation": null,
+  "codes": [
+    {
+      "name": "Code 1",
+      "code": "093"
+    },
+    {
+      "name": "Code 2",
+      "code": "173"
+    },
+    {
+      "name": "Code 3",
+      "code": "304"
+    }
+  ],
+  "locations": [
+    {
+      "name": "The bridge",
+      "coords": [
+        52.162023, 4.467596
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/bridge2.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "High five",
+      "coords": [
+        52.158354, 4.468320
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/high_five2.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Zoo",
+      "coords": [
+        52.162019, 4.464560
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/zoo.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "River",
+      "coords": [
+        52.166728, 4.470692
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/river.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Ice",
+      "coords": [
+        52.162151, 4.473617
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/ice.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+    {
+      "name": "Red",
+      "coords": [
+        52.158367, 4.466459
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "QR_CODE",
+        "description": "Can you find the QR code?",
+        "img": "/static/images/red.jpg",
+        "answer": "Merel is jarig!"
+      }
+    },
+
+    {
+      "name": "Reading",
+      "coords": [
+        52.163146, 4.463796
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "How many books are there in the statue?",
+        "answer": "[0-9]+"
+      }
+    },
+    {
+      "name": "Purple",
+      "coords": [
+        52.160032, 4.469901
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "img": "/static/images/purple.jpg",
+        "description": "What is the name of this plant? (Please answer in dutch)",
+        "answer": "paarse regen"
+      }
+    },
+    {
+      "name": "Thespius",
+      "coords": [
+        52.165202, 4.475365
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "Thespius is een anagram voor?",
+        "answer": "pest.*huis"
+      }
+    },
+    {
+      "name": "Crossroad",
+      "coords": [
+        52.160441, 4.464460
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "You are at a crossroad of 2 people. These people have something in common. They are both... (please answer in dutch).",
+        "answer": "waterbouwkundige"
+      }
+    },
+    {
+      "name": "Logo",
+      "coords": [
+        52.164650, 4.464978
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "From whom is this logo? (please answer in dutch).",
+        "img": "/static/images/logo.png",
+        "answer": "hoogheemraadschap"
+      }
+    },
+    {
+      "name": "The five",
+      "coords": [
+        52.164211, 4.475033
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "De Vijf beelden op een kromme is een kunst werk van Frans de Wit. Van welk material zijn deze beelden gemaakt?",
+        "answer": "scheeps.*staal"
+      }
+    },
+    {
+      "name": "Morschkwartier",
+      "coords": [
+        52.159024, 4.470041
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "Wat voor vereniging is de Morschkwartier verenining?",
+        "answer": "speeltuin.*vereniging"
+      }
+    },
+    {
+      "name": "Quote",
+      "coords": [
+        52.166882, 4.468920
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "I'm a mathematician and scientist of old. Many roads are named after me. I have made a quote in a bath that is very famous among scientist. What was this quote?",
+        "answer": "eureka"
+      }
+    },
+    {
+      "name": "DuimerKring",
+      "coords": [
+        52.163316, 4.471737
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "'DuimerKring' is een anagram voor?",
+        "answer": "muider.*kring"
+      }
+    },
+    {
+      "name": "Sport",
+      "coords": [
+        52.166809, 4.464044
+      ],
+      "unlockingDistanceInMeters": 15,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "How many outdoor-sport fields (tennis, soccer & hockey) does the university have?",
+        "answer": "6"
+      }
+    },
+    {
+      "name": "Promotors",
+      "coords": [
+        52.162066, 4.481700
+      ],
+      "unlockingDistanceInMeters": 25,
+      "isUnlocked": true,
+      "isCompleted": false,
+      "question": {
+        "type": "OPEN",
+        "description": "'Promotors' is een anagram voor?",
+        "answer": "morspoort"
+      }
+    }
+  ]
+}
