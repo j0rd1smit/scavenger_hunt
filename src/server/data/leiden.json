@@ -2,16 +2,55 @@
   "selectedLocation": null,
   "codes": [
     {
-      "name": "Code 1",
-      "code": "093"
+      "name": "Yellow",
+      "pieces": [
+        {
+          "unlocksAt": 1,
+          "value": "0"
+        },
+        {
+          "unlocksAt": 3,
+          "value": "9"
+        },
+        {
+          "unlocksAt": 5,
+          "value": "3"
+        }
+      ]
     },
     {
-      "name": "Code 2",
-      "code": "173"
+      "name": "Turquoise",
+      "pieces": [
+        {
+          "unlocksAt": 7,
+          "value": "1"
+        },
+        {
+          "unlocksAt": 9,
+          "value": "7"
+        },
+        {
+          "unlocksAt": 11,
+          "value": "3"
+        }
+      ]
     },
     {
-      "name": "Code 3",
-      "code": "304"
+      "name": "Gray",
+      "pieces": [
+        {
+          "unlocksAt": 13,
+          "value": "3"
+        },
+        {
+          "unlocksAt": 14,
+          "value": "0"
+        },
+        {
+          "unlocksAt": 15,
+          "value": "4"
+        }
+      ]
     }
   ],
   "locations": [
@@ -21,7 +60,7 @@
         52.162023, 4.467596
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -36,7 +75,7 @@
         52.158354, 4.468320
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -51,7 +90,7 @@
         52.162019, 4.464560
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -66,7 +105,7 @@
         52.166728, 4.470692
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -81,7 +120,7 @@
         52.162151, 4.473617
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -96,7 +135,7 @@
         52.158367, 4.466459
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "QR_CODE",
@@ -112,7 +151,7 @@
         52.163146, 4.463796
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -126,7 +165,7 @@
         52.160032, 4.469901
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -141,7 +180,7 @@
         52.165202, 4.475365
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -155,7 +194,7 @@
         52.160441, 4.464460
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -169,7 +208,7 @@
         52.164650, 4.464978
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -184,7 +223,7 @@
         52.164211, 4.475033
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -198,12 +237,12 @@
         52.159024, 4.470041
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
         "description": "Wat voor vereniging is de Morschkwartier verenining?",
-        "answer": "speeltuin.*vereniging"
+        "answer": "speeltuin"
       }
     },
     {
@@ -212,7 +251,7 @@
         52.166882, 4.468920
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -226,7 +265,7 @@
         52.163316, 4.471737
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -240,7 +279,7 @@
         52.166809, 4.464044
       ],
       "unlockingDistanceInMeters": 15,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",
@@ -254,7 +293,7 @@
         52.162066, 4.481700
       ],
       "unlockingDistanceInMeters": 25,
-      "isUnlocked": true,
+      "isUnlocked": false,
       "isCompleted": false,
       "question": {
         "type": "OPEN",

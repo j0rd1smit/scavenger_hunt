@@ -1,4 +1,5 @@
 import {distanceInMetersBetween} from "../client/utils/GeoUtils";
+import {isPresent} from "../client/utils/utils";
 
 
 export interface IGameState {
@@ -35,60 +36,76 @@ export const isInTheSearchArea = (location: ILocation, userLocation: [number, nu
 
 export interface ICode {
     name: string;
-    code: string;
+    pieces: ICodePiece[];
+}
+
+export interface ICodePiece {
+    unlocksAt: number;
+    value: string;
 }
 
 const codeMaskSign = "?";
-export const mapCodesToMaskedFormat = (codes: ICode[], nUnlockedLocations: number): ICode[] => {
-    const maskedCodes = codes.map(e => {
-        return {...e};
-    });
+export class Code {
+    public readonly icode: ICode;
+    private nUnlockedLocations: number;
 
-
-    let nCodeCharsToShow = nUnlockedLocations;
-    for (let i = 0; i < codes.length; i++) {
-        const code = codes[i];
-        const maskedCode = maskedCodes[i];
-        maskedCode.code = "";
-        for (let j = 0; j < code.code.length; j++) {
-            if (nCodeCharsToShow > 0) {
-                maskedCode.code += code.code[j];
-                nCodeCharsToShow -= 1;
-            } else {
-                maskedCode.code += codeMaskSign;
-            }
-        }
+    constructor(icode: ICode, nUnlockedLocations: number) {
+        this.icode = icode;
+        this.nUnlockedLocations = nUnlockedLocations;
+        console.assert(this.icode.pieces.length > 0);
     }
 
-    return maskedCodes;
+    public maskedCode = (): string => {
+        return this.icode.pieces.map(piece => {
+            if (this.isPieceUnlocked(piece)) {
+                return piece.value
+            }
+            return codeMaskSign;
+        }).join("")
+    }
+
+    private isPieceUnlocked = (piece: ICodePiece): boolean => {
+        return this.nUnlockedLocations >= piece.unlocksAt;
+    }
+
+    public isFullUnlocked = (): boolean => {
+        return this.icode.pieces.filter(this.isPieceUnlocked).length === this.icode.pieces.length;
+    }
+
+    public isParialyUnlocked = (): boolean => {
+        return this.icode.pieces.filter(this.isPieceUnlocked).length > 0;
+    }
+
+
+    public unlocksAt = (n: number): boolean => {
+        return this.icode.pieces.map(e => e.unlocksAt).includes(n);
+    }
+
+    public nextUnlockAt = (): number|undefined => {
+        const notYetUnlockedPieces = this.icode.pieces.filter(e => !this.isPieceUnlocked(e))
+        if (notYetUnlockedPieces.length === 0) {
+            return undefined;
+        }
+        return Math.min(... notYetUnlockedPieces.map(e => e.unlocksAt))
+    }
 }
 
-export const nUnlockableCodes = (codes: ICode[]): number => {
-    return codes.map(e => e.code).reduce((acc, code) => acc + code.length, 0)
+export const findLastUnlockedCode = (icodes: ICode[], nUnlockedLocations: number): undefined|Code => {
+    const codes = icodes.map(c => new Code(c, nUnlockedLocations));
+    return codes.find(c => c.unlocksAt(nUnlockedLocations));
 }
 
-export const findLastUnlockedCode = (codes: ICode[], locations: ILocation[]): ICode|undefined => {
-    const nUnlockedLocations = locations.filter(e => e.isCompleted).length;
-
-    if (nUnlockedLocations > nUnlockableCodes(codes)) {
+export const findNextUnlockedAt = (icodes: ICode[], nUnlockedLocations: number): undefined|number => {
+    const codes = icodes.map(c => new Code(c, nUnlockedLocations));
+    const nextUnlockMoments = codes.map(c => c.nextUnlockAt()).filter(isPresent);
+    if (nextUnlockMoments.length === 0) {
         return undefined;
     }
-
-    const maskedCodes = mapCodesToMaskedFormat(codes, nUnlockedLocations);
-
-    const countMaskingSigns = (maskedCode: ICode): number => {
-        return (maskedCode.code.match(new RegExp(`${codeMaskSign.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, "g")) || []).length
-    }
-
-    for (let i = 0; i < maskedCodes.length - 1; i++) {
-        const maskedCode = maskedCodes[i];
-        const nextMaskedCode = maskedCodes[i + 1];
-
-        if (countMaskingSigns(maskedCode) > 0 || countMaskingSigns(nextMaskedCode) === nextMaskedCode.code.length) {
-            return maskedCode;
-        }
-    }
-
-    return maskedCodes[maskedCodes.length - 1];
-
+    return  Math.min(... nextUnlockMoments);
 }
+
+export const totalNPieces = (icodes: ICode[]): number => {
+    return icodes.map(e => e.pieces.length).reduce((a, b) => a + b, 0);
+}
+
+

@@ -24,9 +24,9 @@ import {
     SportsEsports, VpnKey
 } from "@material-ui/icons";
 import {
+    Code,
     ILocation,
     IQuestion,
-    mapCodesToMaskedFormat,
     OPEN_QUESTION_TYPE_STR,
     QR_CODE_TYPE_STR
 } from "../../utils/Locations";
@@ -302,16 +302,16 @@ function CodesList(props: ICodesListProps): JSX.Element {
                     disablePadding
                     className={classes.progressList}
                 >
-                    {mapCodesToMaskedFormat(codes, nCompletedLocation).map((code, i) =>
-                    <ListItem key={i}>
+                    {codes.map((icode) => new Code(icode, nCompletedLocation)).map((code, i) =>
+                     <ListItem key={i}>
                         <ListItemAvatar>
                             <ListItemIcon>
                                 <VpnKey />
                             </ListItemIcon>
                         </ListItemAvatar>
                         <ListItemText
-                            primary={code.name}
-                            secondary={code.code}
+                            primary={code.icode.name}
+                            secondary={code.maskedCode()}
                         />
                     </ListItem>
                     )}

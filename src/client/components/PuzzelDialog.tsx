@@ -9,7 +9,7 @@ import {
 import {OnChangeEvent, OnClickCallback, OnClickEvent, SetState} from "../utils/ReactTypes";
 import {CameraAlt} from "@material-ui/icons";
 import QRCodeDailog from "./QRCodeDailog";
-import {findLastUnlockedCode, ILocation, IQuestion} from "../../utils/Locations";
+import {findLastUnlockedCode, findNextUnlockedAt, ILocation, IQuestion, totalNPieces} from "../../utils/Locations";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 
 
@@ -181,7 +181,6 @@ function QuestionContent(props: IQuestionContentProps): JSX.Element {
 
     const reg = new RegExp(question.answer, 'g');
     const onSubmit = (e: OnClickEvent): void => {
-        //if (userAnswer.toLowerCase() === question.answer.toLowerCase()) {
         if (userAnswer.toLowerCase().match(reg)) {
             setAnswerHelperText("");
             setIsIncorrect(false);
@@ -242,23 +241,35 @@ function AnswerContent(props: IAnswerContentProps): JSX.Element {
     const [state, {}] = useGlobalGameStore();
     const {codes, locations} = state.gameState;
 
-    const lastUnlockedCode = findLastUnlockedCode(codes, locations);
+    const nCompletedLocations = locations.filter(e => e.isCompleted).length;
+    const unlockedCode = findLastUnlockedCode(codes, nCompletedLocations);
+    const allCodeAreUnlocked = nCompletedLocations > totalNPieces(codes);
+    const nextUnlockAt = findNextUnlockedAt(codes, nCompletedLocations);
+
+    const getSubText = (): string => {
+        if (allCodeAreUnlocked) {
+            return " You have already unlocked all the codes, so I can't give you anymore.";
+        }
+        if (unlockedCode !== undefined) {
+            return ` You unlocked a piece of ${unlockedCode.icode.name}:`
+        }
+
+        if (nextUnlockAt !== undefined) {
+            return ` You are one step closer to unlocking the next code. You will unlock the next code when you have completed ${nextUnlockAt} locations. You have currently completed ${nCompletedLocations} locations.`
+        }
+        return "";
+    }
 
     return (
         <Fragment>
             <DialogContent>
                 <Typography variant="body1" display="block" gutterBottom>
-                    You solved it. Well done!
-                    {lastUnlockedCode === undefined ?
-                        " You have already unlocked all the codes, so I can't give you anymore."
-                        :
-                        ` You unlocked a piece of ${lastUnlockedCode.name}:`
-                    }
+                    You solved it. Well done! {getSubText()}
                 </Typography>
-                {lastUnlockedCode !== undefined &&
+                {unlockedCode !== undefined &&
                     <Fragment>
                         <Typography align={"center"} variant="button" display="block" gutterBottom>
-                            {lastUnlockedCode.code}
+                            {unlockedCode.maskedCode()}
                         </Typography>
                         <Typography variant="caption" display="block" gutterBottom>
                             If you need to see this code again, you can find it in the sidebar under "Unlocked codes".
