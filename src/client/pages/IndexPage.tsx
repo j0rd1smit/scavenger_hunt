@@ -8,13 +8,14 @@ import PuzzelDialog from "../components/PuzzelDialog";
 import LocationPullOver from "../components/LocationPullOver";
 import {Fab, Tooltip} from "@material-ui/core";
 import {Navigation, RateReview} from "@material-ui/icons";
-import {windowHeightMinusAppBarState} from "../utils/ReactHelpers";
+import {localStorageFlagHook, windowHeightMinusAppBarState} from "../utils/ReactHelpers";
 import {createGeoDataHook} from "../service/GeolocationService";
 import {useGlobalGameStore} from "../utils/GlobalGameStateStore";
 import {permissionStatusHook} from "../utils/permissionsUtils";
 import {Redirect} from "react-router-dom";
 import {permissionsPageUrl} from "../routes/Hrefs";
 import {isPresent} from "../utils/utils";
+import ExplanationDialog from "../components/ExplanationDialog";
 
 const useStyles = makeStyles((theme: Theme) =>
     createStyles({
@@ -90,6 +91,9 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
         setDrawerIsOpen(true);
     };
 
+    // tutorial
+    const [isExplanationDialogOpen, setIsExplanationDialogOpen] = localStorageFlagHook(true, "isExplanationDialogOpen");
+
 
     const permissionStatus = permissionStatusHook();
 
@@ -109,7 +113,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                 <NavBar
                     geoData={geoData}
                     onMenuButtonClick={onClickMenuButton}
-                    sidebarIsOpen={drawerIsOpen}
+                    sidebarIsOpen={drawerIsOpen || isExplanationDialogOpen}
                 />
                 <SideBarDrawer
                     userLocation={geoData.coord}
@@ -186,6 +190,7 @@ function IndexPage(_: IIndexPageProps): JSX.Element {
                         followUser={followUser}
                         setFollowUser={setFollowUser}
                     />
+                    <ExplanationDialog isOpen={isExplanationDialogOpen} setIsOpen={setIsExplanationDialogOpen}/>
                 </div>
 
             </div>

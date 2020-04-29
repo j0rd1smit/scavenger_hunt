@@ -33,3 +33,21 @@ export const windowHeightMinusAppBarState = (): number => {
     return height;
 }
 
+export const localStorageFlagHook = (v: boolean, key: string): [boolean, Dispatch<boolean>] => {
+    const [flag, setFlag] = useState<boolean>(v);
+    //window.localStorage.
+    useEffect(() => {
+       if (window.localStorage.getItem(key) === null) {
+           window.localStorage.setItem(key, flag.toString());
+       } else {
+           setFlag(window.localStorage.getItem(key) === "true");
+       }
+    }, []);
+
+    useEffect(() => {
+        window.localStorage.setItem(key, flag.toString());
+    }, [flag]);
+
+    return [flag, setFlag];
+}
+
